@@ -1,0 +1,350 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ZYKLUS — Nothing Was Lost</title>
+<meta name="description" content="Six million people live inside a mountain, ten levels deep. Go down. A sci-fi audio drama in the spirit of the old adventure games — a new episode every Friday.">
+<meta property="og:title" content="ZYKLUS — Nothing Was Lost">
+<meta property="og:description" content="Ten levels deep. Every light turns red. A sci-fi audio drama in the spirit of the old adventure games.">
+<meta property="og:image" content="img/hero.jpg">
+<link rel="icon" href="img/favicon.png">
+<link rel="stylesheet" href="fonts.css">
+<style>
+:root {
+  --text: #e8e2d6; --muted: #a39d92; --red: #d23c32;
+  --glut: 232, 116, 44;            /* oben: heiß */
+  --kuehl: 111, 183, 232;          /* unten: kühl */
+  --tiefe: 0;                      /* 0 = Ebene Eins … 1 = Ebene Zehn, per Skript */
+  --line: rgba(232,226,214,.13);
+}
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body {
+  margin: 0; color: var(--text); font: 17px/1.65 Barlow, system-ui, sans-serif;
+  background: #0e0908;
+  transition: background-color 1.2s;
+}
+a { color: inherit; }
+img { display: block; max-width: 100%; }
+.kl, h1, h2, h3 { font-family: "Barlow Condensed", Barlow, sans-serif; font-weight: 600; letter-spacing: .07em; text-transform: uppercase; }
+
+/* Der Schein der Ebene: oben warm, unten kalt (Farbe setzt das Skript) */
+.schein { position: fixed; inset: 0; pointer-events: none; z-index: 0;
+  background: radial-gradient(ellipse at 50% 30%, rgba(232,116,44,.16), transparent 65%); transition: background 1.2s; }
+
+/* Tiefenmesser */
+.messer { position: fixed; right: 18px; top: 50%; transform: translateY(-50%); z-index: 20;
+  display: flex; flex-direction: column; align-items: center; gap: 6px; font-family: "Barlow Condensed"; }
+.messer .rohr { width: 6px; height: 46vh; border-radius: 3px; position: relative;
+  background: linear-gradient(rgba(var(--glut), .45), rgba(var(--kuehl), .45)); }
+.messer .fahrt { position: absolute; left: 50%; width: 18px; height: 18px; margin-left: -9px; border-radius: 50%;
+  border: 2px solid var(--text); background: #08080a; top: calc(var(--tiefe) * 100% - 9px); transition: top .4s, left .4s; }
+.messer .zahl { font-size: 13px; letter-spacing: .2em; color: var(--muted); writing-mode: vertical-rl; transform: rotate(180deg); }
+.messer b { font-size: 26px; line-height: 1; }
+@media (max-width: 700px) {
+  .messer { top: auto; bottom: 14px; right: 50%; transform: translateX(50%); flex-direction: row; gap: 10px;
+    background: #08080add; padding: 6px 14px; border: 1px solid var(--line); border-radius: 20px; }
+  .messer .rohr { width: 34vw; height: 6px; background: linear-gradient(90deg, rgba(var(--glut), .6), rgba(var(--kuehl), .6)); }
+  .messer .fahrt { top: 50%; margin-top: -9px; margin-left: -9px; left: calc(var(--tiefe) * 100%); }
+  .messer .zahl { writing-mode: horizontal-tb; transform: none; }
+}
+
+/* Ton */
+.ton { position: fixed; left: 16px; bottom: 16px; z-index: 20; background: #08080acc; border: 1px solid var(--line);
+  color: var(--muted); font: 13px "Barlow Condensed"; letter-spacing: .15em; text-transform: uppercase; padding: 8px 14px; cursor: pointer; }
+.ton[aria-pressed="true"] { color: var(--text); border-color: var(--text); }
+@media (max-width: 700px) { .ton { bottom: 64px; } }
+
+main { position: relative; z-index: 1; }
+.wrap { max-width: 1040px; margin: 0 auto; padding: 0 16px; }
+
+/* Eingang */
+.eingang { min-height: 100svh; display: grid; place-items: center; text-align: center; position: relative; overflow: hidden; }
+.eingang::before { content: ""; position: absolute; inset: 0; background: url(img/schacht.jpg) center/cover; opacity: .55;
+  -webkit-mask-image: radial-gradient(ellipse at center, #000 30%, transparent 75%); mask-image: radial-gradient(ellipse at center, #000 30%, transparent 75%); }
+.eingang > div { position: relative; padding: 80px 16px; }
+.eingang h1 { font-size: clamp(60px, 14vw, 160px); line-height: 1; margin: 0; letter-spacing: .22em; padding-left: .22em; }
+.eingang .unter { color: var(--red); letter-spacing: .32em; font-size: clamp(16px, 3.2vw, 28px); margin: 8px 0 26px; }
+.eingang p { max-width: 540px; margin: 0 auto; color: #d6d0c4; }
+.runter { display: inline-flex; flex-direction: column; align-items: center; gap: 6px; margin-top: 40px; text-decoration: none;
+  font-family: "Barlow Condensed"; letter-spacing: .3em; text-transform: uppercase; font-size: 14px; color: var(--muted); }
+.runter span { width: 1px; height: 48px; background: linear-gradient(var(--text), transparent); animation: fall 2s infinite; transform-origin: top; }
+@keyframes fall { 0% { transform: scaleY(0); } 60% { transform: scaleY(1); opacity: 1; } 100% { transform: scaleY(1); opacity: 0; } }
+
+/* Ebene */
+.ebene { padding: 14vh 0; }
+.ebene .kopf { display: flex; align-items: baseline; gap: 18px; margin-bottom: 18px; }
+.ebene .nr { font-family: "Barlow Condensed"; font-size: clamp(64px, 10vw, 110px); line-height: .85; font-weight: 600;
+  color: rgb(var(--farbe)); opacity: .9; }
+.ebene h2 { margin: 0; font-size: clamp(26px, 4vw, 40px); }
+.ebene .art { color: var(--muted); font-size: 15px; letter-spacing: .12em; text-transform: uppercase; font-family: "Barlow Condensed"; }
+.ebene .text { max-width: 640px; margin: 22px 0 0; color: #d6d0c4; }
+.zwischen { text-align: center; color: var(--muted); font-family: "Barlow Condensed"; letter-spacing: .3em; text-transform: uppercase;
+  font-size: 13px; padding: 4vh 0; }
+.zwischen::before, .zwischen::after { content: ""; display: block; width: 1px; height: 7vh; margin: 10px auto;
+  background: linear-gradient(transparent, rgba(232,226,214,.35), transparent); }
+
+/* Die Bühne: ein Adventure-Bildschirm */
+.buehne { position: relative; aspect-ratio: 16/9; overflow: hidden; border: 1px solid var(--line); background: #000; }
+.buehne img { width: 100%; height: 100%; object-fit: cover; }
+.buehne .ort { position: absolute; left: 14px; top: 12px; font-family: "Barlow Condensed"; letter-spacing: .15em; text-transform: uppercase;
+  font-size: 14px; background: #000a; padding: 3px 10px; }
+.punkt { position: absolute; width: 13%; aspect-ratio: 1; transform: translate(-50%, -50%); border-radius: 50%;
+  cursor: pointer; background: transparent; border: 0; padding: 0; }
+.punkt::after { content: ""; position: absolute; left: 50%; top: 50%; width: 10px; height: 10px; margin: -5px; border-radius: 50%;
+  background: #fff; opacity: 0; animation: puls 2.4s infinite; transition: opacity .3s; }
+.buehne:hover .punkt::after, .punkt:focus-visible::after { opacity: .85; }
+.punkt.gesehen::after { animation: none; opacity: .3 !important; }
+@keyframes puls { 0% { box-shadow: 0 0 0 0 #fff9; } 70% { box-shadow: 0 0 0 16px #fff0; } 100% { box-shadow: 0 0 0 0 #fff0; } }
+@media (hover: none) { .punkt::after { opacity: .85; } }
+
+/* Verbzeile und Antwort — wie unten im alten Adventure */
+.verb { font-family: VT323, monospace; font-size: 22px; color: #b8d4a8; background: #000; border: 1px solid var(--line); border-top: 0;
+  padding: 6px 14px; min-height: 40px; }
+.verb .was { color: #f1e6a8; }
+.antwort { font-family: VT323, monospace; font-size: 23px; line-height: 1.3; color: #f1e6a8; background: #000; border: 1px solid var(--line);
+  border-top: 0; padding: 0 14px; max-height: 0; overflow: hidden; transition: max-height .4s, padding .4s; }
+.antwort.offen { max-height: 260px; padding: 10px 14px 14px; }
+.fund { font-family: "Barlow Condensed"; letter-spacing: .15em; text-transform: uppercase; font-size: 13px; color: var(--muted); margin-top: 10px; }
+
+/* Unten angekommen */
+.grund { padding: 16vh 0 10vh; text-align: center; }
+.grund h2 { font-size: clamp(34px, 6vw, 64px); margin: 0 0 10px; }
+.grund p { color: #d6d0c4; max-width: 560px; margin: 0 auto 30px; }
+.video { position: relative; aspect-ratio: 16/9; background: #000 url(img/korridor.jpg) center/cover; border: 1px solid var(--line); cursor: pointer; text-align: center; }
+.video::before { content: ""; position: absolute; inset: 0; background: #000a; }
+.video .spiel { position: absolute; inset: 0; display: grid; place-items: center; padding: 16px; }
+.video .spiel span { display: grid; place-items: center; width: 84px; height: 84px; border-radius: 50%; background: var(--red); margin: 0 auto 14px; }
+.video .spiel span::after { content: ""; border-left: 26px solid #fff; border-top: 16px solid transparent; border-bottom: 16px solid transparent; margin-left: 6px; }
+.video small { color: #bdb6aa; font-size: 13px; max-width: 420px; display: block; margin: 0 auto; }
+.video iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; }
+.knopf { display: inline-block; padding: 13px 26px; border: 1px solid var(--red); text-decoration: none; font-family: "Barlow Condensed";
+  letter-spacing: .15em; text-transform: uppercase; }
+.knopf.voll, .knopf:hover { background: var(--red); }
+.knoepfe { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; margin-top: 30px; }
+
+.folgen { display: grid; gap: 12px; margin-top: 60px; text-align: left; }
+.folge { display: grid; grid-template-columns: 70px 1fr auto; gap: 18px; align-items: center; padding: 16px 20px; background: #0e1116; border: 1px solid var(--line); }
+.folge .n { font-family: "Barlow Condensed"; font-size: 34px; color: var(--red); line-height: 1; }
+.folge h3 { margin: 0; font-size: 20px; }
+.folge p { margin: 2px 0 0; color: var(--muted); font-size: 15px; }
+.folge .wann { font-family: "Barlow Condensed"; letter-spacing: .12em; text-transform: uppercase; font-size: 14px; color: var(--muted); white-space: nowrap; }
+.folge.bald { opacity: .55; }
+@media (max-width: 640px) { .folge { grid-template-columns: 1fr; gap: 6px; } }
+
+.figuren { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 14px; margin-top: 60px; text-align: left; }
+.figur img { aspect-ratio: 1; object-fit: cover; width: 100%; border: 1px solid var(--line); }
+.figur h3 { margin: 8px 0 0; font-size: 17px; }
+.figur p { margin: 0; color: var(--muted); font-size: 14px; line-height: 1.45; }
+
+.ki { max-width: 640px; margin: 60px auto 0; color: var(--muted); font-size: 14px; }
+footer { border-top: 1px solid var(--line); padding: 30px 0 90px; color: var(--muted); font-size: 14px; position: relative; z-index: 1; }
+footer .wrap { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 10px 24px; }
+footer a { color: var(--muted); }
+@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } .punkt::after, .runter span { animation: none; } }
+</style>
+</head>
+<body>
+<div class="schein" aria-hidden="true"></div>
+
+<div class="messer" aria-hidden="true">
+  <span class="zahl">Level</span><b id="ebenenzahl">1</b>
+  <div class="rohr"><div class="fahrt"></div></div>
+</div>
+<button class="ton" id="ton" aria-pressed="false" title="Sound: the hum of the levels">Sound off</button>
+
+<main>
+<header class="eingang" data-tiefe="0" data-ebene="1"><div>
+  <h1>ZYKLUS</h1>
+  <div class="unter kl">Nothing Was Lost</div>
+  <p>Six million people live inside a mountain, ten levels deep. Heat rises — so the poor live at the top, in the heat, and the rich at the bottom, in the cool.</p>
+  <a class="runter" href="#ebene-1">Go down<span></span></a>
+</div></header>
+
+<section class="ebene" id="ebene-1" data-tiefe="0" data-ebene="1" style="--farbe: var(--glut)"><div class="wrap">
+  <div class="kopf"><div class="nr">01</div><div><h2>Level One</h2><div class="art">The top · the heat</div></div></div>
+  <div class="buehne">
+    <img src="img/schacht.jpg" style="object-position: 50% 0" alt="Looking up the great shaft, every level lit, a pale square of light at the very top" loading="lazy">
+    <div class="ort">Level One</div>
+    <button class="punkt" style="left:50%;top:12%" data-name="the light at the top" data-text="A pale square, very far up. Everybody down here has seen it. Nobody down here has asked what it is."></button>
+    <button class="punkt" style="left:24%;top:72%" data-name="the railings" data-text="Thousands of people, every evening, leaning on the rails. Up here the air is warm before it reaches you. It has been used by every level below."></button>
+  </div>
+  <div class="verb" aria-live="polite">Look at …</div><div class="antwort"></div>
+  <p class="text">The heat of six million people rises and collects here. Level One is crowded, loud and poor — and the closest anyone lives to the rock above.</p>
+</div></section>
+
+<div class="zwischen">Going down</div>
+
+<section class="ebene" data-tiefe=".12" data-ebene="2" style="--farbe: var(--glut)"><div class="wrap">
+  <div class="kopf"><div class="nr">02</div><div><h2>Level Two</h2><div class="art">Offices · investigators · paper</div></div></div>
+  <div class="buehne">
+    <img src="img/ebene2.jpg" alt="A crowded morning corridor; people make half a step of room for a big man with a mechanical arm" loading="lazy">
+    <div class="ort">Level Two — morning</div>
+    <button class="punkt" style="left:30%;top:68%" data-name="the arm" data-text="A mechanical arm, built for competition, not for comfort. In a full corridor, people make half a step of room for it. They always do."></button>
+    <button class="punkt" style="left:56%;top:40%" data-name="the man" data-text="Erek Bracks, investigator. He says very little. When he says something, it is usually: “I know.”"></button>
+  </div>
+  <div class="verb" aria-live="polite">Look at …</div><div class="antwort"></div>
+  <p class="text">On Level Two the city keeps its records — and its investigators. One of them is actually thorough. That is about to become a problem for somebody.</p>
+</div></section>
+
+<div class="zwischen">Going down</div>
+
+<section class="ebene" data-tiefe=".33" data-ebene="4" style="--farbe: var(--glut)"><div class="wrap">
+  <div class="kopf"><div class="nr">04</div><div><h2>Level Four</h2><div class="art">The growing halls</div></div></div>
+  <div class="buehne">
+    <img src="img/ebene4.jpg" alt="Endless rows of growing racks under red lamps" loading="lazy">
+    <div class="ort">Level Four — the halls</div>
+    <button class="punkt" style="left:30%;top:42%" data-name="the red lamps" data-text="Red light, day and night, row after row. Everything six million people eat starts here. Somebody has counted exactly how much."></button>
+    <button class="punkt" style="left:78%;top:70%" data-name="the floor" data-text="Wet. Always wet. The water comes from above and goes on, down, to the levels that can afford it."></button>
+  </div>
+  <div class="verb" aria-live="polite">Look at …</div><div class="antwort"></div>
+  <p class="text">The city feeds itself in halls under red lamps. Somewhere in these numbers is the first thing that doesn't add up.</p>
+</div></section>
+
+<div class="zwischen">Going down</div>
+
+<section class="ebene" data-tiefe=".78" data-ebene="9" style="--farbe: var(--kuehl)"><div class="wrap">
+  <div class="kopf"><div class="nr">09</div><div><h2>Level Nine</h2><div class="art">Freight · halls · the council</div></div></div>
+  <div class="buehne">
+    <img src="img/ebene9.jpg" alt="A freight hall full of blue containers; under one lid, a pair of eyes" loading="lazy">
+    <div class="ort">Level Nine — 5:20 a.m.</div>
+    <button class="punkt" style="left:40%;top:56%" data-name="the blue lid" data-text="5:20 in the morning. A lid lifts by two fingers. Somebody has spent the night folded up in there — and has to walk out as if she belonged."></button>
+    <button class="punkt" style="left:80%;top:40%" data-name="the carts" data-text="A hall full of carts. Nobody looks at freight. That's the whole point of freight."></button>
+  </div>
+  <div class="verb" aria-live="polite">Look at …</div><div class="antwort"></div>
+  <p class="text">Cooler now. Quieter. Level Nine moves the city's goods — and keeps a small council room where a record can be amended for seven days. After that, it is what's in it. Forever.</p>
+</div></section>
+
+<div class="zwischen">Going down</div>
+
+<section class="ebene" data-tiefe="1" data-ebene="10" style="--farbe: var(--kuehl)"><div class="wrap">
+  <div class="kopf"><div class="nr">10</div><div><h2>Level Ten</h2><div class="art">The bottom · the cool · the Houses</div></div></div>
+  <div class="buehne">
+    <img src="img/rot.jpg" alt="A young woman slides on her knees under a closing door; the floor stripes glow red" loading="lazy">
+    <div class="ort">Level Ten — the outer ring</div>
+    <button class="punkt" style="left:24%;top:84%" data-name="the stripes" data-text="Every light on her way home has turned red. On Level Ten, red means one thing: the city has decided you are not supposed to be here."></button>
+    <button class="punkt" style="left:56%;top:52%" data-name="Lian" data-text="Lian Sarn. Twenty-four, a swimmer, a student. When she is afraid, she calculates. Right now she is calculating very fast."></button>
+    <button class="punkt" style="left:50%;top:10%" data-name="the door" data-text="Heavy, slow, and closing. Doors close because doors close. That's what they're built for."></button>
+  </div>
+  <div class="verb" aria-live="polite">Look at …</div><div class="antwort"></div>
+  <p class="text">At the bottom of the city it is cool, quiet and rich. Ceilings of four metres, old wood, the two great Houses: Sarn and Vesk. One evening, every light on Lian Sarn's way home turns red. Her door won't open. And someone has reported her in connection with a death.</p>
+  <p class="fund" id="fund">Found: 0</p>
+</div></section>
+
+<section class="grund" data-tiefe="1" data-ebene="10"><div class="wrap">
+  <div class="kl" style="color:var(--red);letter-spacing:.3em">You've reached the bottom</div>
+  <h2>What's above the rock?</h2>
+  <p>For two hundred years the surface has been habitable again. Nobody down here knows. And the people who find out keep disappearing.</p>
+  <div class="video" id="video" role="button" tabindex="0" aria-label="Play the trailer">
+    <div class="spiel"><div><span></span><small>Click to play the trailer. This loads the video from YouTube, which may set cookies.</small></div></div>
+  </div>
+  <div class="knoepfe">
+    <a class="knopf voll" href="https://www.youtube.com/@thezyklus?sub_confirmation=1" target="_blank" rel="noopener">Subscribe on YouTube</a>
+    <a class="knopf" href="play/">Play Episode 1 — in your browser</a>
+  </div>
+  <p style="margin-top:14px;font-size:14px;color:var(--muted)">A new episode every Friday · 8 pm Berlin time · BRACKS every Wednesday from 21 October</p>
+
+  <div class="folgen">
+    <div class="folge"><div class="n">01</div><div><h3>Locked Out</h3><p>Every light turns red, her door won't open — and a dead man knocks.</p></div><a class="wann knopf" href="https://youtu.be/5wdu2ETbQcg" target="_blank" rel="noopener">Fri · Oct 9</a></div>
+    <div class="folge"><div class="n">02</div><div><h3>Bought</h3><p>Hiding in the laundries of Level Eight — while House Vesk makes the hunter an offer.</p></div><div class="wann">Fri · Oct 16</div></div>
+    <div class="folge bald"><div class="n">03</div><div><h3>Nothing From Before</h3><p>Stripped of her name, Lian vanishes into the cold of Level Five.</p></div><div class="wann">Fri · Oct 23</div></div>
+    <div class="folge bald"><div class="n">04</div><div><h3>She Calculates</h3><p>Under a false name, Lian finds out what the city is missing.</p></div><div class="wann">Fri · Oct 30</div></div>
+  </div>
+
+  <div class="figuren">
+    <div class="figur"><img src="img/lian.jpg" alt="" loading="lazy"><h3>Lian Sarn</h3><p>Calculates when she's afraid.</p></div>
+    <div class="figur"><img src="img/toren.jpg" alt="" loading="lazy"><h3>Toren Vesk</h3><p>Reported dead. Knocking at 1:20.</p></div>
+    <div class="figur"><img src="img/bracks.jpg" alt="" loading="lazy"><h3>Erek Bracks</h3><p>The one who is thorough.</p></div>
+    <div class="figur"><img src="img/halen.jpg" alt="" loading="lazy"><h3>Halen</h3><p>Politeness as a procedure.</p></div>
+    <div class="figur"><img src="img/meret.jpg" alt="" loading="lazy"><h3>Meret Sarn</h3><p>Never more than five sentences.</p></div>
+    <div class="figur"><img src="img/malin.jpg" alt="" loading="lazy"><h3>Malin</h3><p>Tidies up instead of answering.</p></div>
+  </div>
+
+  <p class="ki">Adapted from the ZYKLUS novels by Tim Mecklenburg. The story and the world are written by a human author; narration, voices, the faces of the speaking characters, illustrations and music are created with the help of artificial intelligence (disclosure under Art. 50 of the EU AI Act). <i>Zyklus</i> is German for <i>cycle</i>.</p>
+</div></section>
+</main>
+
+<footer><div class="wrap">
+  <div>© 2026 Tim Mecklenburg · ZYKLUS — Nothing Was Lost</div>
+  <div><a href="https://www.youtube.com/@thezyklus" target="_blank" rel="noopener">YouTube</a> · <a href="datenschutz.html">Privacy</a> · <a href="impressum.html">Imprint</a></div>
+</div></footer>
+
+<script>
+(function () {
+  var wurzel = document.documentElement;
+  var zahl = document.getElementById("ebenenzahl");
+  var schein = document.querySelector(".schein");
+  var glut = [232, 116, 44], kuehl = [111, 183, 232];
+  var ton = null, rauschen = null, lautst = null;
+
+  // Tiefe und Farbe folgen dem Abschnitt in der Bildmitte
+  function setze(t, e) {
+    wurzel.style.setProperty("--tiefe", t);
+    var c = glut.map(function (g, i) { return Math.round(g + (kuehl[i] - g) * t); });
+    schein.style.background = "radial-gradient(ellipse at 50% 30%, rgba(" + c.join(",") + ",.16), transparent 65%)";
+    document.body.style.backgroundColor = "rgb(" + [Math.round(14 - 6 * t), Math.round(9 + t), Math.round(8 + 6 * t)].join(",") + ")";
+    zahl.textContent = e;
+    if (rauschen) rauschen.frequency.setTargetAtTime(1100 - 850 * t, ton.currentTime, 0.8);
+  }
+  if ("IntersectionObserver" in window) {
+    var beob = new IntersectionObserver(function (eintraege) {
+      eintraege.forEach(function (x) { if (x.isIntersecting) setze(+x.target.dataset.tiefe, x.target.dataset.ebene); });
+    }, { rootMargin: "-45% 0px -45% 0px" });
+    document.querySelectorAll("[data-tiefe]").forEach(function (a) { beob.observe(a); });
+  }
+
+  // Adventure: Ansehen
+  var gesehen = 0, gesamt = document.querySelectorAll(".punkt").length;
+  var fund = document.getElementById("fund");
+  fund.textContent = "Found: 0 of " + gesamt;
+  document.querySelectorAll(".buehne").forEach(function (b) {
+    var verb = b.nextElementSibling, antwort = verb.nextElementSibling;
+    b.querySelectorAll(".punkt").forEach(function (p) {
+      p.setAttribute("aria-label", "Look at " + p.dataset.name);
+      function zeig() { verb.innerHTML = 'Look at <span class="was">' + p.dataset.name + "</span>"; }
+      p.addEventListener("mouseenter", zeig);
+      p.addEventListener("focus", zeig);
+      p.addEventListener("mouseleave", function () { verb.textContent = "Look at …"; });
+      p.addEventListener("click", function () {
+        zeig();
+        antwort.textContent = p.dataset.text;
+        antwort.classList.add("offen");
+        if (!p.classList.contains("gesehen")) {
+          p.classList.add("gesehen"); gesehen++;
+          fund.textContent = gesehen === gesamt ? "Found: all " + gesamt + ". You'd make a good investigator." : "Found: " + gesehen + " of " + gesamt;
+        }
+      });
+    });
+  });
+
+  // Ton: das Brummen der Lüftung — oben hell, unten dunkel und still
+  var knopf = document.getElementById("ton");
+  knopf.addEventListener("click", function () {
+    var an = knopf.getAttribute("aria-pressed") !== "true";
+    knopf.setAttribute("aria-pressed", an); knopf.textContent = an ? "Sound on" : "Sound off";
+    if (an && !ton) {
+      ton = new (window.AudioContext || window.webkitAudioContext)();
+      var n = ton.sampleRate * 4, puffer = ton.createBuffer(1, n, ton.sampleRate), d = puffer.getChannelData(0), last = 0;
+      for (var i = 0; i < n; i++) { last = (last + 0.02 * (Math.random() * 2 - 1)) / 1.02; d[i] = last * 3.5; }
+      var quelle = ton.createBufferSource(); quelle.buffer = puffer; quelle.loop = true;
+      rauschen = ton.createBiquadFilter(); rauschen.type = "lowpass";
+      rauschen.frequency.value = 1100 - 850 * (+getComputedStyle(wurzel).getPropertyValue("--tiefe") || 0);
+      lautst = ton.createGain(); lautst.gain.value = 0;
+      quelle.connect(rauschen); rauschen.connect(lautst); lautst.connect(ton.destination); quelle.start();
+    }
+    if (ton) { ton.resume(); lautst.gain.setTargetAtTime(an ? 0.35 : 0, ton.currentTime, 0.4); }
+  });
+
+  // Trailer erst nach Klick
+  var v = document.getElementById("video");
+  function laden() {
+    if (v.querySelector("iframe")) return;
+    v.innerHTML = '<iframe src="https://www.youtube-nocookie.com/embed/61wMRt4ZUlQ?autoplay=1&rel=0" title="ZYKLUS — Official Trailer" allow="autoplay; encrypted-media; picture-in-picture; fullscreen" allowfullscreen></iframe>';
+  }
+  v.addEventListener("click", laden);
+  v.addEventListener("keydown", function (e) { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); laden(); } });
+})();
+</script>
+</body>
+</html>
