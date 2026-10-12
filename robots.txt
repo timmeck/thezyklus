@@ -1,5 +1,5 @@
 # thezyklus.com — everyone welcome, including AI answer engines.
-# /bracks/ is reachable but carries noindex until it is announced.
+# All pages may be crawled.
 User-agent: *
 Allow: /
 
