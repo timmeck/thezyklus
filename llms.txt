@@ -31,13 +31,14 @@ Key facts:
 - Episode 3: Nothing From Before — 23 October 2026
 - Episode 4: She Calculates — 30 October 2026
 
-## Characters
-- Lian Sarn — calculates when she's afraid.
-- Toren Vesk — reported dead; knocking at 1:20.
-- Erek Bracks — the investigator on Level Two who is actually thorough.
-- Halen — politeness as a procedure.
-- Meret Sarn — never more than five sentences.
-- Malin — tidies up instead of answering.
+## Characters (as of Episode 1)
+- [All people](https://thezyklus.com/people/)
+- [Lian Sarn](https://thezyklus.com/people/lian/) — Daughter of House Sarn, Level Ten.
+- [Toren Vesk](https://thezyklus.com/people/toren/) — Of House Vesk, Level Ten.
+- [Erek Bracks](https://thezyklus.com/people/bracks/) — Investigator, Level Two.
+- [Halen](https://thezyklus.com/people/halen/) — Man from the House, Level Ten.
+- [Meret Sarn](https://thezyklus.com/people/meret/) — Lian's mother, House Sarn, Level Ten.
+- [Malin](https://thezyklus.com/people/malin/) — Works for the Sarn household, Level Ten.
 
 ## The levels
 - Level One: the top, the heat — crowded, loud and poor.
@@ -45,6 +46,9 @@ Key facts:
 - Level Four: growing halls under red lamps that feed the city.
 - Level Nine: freight and a small council room where a record can be amended for seven days.
 - Level Ten: the bottom, the cool, the Houses Sarn and Vesk.
+
+## BRACKS Manga
+- [BRACKS: The Back Rooms — all fights](https://thezyklus.com/bracks-manga/) — ten fights, Mondays and Fridays 6 pm Berlin time, 12 Oct – 13 Nov 2026.
 
 ## Play
 - [Locked Out — free browser game](https://thezyklus.com/play/)
