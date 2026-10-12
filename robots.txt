@@ -1,0 +1,26 @@
+# thezyklus.com — everyone welcome, including AI answer engines.
+User-agent: *
+Allow: /
+Disallow: /bracks/
+
+User-agent: GPTBot
+Allow: /
+Disallow: /bracks/
+
+User-agent: OAI-SearchBot
+Allow: /
+Disallow: /bracks/
+
+User-agent: PerplexityBot
+Allow: /
+Disallow: /bracks/
+
+User-agent: ClaudeBot
+Allow: /
+Disallow: /bracks/
+
+User-agent: Google-Extended
+Allow: /
+Disallow: /bracks/
+
+Sitemap: https://thezyklus.com/sitemap.xml
