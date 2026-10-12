@@ -15,6 +15,7 @@
   const clamp=v=>Math.max(0,Math.min(1,v));
   function frame(who,track,stage){
     const pose=index=>({index,sheet:'base',offset:0,lean:0});
+    if(who.phase==='recovery'&&who.pose==='guard')return {index:0,sheet:'base',offset:0,lean:0};
     if(who.pose==='defeat')return pose(8);
     if(who.pose==='hurt')return pose(7);
     const long=who.attackType==='long';

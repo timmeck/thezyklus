@@ -19,6 +19,7 @@
       const p=clamp(who.hitTime/(enemy?.22:.3));
       return {...base(4),offset:(enemy?1:-1)*Math.sin(Math.PI*p)*5};
     }
+    if(enemy && who.pose==='guard')return base(0);
     if(enemy){
       if(who.phase==='telegraph')return {...base(who.elapsed<.065?0:1),lean:-.018*ease(who.elapsed/.22)};
       if(who.phase==='punch')return who.elapsed<.045?extra(4):who.elapsed<.135?base(2):extra(4);

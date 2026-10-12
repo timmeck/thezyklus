@@ -14,6 +14,7 @@
   ];
   function frame(who,track,stage){
     const pose=index=>({index,sheet:'base',offset:0,lean:0});
+    if(who.phase==='recovery'&&who.pose==='guard')return {index:0,sheet:'base',offset:0,lean:0};
     if(who.pose==='defeat')return pose(8);
     if(who.phase==='reset')return pose(7);
     if(who.pose==='hurt')return {...pose(6),lean:.035};

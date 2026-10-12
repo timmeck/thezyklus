@@ -5,6 +5,7 @@
   const clamp=v=>Math.max(0,Math.min(1,v));
   function frame(who,track){
     const pose=(index,sheet='base',offset=0,lean=0)=>({index,sheet,offset,lean});
+    if(who.phase==='recovery'&&who.pose==='guard')return {index:0,sheet:'base',offset:0,lean:0};
     if(who.pose==='defeat')return pose(5);
     if(who.pose==='hurt')return pose(0,'base',Math.sin(Math.PI*clamp(who.hitTime/.22))*5,.035);
     const long=who.attackType==='long';

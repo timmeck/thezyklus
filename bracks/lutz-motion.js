@@ -11,6 +11,7 @@
   ];
   function frame(who){
     const pose=index=>({index,sheet:'base',offset:0,lean:0});
+    if(who.phase==='recovery'&&who.pose==='guard')return {index:0,sheet:'base',offset:0,lean:0};
     if(who.pose==='defeat')return pose(5);
     if(who.pose==='hurt')return pose(4);
     if(who.phase==='telegraph')return pose(1);

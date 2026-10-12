@@ -13,7 +13,7 @@
   let S=FightStory,fightId='k01',practice=false,room=null,completionDue=false,pendingRoom=null;
   const isLutz=()=>fightId==='k04',isPetra=()=>fightId==='k05',isGustav=()=>fightId==='k06';
   const current=()=>fights[fightId],isZarr=()=>fightId==='k02',isYann=()=>fightId==='k03';
-  const newState=()=>FightPractice.create(M,current().rules,practice);
+  const newState=()=>HardRules.create(M,fightId,current().rules,practice);
   const canvas = $('arena'), ctx = canvas.getContext('2d');
   const input = {}, keys = new Set(), pointers = new Map(); let touchState=FightTouch.create(), swipeTimer=null;
   const keyMap = {KeyA:'left',ArrowLeft:'left',KeyD:'right',ArrowRight:'right',KeyJ:'strike',KeyK:'guard',KeyL:'dodge'};
@@ -56,7 +56,7 @@
     $('room-back').hidden=practice;
     if(practice)$('result-note').textContent=`Practice finished · ${state.stats.counters} counters · No records changed. ${state.phase==='won'?'':state.elapsed>=120?S.training:(M.advice(state)===null?S.training:S.feedback[M.advice(state)])}`;
     if(next){$('next-fight').textContent='Next fight: '+fights[next].name+' →';$('next-fight').onclick=()=>{enterRoom(next);};}
-    $('again').focus({preventScroll:true});}
+    $('result-note').textContent+=' '+HardRules.hints[fightId];$('again').focus({preventScroll:true});}
   function renderRecords(){
     const r=progress.records;
     const next=FightCareer.next(FightCareer.update(career,fightId,progress),Object.keys(fights));
@@ -151,7 +151,7 @@
     renderRecords();only('title-card');updateHint();
   }
   for(const b of document.querySelectorAll('[data-fight]'))b.onclick=()=>selectFight(b.dataset.fight);
-  function updateHint(){$('training').textContent=(practice?'Practice · ':'')+(progress.hint?S.training:'A / D · move     J · hit     K · guard     L · step away');$('hint-toggle').textContent=progress.hint?'Hide hint':'Show hint';$('hint-toggle').setAttribute('aria-pressed',String(progress.hint));}
+  function updateHint(){$('training').textContent=(practice?'Practice · ':'')+(progress.hint?HardRules.hints[fightId]:'A / D · move     J · hit     K · guard     L · step away');$('hint-toggle').textContent=progress.hint?'Hide hint':'Show hint';$('hint-toggle').setAttribute('aria-pressed',String(progress.hint));}
   $('hint-toggle').onclick=()=>{progress.hint=!progress.hint;save();updateHint();};
   $('voice-enabled').checked=progress.voice;$('voice-volume').value=progress.voiceVolume;
   $('voice-enabled').onchange=()=>{progress.voice=$('voice-enabled').checked;save();if(screen==='story')voice.play(sequence[lineIndex],progress.voice,progress.voiceVolume);else voice.stop();};
@@ -216,7 +216,13 @@
   document.body.classList.toggle('buttons-only',progress.buttonsOnly);
   $('buttons-only').onchange=()=>{clearInput();progress.buttonsOnly=$('buttons-only').checked;document.body.classList.toggle('buttons-only',progress.buttonsOnly);save();};
   let inputWidth=innerWidth;window.addEventListener('resize',()=>{clearInput();const orientationChanged=Math.abs(innerWidth-inputWidth)>80;inputWidth=innerWidth;if(orientationChanged)pause();});
-  function updateHud(){const p=state.player,e=state.enemy;$("player-health").style.setProperty("--trail",(progress.motion?p.hp:effects.health[0])+"%");$("enemy-health").style.setProperty("--trail",(progress.motion?e.hp:effects.health[1])+"%");$('player-health').value=p.hp;$('enemy-health').value=e.hp;$('stamina').value=p.stamina;$('player-value').textContent=Math.ceil(p.hp);$('enemy-value').textContent=Math.ceil(e.hp);const left=Math.ceil(120-state.elapsed);$('timer').textContent=`${Math.floor(left/60)}:${String(left%60).padStart(2,'0')}`;$('enemy-state').textContent=isGustav()?(e.phase==='reset'?'When he steps back behind his arms, wait.':e.phase==='recovery'?'When he looks down at his feet, hit him.':e.phase==='telegraph'||e.phase==='punch'?(e.attackType==='long'?'Arm out and still: the long one. Guard it.':'Feet together, elbows in: a short one. Step back.'):'After every short one, look again.'):isPetra()?(e.phase==='recovery'?'When her hands go to her back, hit her.':e.phase==='telegraph'||e.phase==='punch'?(e.attackType==='long'?'Tall and side-on: one long one. Guard it.':'Low and wide: two short ones. Step back and let both go.'):'Watch her stance.'):isLutz()?(e.phase==='telegraph'?'His arms come apart.':e.phase==='recovery'?'While he bends over the drain, hit him.':e.phase==='punch'?'Get back behind the drain.':'Step over the drain.'):isYann()?(e.phase==='telegraph'?(e.attackType==='long'?'His heel goes back.':'His shoulder drops.'):e.phase==='recovery'?(e.attackType==='long'?'His arm comes back.':'He comes up slowly.'):'Watch his heel and shoulder.'):isZarr()?(e.phase==='recovery'?'She shakes her hands out.':state.stage>=3&&state.stage<=4?'There is a second.':e.phase==='telegraph'?'Both fists come up.':'Watch both hands.'):e.phase==='telegraph'?'His shoulder goes back.':e.phase==='recovery'?'His arm hangs.':e.phase==='punch'?'':'Watch his shoulder.';}
+
+  function updateHardHud(){
+    const e=state.enemy,l=state.haskLab;
+    if(l){$('enemy-state').textContent=e.phase==='rest'?'Step closer. Make him commit.':e.phase==='telegraph'?(l.reprisal?'He answers. Get out.':'Shoulder back. Step away.'):e.phase==='recovery'?(l.cleanOpening?(l.recoveryHits?(l.reprisal?'Step back. Recover stamina.':'Second hit? He will answer.'):'An opening. Counter now.'):'No opening. Make him miss.'):'Get clear.';return;}
+    if(state.hardLab&&e.phase==='recovery')$('enemy-state').textContent=e.countered?'Step back. Recover stamina.':fightId==='k03'&&e.attackType==='long'?'Wait for the short punch.':state.hardLab.clean?'Opening. Counter now.':'No opening. Defend the whole attack.';
+  }
+  function updateHud(){const p=state.player,e=state.enemy;$("player-health").style.setProperty("--trail",(progress.motion?p.hp:effects.health[0])+"%");$("enemy-health").style.setProperty("--trail",(progress.motion?e.hp:effects.health[1])+"%");$('player-health').value=p.hp;$('enemy-health').value=e.hp;$('stamina').value=p.stamina;$('player-value').textContent=Math.ceil(p.hp);$('enemy-value').textContent=Math.ceil(e.hp);const left=Math.ceil(120-state.elapsed);$('timer').textContent=`${Math.floor(left/60)}:${String(left%60).padStart(2,'0')}`;$('enemy-state').textContent=isGustav()?(e.phase==='reset'?'When he steps back behind his arms, wait.':e.phase==='recovery'?'When he looks down at his feet, hit him.':e.phase==='telegraph'||e.phase==='punch'?(e.attackType==='long'?'Arm out and still: the long one. Guard it.':'Feet together, elbows in: a short one. Step back.'):'After every short one, look again.'):isPetra()?(e.phase==='recovery'?'When her hands go to her back, hit her.':e.phase==='telegraph'||e.phase==='punch'?(e.attackType==='long'?'Tall and side-on: one long one. Guard it.':'Low and wide: two short ones. Step back and let both go.'):'Watch her stance.'):isLutz()?(e.phase==='telegraph'?'His arms come apart.':e.phase==='recovery'?'While he bends over the drain, hit him.':e.phase==='punch'?'Get back behind the drain.':'Step over the drain.'):isYann()?(e.phase==='telegraph'?(e.attackType==='long'?'His heel goes back.':'His shoulder drops.'):e.phase==='recovery'?(e.attackType==='long'?'His arm comes back.':'He comes up slowly.'):'Watch his heel and shoulder.'):isZarr()?(e.phase==='recovery'?'She shakes her hands out.':state.stage>=3&&state.stage<=4?'There is a second.':e.phase==='telegraph'?'Both fists come up.':'Watch both hands.'):e.phase==='telegraph'?'His shoulder goes back.':e.phase==='recovery'?'His arm hangs.':e.phase==='punch'?'':'Watch his shoulder.';updateHardHud();}
   function eventEffects(){for(const event of state.events){FightEffects.event(effects,event.type,state);
     if(event.type==='counter'){crowd?.react(clock,1);impact=.16;captionTime=.65;$('combat-caption').textContent='Counter';sound(100,.14,.045,true);}
     if(event.type==='player-hit'||event.type==='guard-hit'){const block=event.type==='guard-hit'?FightEffects.guardFeedback(state):null,damaged=!block||block.damaged;crowd?.react(clock,damaged?.7:.3);impact=damaged?.12:.045;captionTime=block?.text==='Guard broken'?.8:.6;$('combat-caption').textContent=block?block.text:'Hit';sound(damaged?70:190,damaged?.16:.08,damaged?.035:.02,true);}
