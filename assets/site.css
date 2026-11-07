@@ -7,6 +7,9 @@
 .episode{min-height:0}@media(min-width:701px) and (max-width:1000px){.watch-grid{gap:32px;grid-template-columns:1fr 1fr}.watch h2{font-size:62px}.level{gap:25px}.world-intro{align-items:start}.world-intro p{max-width:280px}}
 
 /* Claude 12.10.2026: Folgen, BRACKS, Figuren, Zwischenebenen */
+.ep-x{display:inline-block;margin-top:8px;font-size:13px;letter-spacing:.06em;color:var(--blue);min-height:32px;line-height:32px}.ep-x:hover,.avail-x:hover{color:var(--orange)}
+.avail-x{color:var(--paper);border-bottom:1px solid var(--line)}
+@media(max-width:700px){.masthead nav a.nav-x{display:none}}
 .episodes{list-style:none;margin:60px 0 0;padding:0;border-top:1px solid var(--line)}
 .episodes li{display:grid;grid-template-columns:70px 1fr auto;gap:24px;align-items:baseline;padding:22px 0;border-bottom:1px solid var(--line)}
 .episodes .nr{font:600 34px Condensed;color:var(--orange)}.episodes h3{font-size:34px}.episodes p{margin:8px 0 0;color:var(--muted);font-size:16px}
