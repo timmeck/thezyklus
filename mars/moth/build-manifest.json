@@ -1,0 +1,171 @@
+{
+  "asOf": "2026-11-07T12:15:04.692840+01:00",
+  "review": false,
+  "available": [
+    1
+  ],
+  "version": "249bcd19e225",
+  "totalBytes": 663388,
+  "files": [
+    {
+      "file": "app.js",
+      "bytes": 20708,
+      "sha256": "1a2e865f45cf71d7b960c63af97447f4f666dafec6e6d4f7fafd0d05aacc69f1"
+    },
+    {
+      "file": "audio.js",
+      "bytes": 4172,
+      "sha256": "cc70f6f90e1fe3e8471545a42351ad3e55da276e996c617fdd655261af9e1690"
+    },
+    {
+      "file": "export.js",
+      "bytes": 3650,
+      "sha256": "f08d5a3806b3aec1135a43b2aa50b07e17026e2e1bd445caf0843dc437ce2705"
+    },
+    {
+      "file": "icon.svg",
+      "bytes": 398,
+      "sha256": "10754686cdb5a2b255ed3f6a964281d6c92518e6fb6cefd149efffbebd5ff6c3"
+    },
+    {
+      "file": "index.html",
+      "bytes": 12182,
+      "sha256": "86ca93f3b60022306f710d415a643b74336ffbdcef0d5289beb5899effa41272"
+    },
+    {
+      "file": "manifest.webmanifest",
+      "bytes": 261,
+      "sha256": "b6d147a61bad61a800bd72b7f07c007f7322e3457e1ca3e346312011f6481310"
+    },
+    {
+      "file": "record.js",
+      "bytes": 2021,
+      "sha256": "c62b4ae673f4a072458b03de41c00701877599fbf8250d7782d3d1157e635090"
+    },
+    {
+      "file": "release.js",
+      "bytes": 121,
+      "sha256": "94e319ffb3709b1455d9a59032950a519a94edd03409b3f2a39b4cf4132da7ce"
+    },
+    {
+      "file": "renderer.js",
+      "bytes": 13233,
+      "sha256": "8e49c8721739cd4dcffcbfc814463c6676cbbb813d299fc7f0ae24e3da5f8dd6"
+    },
+    {
+      "file": "sim.js",
+      "bytes": 9635,
+      "sha256": "05ba5bf9a8f659ff35f4720b0a2795b40bc96f896a83cfeba639696de492f57e"
+    },
+    {
+      "file": "style.css",
+      "bytes": 27799,
+      "sha256": "e738dc99b20ad8d1d27092d82b01ca4fbe1dca56c3c24972c762e9e8ec945d96"
+    },
+    {
+      "file": "sw.js",
+      "bytes": 1506,
+      "sha256": "cfb7ba7b6800734c29f03596a21930b6eb725eb3228ede5cb9e91ce9e27604da"
+    },
+    {
+      "file": "assets/Bangers-OFL.txt",
+      "bytes": 4479,
+      "sha256": "630dd5a307c0657b094d324e069b390edf90182fe5003639e06c02a0e5769af7"
+    },
+    {
+      "file": "assets/Bangers.woff",
+      "bytes": 16628,
+      "sha256": "55e196a8232d6eb287c55e2f52fe521350327c870462ccd4886cc4ef52324c66"
+    },
+    {
+      "file": "assets/Barlow-400-latin.woff2",
+      "bytes": 22196,
+      "sha256": "b0a8ad37ac45f5fb22ced461576db72e44e295107aad7a9c8a7a4bad728fd03b"
+    },
+    {
+      "file": "assets/Barlow-500-latin.woff2",
+      "bytes": 22008,
+      "sha256": "cd759df8ef9efc98fee14307b4eb5ba27f08b1f8f2f3ad2872432e25c89907a8"
+    },
+    {
+      "file": "assets/barlow-OFL.txt",
+      "bytes": 4377,
+      "sha256": "186d750eb496a4c17a76385f82be6aea2ac1cf2de074a811d63786cf374ea73f"
+    },
+    {
+      "file": "assets/BarlowCondensed-600-latin.woff2",
+      "bytes": 22308,
+      "sha256": "215a93c696f442034a46fbb382958f753fda60e30490683aeea6b235fcbb2b66"
+    },
+    {
+      "file": "assets/barlowcondensed-OFL.txt",
+      "bytes": 4377,
+      "sha256": "186d750eb496a4c17a76385f82be6aea2ac1cf2de074a811d63786cf374ea73f"
+    },
+    {
+      "file": "assets/capsule.webp",
+      "bytes": 5102,
+      "sha256": "9f87a0af5a301a341fe9ed841338cd5be211d6710a1074e99c7883528683d97c"
+    },
+    {
+      "file": "assets/debris.webp",
+      "bytes": 7912,
+      "sha256": "14f71c503c32178c05592470bc712568424ba14ac60358e82a35b816bbf777c1"
+    },
+    {
+      "file": "assets/drone.webp",
+      "bytes": 7914,
+      "sha256": "594cdb6d63d9f066bd9761ef8143302bb126e46ea108689dda14e76406e85ed5"
+    },
+    {
+      "file": "assets/mars.webp",
+      "bytes": 124230,
+      "sha256": "0ed25f2c05bca4b4e1f344c0eb61a7ba8101c85a04525de8cbc0b8925cf4501b"
+    },
+    {
+      "file": "assets/moth-small.webp",
+      "bytes": 7894,
+      "sha256": "eff8e59573d3abc49a5511b3705d24a88a5fc1b7d5c99f126b180b8840a85e5e"
+    },
+    {
+      "file": "assets/moth.webp",
+      "bytes": 63228,
+      "sha256": "00969535135b6904e8c7e5043d95f18dbdce6fae95a7d5ce162e4034cd9e1860"
+    },
+    {
+      "file": "assets/needlewake.webp",
+      "bytes": 38252,
+      "sha256": "6c57f25b2c2d6aeb1c1ed0b9e88636080ef12207e84800acb329cd2b1714500e"
+    },
+    {
+      "file": "levels/volume-1.js",
+      "bytes": 963,
+      "sha256": "58d4d2b10cc392ad8d3e63435428311928b97e82300edc2ee8593c523c8863c9"
+    },
+    {
+      "file": "assets/b1/badge.webp",
+      "bytes": 26520,
+      "sha256": "6bb55bfe2e27f0e68a12d0478c8d7fb7ed11aba6c53fe6f56dab7ef3a20697c0"
+    },
+    {
+      "file": "assets/b1/beam-crash.m4a",
+      "bytes": 65967,
+      "sha256": "df1e51dabd11d5eb5b902b0b117aaed2b4fc882e859c26595eb67777a799e3af"
+    },
+    {
+      "file": "assets/b1/beam-crash.webp",
+      "bytes": 36602,
+      "sha256": "24e1a749c8d53347202965202ffc5e8f13b964afabc193bc8b64f90ca02846e1"
+    },
+    {
+      "file": "assets/b1/beam-win.m4a",
+      "bytes": 56481,
+      "sha256": "686e0fb16eec018a28841acaffdd92baf2e8b7f2f3f6dbe7113bad3aead38b12"
+    },
+    {
+      "file": "assets/b1/beam-win.webp",
+      "bytes": 30264,
+      "sha256": "3c07af925a5adf258a04a10d53e64a2a6b5be83cdd809afd53d38a3d3b99c198"
+    }
+  ]
+}

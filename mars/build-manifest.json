@@ -1,0 +1,390 @@
+{
+  "asOf": "2026-11-07T12:15:05.053869+01:00",
+  "review": false,
+  "available": [
+    1
+  ],
+  "totalBytes": 10832480,
+  "files": [
+    {
+      "file": "app.js",
+      "bytes": 21957,
+      "sha256": "6f5e0f470a70df094b0fe4c3111042c2240657a22a4b1e5071d44ebe7a973be0"
+    },
+    {
+      "file": "cadet-card.js",
+      "bytes": 4728,
+      "sha256": "560dc1531c20389bc92e82645b7d98fbd1fd73309c23316d983466455ee83ef1"
+    },
+    {
+      "file": "data.js",
+      "bytes": 11604,
+      "sha256": "56cfc2c1af02c341b256ee184544de1e258d8a58d88c634feebe41288978162a"
+    },
+    {
+      "file": "game.js",
+      "bytes": 15609,
+      "sha256": "65ce1afa85fbfc22af3b90ca02050156e27b99c851ea283c88cac6744a9cca70"
+    },
+    {
+      "file": "index.html",
+      "bytes": 14585,
+      "sha256": "af319f777fb71ecdc4f1e8de4a565066af91f42e561dd0072341d55dccd070bd"
+    },
+    {
+      "file": "manga.js",
+      "bytes": 7349,
+      "sha256": "0b21a57305161366f80cbfd0a8f168b101f4fd168551eb4db841aaaaad18381c"
+    },
+    {
+      "file": "sim.js",
+      "bytes": 1861,
+      "sha256": "fe0a65b5bb4f40d2e4c4e426db78c41020e9f4aca13e4da2091687907d8f4917"
+    },
+    {
+      "file": "store.js",
+      "bytes": 1320,
+      "sha256": "43c06d796233af22f69285edf03a9f9dfacc4a7af6a2ff9bff2f91832771730e"
+    },
+    {
+      "file": "style.css",
+      "bytes": 51411,
+      "sha256": "296d1d7578dbcbe631de3988b7a69c880f2c95cf9315e6b338d3d0e46ae545bb"
+    },
+    {
+      "file": "sw.js",
+      "bytes": 1176,
+      "sha256": "c808683aa4ff96b924e7d2bddaafcc1496d0f37c0c5a628c4a00a41096050f50"
+    },
+    {
+      "file": "assets/Barlow-400-latin.woff2",
+      "bytes": 22196,
+      "sha256": "b0a8ad37ac45f5fb22ced461576db72e44e295107aad7a9c8a7a4bad728fd03b"
+    },
+    {
+      "file": "assets/Barlow-500-latin.woff2",
+      "bytes": 22008,
+      "sha256": "cd759df8ef9efc98fee14307b4eb5ba27f08b1f8f2f3ad2872432e25c89907a8"
+    },
+    {
+      "file": "assets/barlow-OFL.txt",
+      "bytes": 4377,
+      "sha256": "186d750eb496a4c17a76385f82be6aea2ac1cf2de074a811d63786cf374ea73f"
+    },
+    {
+      "file": "assets/BarlowCondensed-600-latin.woff2",
+      "bytes": 22308,
+      "sha256": "215a93c696f442034a46fbb382958f753fda60e30490683aeea6b235fcbb2b66"
+    },
+    {
+      "file": "assets/barlowcondensed-OFL.txt",
+      "bytes": 4377,
+      "sha256": "186d750eb496a4c17a76385f82be6aea2ac1cf2de074a811d63786cf374ea73f"
+    },
+    {
+      "file": "assets/beam.webp",
+      "bytes": 134412,
+      "sha256": "8793c297212b341e4acf8c26acd176b489a3e5d499d5edbc93a71f811c0d70ca"
+    },
+    {
+      "file": "assets/emblem.svg",
+      "bytes": 246,
+      "sha256": "b70d8f12898523d1c5984070da35dc4600246cdb53087667bfeb5bdf67c2a49d"
+    },
+    {
+      "file": "assets/hero-1000.webp",
+      "bytes": 392344,
+      "sha256": "1e29def63b924799b0e8a8cb06341ce37bb4f6006eb71a8d60b347a7adfe4a39"
+    },
+    {
+      "file": "assets/hero-1600.webp",
+      "bytes": 661144,
+      "sha256": "2dd0f562b6b2c4848ff72bc810ff48294cd590460f830f70bc73b61a6ab6aea7"
+    },
+    {
+      "file": "assets/hero-640.webp",
+      "bytes": 199170,
+      "sha256": "0ff0a4a786e24e2d5a05c80acdc64e3564e9efc8b18bb36d6c56a210da311f89"
+    },
+    {
+      "file": "assets/iona.webp",
+      "bytes": 117864,
+      "sha256": "969a7e21800e1a9a8d2a3cef464dc1edc2cd118ee4674624c28eb1c6416b5d23"
+    },
+    {
+      "file": "assets/pip.webp",
+      "bytes": 166762,
+      "sha256": "bb132ba9ef408e9e77129bbef5248b3b6f9b915455bb9d1594661ae2dfb56a43"
+    },
+    {
+      "file": "assets/rook-sprite.webp",
+      "bytes": 32078,
+      "sha256": "19ff8bb03fca55b9dfb593a56f02a0113df4334f1ff13e3fcf143613f498c4eb"
+    },
+    {
+      "file": "assets/rook.webp",
+      "bytes": 150786,
+      "sha256": "5c77c4824be3cc21cfe97ad0764f5369b601657c4feb69d977081e663715cdb9"
+    },
+    {
+      "file": "assets/sera.webp",
+      "bytes": 109378,
+      "sha256": "a0519f3bfb5c81bab729871947ac2f451907b4614424251b439b9ca2246e3db4"
+    },
+    {
+      "file": "assets/tavi.webp",
+      "bytes": 123802,
+      "sha256": "f1a69e043cb26abd7e849f4d00ffee03fa169ca31a39b183dbb42804cba909c2"
+    },
+    {
+      "file": "missions/mission-1.js",
+      "bytes": 1914,
+      "sha256": "337cd625f4d1cb4ee14c51a878d418c3de7874225d0597174bad2243b3d49d66"
+    },
+    {
+      "file": "missions/scene-1.js",
+      "bytes": 1336,
+      "sha256": "d5019c08509e83f010f39fbab2642ebdf2027d0fd5ba6fc3c94e34702ac5a846"
+    },
+    {
+      "file": "assets/b1/card-iona.webp",
+      "bytes": 109616,
+      "sha256": "beb3dcc012747f24110c507370b203699a983a12df37900024455c7ab39acfee"
+    },
+    {
+      "file": "assets/b1/card-pip.webp",
+      "bytes": 106076,
+      "sha256": "456da9f54b5255460cc95a283c207f77cfa1bd17df55466c6b1a5ebc82e6acc1"
+    },
+    {
+      "file": "assets/b1/card-rook.webp",
+      "bytes": 103070,
+      "sha256": "35f92d987efc6c44691221e944286da837550d407a94656526076f3d93461588"
+    },
+    {
+      "file": "assets/b1/cover.webp",
+      "bytes": 311240,
+      "sha256": "fc9584eb43dff503d78cba2669df4d92469797266536bb331b2edea810f59945"
+    },
+    {
+      "file": "assets/b1/fragment.svg",
+      "bytes": 378,
+      "sha256": "d057fa8d868a03d48f4631f53850e0a9537cf81ee13a3d1cb16bdb66337985aa"
+    },
+    {
+      "file": "assets/b1/medal-back-v3.webp",
+      "bytes": 132126,
+      "sha256": "ed818cb43558ab0fe54e611216dac5b078705e9db7bac81cf8e8ee78f376a205"
+    },
+    {
+      "file": "assets/b1/medal-back.svg",
+      "bytes": 1334,
+      "sha256": "3dcdf0a3b4fd723ba107b801f75c8188dba5d053e7a46ad9fd17ee105df89f2b"
+    },
+    {
+      "file": "assets/b1/medal-front-v3.webp",
+      "bytes": 171952,
+      "sha256": "86364980be6882d304a4719be325591613a650f1ae0e974cf998f2957cef911c"
+    },
+    {
+      "file": "assets/b1/medal-front.svg",
+      "bytes": 1337,
+      "sha256": "7ce6344ee9d27b006693be2152dda9985a7de73bc03d5df4ff04f5a7239f43dd"
+    },
+    {
+      "file": "assets/b1/p01a.webp",
+      "bytes": 220372,
+      "sha256": "8006f14b891fb91119c1501752712dd07d15d3dc91b496eab20d99431a77e35c"
+    },
+    {
+      "file": "assets/b1/p01b.webp",
+      "bytes": 134412,
+      "sha256": "8793c297212b341e4acf8c26acd176b489a3e5d499d5edbc93a71f811c0d70ca"
+    },
+    {
+      "file": "assets/b1/p02a.webp",
+      "bytes": 167158,
+      "sha256": "52a85a671c5f6cc449339130f26f455ebc92f841e7e39a3591d5d4fbb461eb47"
+    },
+    {
+      "file": "assets/b1/p02c.webp",
+      "bytes": 133008,
+      "sha256": "02efa297b688cdb324ad06ace06a440c97a2cdead1f39ce9a6170de4d72d8a17"
+    },
+    {
+      "file": "assets/b1/p02d.webp",
+      "bytes": 117864,
+      "sha256": "969a7e21800e1a9a8d2a3cef464dc1edc2cd118ee4674624c28eb1c6416b5d23"
+    },
+    {
+      "file": "assets/b1/p03d.webp",
+      "bytes": 129798,
+      "sha256": "c95037d9723503359bf5e2fd3052f76cf1b35b0980db5717c907b69a2792e174"
+    },
+    {
+      "file": "assets/b1/p04c.webp",
+      "bytes": 128012,
+      "sha256": "32458e8ade9fce0ff5e40b034d1c7f8d135546ecc320cb1d17e7d663777bad05"
+    },
+    {
+      "file": "assets/b1/p10a.webp",
+      "bytes": 603432,
+      "sha256": "b3bddc6d0f526c848a091e0a0178c6a090b66ab6c360ade2332c8b00b9123702"
+    },
+    {
+      "file": "assets/b1/p19a.webp",
+      "bytes": 229650,
+      "sha256": "3edac70cc0772260b05c4aa936f133e435cfad2620e71584e99cd5c884579da2"
+    },
+    {
+      "file": "assets/b1/p20a.webp",
+      "bytes": 674868,
+      "sha256": "4271b7ac43d23c77397f9760d3e49f1969aeb79ce34dd6232b7c60f48e109d32"
+    },
+    {
+      "file": "assets/b1/p34a.webp",
+      "bytes": 582636,
+      "sha256": "6a987719595696ae6aab89e834a02645f1f10f477eaf3edd7a72e64a267eb8a3"
+    },
+    {
+      "file": "assets/b1/p36a.webp",
+      "bytes": 268906,
+      "sha256": "956d6e04aae9ab8efca732cb3079e493b254aea95258af80a6db50a089923f4f"
+    },
+    {
+      "file": "assets/b1/p37a.webp",
+      "bytes": 191996,
+      "sha256": "0593bbf0870a30a7a368a222fcf769719fa2f80faf42bc85ddd4afeab0b701b9"
+    },
+    {
+      "file": "assets/b1/p37c.webp",
+      "bytes": 150786,
+      "sha256": "5c77c4824be3cc21cfe97ad0764f5369b601657c4feb69d977081e663715cdb9"
+    },
+    {
+      "file": "assets/b1/p37e.webp",
+      "bytes": 173004,
+      "sha256": "3ab0787918714adcb6863114a74e0b4382c67811bfed5eca9e4b2bb44e5b9360"
+    },
+    {
+      "file": "assets/b1/simulator-badge.webp",
+      "bytes": 141528,
+      "sha256": "d7911d66a6ecd1b371c647c5fcf40b22834822633c3d1fd55947bba1ac82b82e"
+    },
+    {
+      "file": "assets/b1/wallpaper-p10a.webp",
+      "bytes": 926660,
+      "sha256": "c442c15cbe2900fa0ab14f3ec3e9dcdd7e169bf9a6f4ac65d841ef6025f694e1"
+    },
+    {
+      "file": "assets/b1/wallpaper-p34a.webp",
+      "bytes": 931386,
+      "sha256": "2c687c199038c60f859a7515ec5825f13441a4ecb2e12106981cf67e12f8e1f0"
+    },
+    {
+      "file": "assets/b1/audio/V3L01a.m4a",
+      "bytes": 65943,
+      "sha256": "1dad5c0ee8e2328bf1fd9998b897f517abc2e8a3c2c3b25a074d14ec4df2904a"
+    },
+    {
+      "file": "assets/b1/audio/V3L02a.m4a",
+      "bytes": 61016,
+      "sha256": "2c2f1d70920a03bdaf146f07cf69b82a2ed940ec82bc192360a3610cd6b6fdc2"
+    },
+    {
+      "file": "assets/b1/audio/V3L02c.m4a",
+      "bytes": 49193,
+      "sha256": "e6a815bc4036589a3316751a571d5565e8edd4a57bc3c6c7eb8c7e587908c6b1"
+    },
+    {
+      "file": "assets/b1/audio/V3L02d.m4a",
+      "bytes": 52224,
+      "sha256": "20ade8b2d92df6e994356d62ce68036d97b9fd4c9df91567f59c532f919b17bd"
+    },
+    {
+      "file": "assets/b1/audio/V3L03b.m4a",
+      "bytes": 35811,
+      "sha256": "f9558b9b6520ff20efd72c2c558f7287fa60347c662e5acb3222776d919c5ff6"
+    },
+    {
+      "file": "assets/b1/audio/V3L03d.m4a",
+      "bytes": 65967,
+      "sha256": "df1e51dabd11d5eb5b902b0b117aaed2b4fc882e859c26595eb67777a799e3af"
+    },
+    {
+      "file": "assets/b1/audio/V3L04c.m4a",
+      "bytes": 30757,
+      "sha256": "c76f8a09282df7bcc6b9d9ccf4f95e092d755261db6b3983adca0e5e925b27c1"
+    },
+    {
+      "file": "assets/b1/audio/V3L05c.m4a",
+      "bytes": 36820,
+      "sha256": "779c5953d746e82f37c9f1e0c4ff7e73493cca50c66d84bd6f029ba93777c1fc"
+    },
+    {
+      "file": "assets/b1/audio/V3L15e.m4a",
+      "bytes": 76114,
+      "sha256": "b608f78a9876506642e043dc88ecfb22af6dbfc865dce83bb7026b91d2df5d94"
+    },
+    {
+      "file": "assets/b1/audio/V3L19a.m4a",
+      "bytes": 107940,
+      "sha256": "dc2355a03236183f433c4693239c50ef17d87e6c725ae586a0ea7ba3d6b3c73f"
+    },
+    {
+      "file": "assets/b1/audio/V3L34a.m4a",
+      "bytes": 56485,
+      "sha256": "b312304535238367036104bbf6d597a573517cbc7e7028806868c2b3e9693737"
+    },
+    {
+      "file": "assets/b1/audio/V3L36d.m4a",
+      "bytes": 43173,
+      "sha256": "68658fd1547b111bdd757995f9c325a69ec351b29df27eb754b72bc2899da9a9"
+    },
+    {
+      "file": "assets/b1/audio/V3L37a.m4a",
+      "bytes": 56481,
+      "sha256": "686e0fb16eec018a28841acaffdd92baf2e8b7f2f3f6dbe7113bad3aead38b12"
+    },
+    {
+      "file": "assets/b1/audio/V3L37c.m4a",
+      "bytes": 49698,
+      "sha256": "17def83818ad4af86b9830174c6a86193629bf8b77c9310729e28af7fc500da5"
+    },
+    {
+      "file": "assets/b1/audio/V3L37e.m4a",
+      "bytes": 61221,
+      "sha256": "83e9df7d48b3031a54d938594e3103049e0fce5a9985de6916ba3508dc513c0b"
+    },
+    {
+      "file": "assets/b1/game/iona.webp",
+      "bytes": 67448,
+      "sha256": "beaa18ff8514fc54c2ab81b00b6773f396008611b662391d02523b4272452bae"
+    },
+    {
+      "file": "assets/b1/game/pip.webp",
+      "bytes": 63720,
+      "sha256": "063c947a5e91cc1d4579346ed1060df8031b53e237d74ae5c53fae97c50df3db"
+    },
+    {
+      "file": "assets/b1/game/rook.webp",
+      "bytes": 217700,
+      "sha256": "7b8bd17cf8f90b5a9a96a35e91106d37636beb0d0a463910d6bc16590b04fb9a"
+    },
+    {
+      "file": "assets/b1/game/room.webp",
+      "bytes": 365920,
+      "sha256": "7559e5d6248dcc51056b90f869cd57c68185346bd7aab3e3e2e4597826153046"
+    },
+    {
+      "file": "assets/b1/game/tavi-probe.webp",
+      "bytes": 63162,
+      "sha256": "86b860b1618d248e0bb944d8fa831ca420f834d56231c747196fe369be5e2343"
+    },
+    {
+      "file": "assets/b1/game/tavi.webp",
+      "bytes": 64980,
+      "sha256": "f902422c1e9df959394eece6b2d36f99c566b258553f8ccbe2fc0b734a4b9ff2"
+    }
+  ]
+}
