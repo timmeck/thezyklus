@@ -1,10 +1,10 @@
 {
-  "asOf": "2026-11-07T12:39:33.483939+01:00",
+  "asOf": "2026-11-07T12:54:53.011259+01:00",
   "review": false,
   "available": [
     1
   ],
-  "totalBytes": 10834054,
+  "totalBytes": 10836048,
   "files": [
     {
       "file": "app.js",
@@ -19,7 +19,7 @@
     {
       "file": "data.js",
       "bytes": 11604,
-      "sha256": "d54d03faca5b73f8ec23b4852f0d5e3d5008a44171ef2ae059af5db54728e038"
+      "sha256": "5006560e634f2795a33f83ae079c75dad45e46bd1c3046dd32e80ec92179914a"
     },
     {
       "file": "game.js",
@@ -28,8 +28,8 @@
     },
     {
       "file": "index.html",
-      "bytes": 14740,
-      "sha256": "6195ca080e9cff2df201e614ddae2f250316668cef6a11fab25dcf2e8661c274"
+      "bytes": 15129,
+      "sha256": "b01501e7a77db0c0f7a8a6ef186132b378ef525d9e511315b3ba61cfc41146bf"
     },
     {
       "file": "manga.js",
@@ -48,13 +48,13 @@
     },
     {
       "file": "style.css",
-      "bytes": 52517,
-      "sha256": "602acbc65b42e0776de231d5b145c9dab1d8420ab4d001e2eceb5f243b2c516d"
+      "bytes": 54122,
+      "sha256": "b6011ef54fb4334869d32351c7aaabd2cec18f14a09230d6c516653765d8d762"
     },
     {
       "file": "sw.js",
       "bytes": 1176,
-      "sha256": "9c469cb40ec8d200702f9f8df441082cd1647759f83e65b1538ce4c565d2224d"
+      "sha256": "4de4ce0bfed91dd705c211a1bb8114475b93c65f43c6c5d00e4223d603756181"
     },
     {
       "file": "assets/Barlow-400-latin.woff2",
