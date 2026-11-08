@@ -1,0 +1,1 @@
+import{n as e}from"./rolldown-runtime-CNOWq4Kh.js";var t;function n(){return(n=e((()=>{t=(e=>(e[e.WEBGL=1]=`WEBGL`,e[e.WEBGPU=2]=`WEBGPU`,e[e.CANVAS=4]=`CANVAS`,e[e.BOTH=3]=`BOTH`,e))(t||{})})))()}export{n,t};

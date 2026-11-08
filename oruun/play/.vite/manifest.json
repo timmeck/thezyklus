@@ -1,0 +1,390 @@
+{
+  "_pixi-B4Fg3xDo.js": {
+    "file": "assets/pixi-B4Fg3xDo.js",
+    "name": "pixi",
+    "imports": [
+      "_rolldown-runtime-CNOWq4Kh.js",
+      "_pixi-DtVzdqGb.js",
+      "_pixi-BW511S8E.js",
+      "_pixi-BJJOeoSZ.js",
+      "_pixi-CTi3qx_a.js",
+      "_pixi-ed0nSAvr.js",
+      "_pixi-DSe2oF71.js",
+      "_pixi-COEZjR7b.js",
+      "_pixi-q-S6nZ4y.js",
+      "_pixi-ByRGQvHc.js"
+    ]
+  },
+  "_pixi-BJJOeoSZ.js": {
+    "file": "assets/pixi-BJJOeoSZ.js",
+    "name": "pixi",
+    "imports": [
+      "_rolldown-runtime-CNOWq4Kh.js",
+      "_pixi-DtVzdqGb.js",
+      "_pixi-BW511S8E.js",
+      "_pixi-BQzmZckT.js",
+      "_pixi-CTi3qx_a.js",
+      "_pixi-BU6XLNqp.js",
+      "_pixi-DZI0JHt9.js"
+    ]
+  },
+  "_pixi-BQzmZckT.js": {
+    "file": "assets/pixi-BQzmZckT.js",
+    "name": "pixi",
+    "imports": [
+      "_rolldown-runtime-CNOWq4Kh.js"
+    ]
+  },
+  "_pixi-BU6XLNqp.js": {
+    "file": "assets/pixi-BU6XLNqp.js",
+    "name": "pixi",
+    "imports": [
+      "_rolldown-runtime-CNOWq4Kh.js"
+    ]
+  },
+  "_pixi-BW511S8E.js": {
+    "file": "assets/pixi-BW511S8E.js",
+    "name": "pixi",
+    "imports": [
+      "_rolldown-runtime-CNOWq4Kh.js",
+      "_pixi-BJJOeoSZ.js"
+    ]
+  },
+  "_pixi-ByRGQvHc.js": {
+    "file": "assets/pixi-ByRGQvHc.js",
+    "name": "pixi",
+    "imports": [
+      "_rolldown-runtime-CNOWq4Kh.js",
+      "_pixi-DtVzdqGb.js",
+      "_pixi-DWGmO4iW.js",
+      "_pixi-BW511S8E.js",
+      "_pixi-BJJOeoSZ.js",
+      "_pixi-CTi3qx_a.js",
+      "_pixi-ed0nSAvr.js",
+      "_pixi-DZI0JHt9.js",
+      "_pixi-DSe2oF71.js",
+      "_pixi-_ZUa6G67.js",
+      "_pixi-B4Fg3xDo.js",
+      "_pixi-Ip91Bc_9.js"
+    ],
+    "dynamicImports": [
+      "_pixi-q-S6nZ4y.js",
+      "_pixi-COEZjR7b.js",
+      "_pixi-ByRGQvHc.js"
+    ]
+  },
+  "_pixi-CHA_oBUs.js": {
+    "file": "assets/pixi-CHA_oBUs.js",
+    "name": "pixi",
+    "imports": [
+      "_rolldown-runtime-CNOWq4Kh.js",
+      "_pixi-DtVzdqGb.js",
+      "_pixi-BW511S8E.js",
+      "_pixi-BJJOeoSZ.js",
+      "_pixi-CTi3qx_a.js",
+      "_pixi-DZI0JHt9.js"
+    ]
+  },
+  "_pixi-CM3RbrmR.js": {
+    "file": "assets/pixi-CM3RbrmR.js",
+    "name": "pixi",
+    "imports": [
+      "_rolldown-runtime-CNOWq4Kh.js"
+    ]
+  },
+  "_pixi-COEZjR7b.js": {
+    "file": "assets/pixi-COEZjR7b.js",
+    "name": "pixi",
+    "imports": [
+      "_rolldown-runtime-CNOWq4Kh.js",
+      "_pixi-DtVzdqGb.js",
+      "_pixi-BW511S8E.js",
+      "_pixi-BJJOeoSZ.js",
+      "_pixi-CTi3qx_a.js",
+      "_pixi-ed0nSAvr.js",
+      "_pixi-_ZUa6G67.js",
+      "_pixi-B4Fg3xDo.js",
+      "_pixi-q-S6nZ4y.js",
+      "_pixi-Ip91Bc_9.js"
+    ]
+  },
+  "_pixi-COmw-RZI.js": {
+    "file": "assets/pixi-COmw-RZI.js",
+    "name": "pixi",
+    "imports": [
+      "_rolldown-runtime-CNOWq4Kh.js",
+      "_pixi-DtVzdqGb.js",
+      "_pixi-BW511S8E.js",
+      "_pixi-BQzmZckT.js",
+      "_pixi-CTi3qx_a.js",
+      "_pixi-ed0nSAvr.js",
+      "_pixi-DZI0JHt9.js",
+      "_pixi-_ZUa6G67.js",
+      "_pixi-B4Fg3xDo.js",
+      "_pixi-CHA_oBUs.js",
+      "_pixi-DhGpFSSw.js"
+    ]
+  },
+  "_pixi-CTi3qx_a.js": {
+    "file": "assets/pixi-CTi3qx_a.js",
+    "name": "pixi",
+    "imports": [
+      "_rolldown-runtime-CNOWq4Kh.js",
+      "_pixi-DtVzdqGb.js",
+      "_pixi-BW511S8E.js",
+      "_pixi-BQzmZckT.js",
+      "_pixi-BJJOeoSZ.js",
+      "_pixi-ed0nSAvr.js",
+      "_pixi-DZI0JHt9.js",
+      "_pixi-DSe2oF71.js",
+      "_pixi-_ZUa6G67.js",
+      "_pixi-uPBGjyZU.js",
+      "_pixi-B4Fg3xDo.js",
+      "_pixi-COEZjR7b.js",
+      "_pixi-q-S6nZ4y.js",
+      "_pixi-Ip91Bc_9.js"
+    ]
+  },
+  "_pixi-DSe2oF71.js": {
+    "file": "assets/pixi-DSe2oF71.js",
+    "name": "pixi",
+    "imports": [
+      "_rolldown-runtime-CNOWq4Kh.js",
+      "_pixi-DtVzdqGb.js",
+      "_pixi-BJJOeoSZ.js",
+      "_pixi-CTi3qx_a.js",
+      "_pixi-ed0nSAvr.js",
+      "_pixi-_ZUa6G67.js",
+      "_pixi-COEZjR7b.js",
+      "_pixi-Ip91Bc_9.js",
+      "_pixi-DhGpFSSw.js"
+    ]
+  },
+  "_pixi-DWGmO4iW.js": {
+    "file": "assets/pixi-DWGmO4iW.js",
+    "name": "pixi",
+    "imports": [
+      "_rolldown-runtime-CNOWq4Kh.js"
+    ]
+  },
+  "_pixi-DZI0JHt9.js": {
+    "file": "assets/pixi-DZI0JHt9.js",
+    "name": "pixi",
+    "imports": [
+      "_rolldown-runtime-CNOWq4Kh.js",
+      "_pixi-DtVzdqGb.js",
+      "_pixi-BJJOeoSZ.js",
+      "_pixi-CTi3qx_a.js",
+      "_pixi-ed0nSAvr.js",
+      "_pixi-BU6XLNqp.js",
+      "_pixi-_ZUa6G67.js",
+      "_pixi-uPBGjyZU.js",
+      "_pixi-ByRGQvHc.js",
+      "_pixi-DhGpFSSw.js"
+    ]
+  },
+  "_pixi-DhGpFSSw.js": {
+    "file": "assets/pixi-DhGpFSSw.js",
+    "name": "pixi",
+    "imports": [
+      "_rolldown-runtime-CNOWq4Kh.js",
+      "_pixi-DtVzdqGb.js",
+      "_pixi-BW511S8E.js",
+      "_pixi-BQzmZckT.js",
+      "_pixi-BJJOeoSZ.js",
+      "_pixi-CTi3qx_a.js",
+      "_pixi-ed0nSAvr.js",
+      "_pixi-DZI0JHt9.js",
+      "_pixi-_ZUa6G67.js",
+      "_pixi-B4Fg3xDo.js"
+    ]
+  },
+  "_pixi-DtVzdqGb.js": {
+    "file": "assets/pixi-DtVzdqGb.js",
+    "name": "pixi",
+    "imports": [
+      "_rolldown-runtime-CNOWq4Kh.js",
+      "_pixi-DWGmO4iW.js",
+      "_pixi-BW511S8E.js",
+      "_pixi-BQzmZckT.js",
+      "_pixi-BJJOeoSZ.js",
+      "_pixi-CTi3qx_a.js",
+      "_pixi-ed0nSAvr.js",
+      "_pixi-DZI0JHt9.js",
+      "_pixi-_ZUa6G67.js",
+      "_pixi-uPBGjyZU.js",
+      "_pixi-B4Fg3xDo.js",
+      "_pixi-CHA_oBUs.js",
+      "_pixi-COEZjR7b.js",
+      "_pixi-q-S6nZ4y.js",
+      "_pixi-Ip91Bc_9.js",
+      "_pixi-ByRGQvHc.js"
+    ],
+    "dynamicImports": [
+      "_pixi-DtVzdqGb.js"
+    ]
+  },
+  "_pixi-Ip91Bc_9.js": {
+    "file": "assets/pixi-Ip91Bc_9.js",
+    "name": "pixi",
+    "imports": [
+      "_rolldown-runtime-CNOWq4Kh.js"
+    ]
+  },
+  "_pixi-_ZUa6G67.js": {
+    "file": "assets/pixi-_ZUa6G67.js",
+    "name": "pixi",
+    "imports": [
+      "_rolldown-runtime-CNOWq4Kh.js",
+      "_pixi-DtVzdqGb.js",
+      "_pixi-DWGmO4iW.js",
+      "_pixi-BW511S8E.js",
+      "_pixi-BQzmZckT.js",
+      "_pixi-BJJOeoSZ.js",
+      "_pixi-CTi3qx_a.js",
+      "_pixi-ed0nSAvr.js",
+      "_pixi-DZI0JHt9.js",
+      "_pixi-B4Fg3xDo.js",
+      "_pixi-q-S6nZ4y.js",
+      "_pixi-ByRGQvHc.js",
+      "_pixi-DhGpFSSw.js",
+      "_pixi-CM3RbrmR.js"
+    ],
+    "dynamicImports": [
+      "_pixi-_ZUa6G67.js"
+    ]
+  },
+  "_pixi-ed0nSAvr.js": {
+    "file": "assets/pixi-ed0nSAvr.js",
+    "name": "pixi",
+    "imports": [
+      "_rolldown-runtime-CNOWq4Kh.js",
+      "_pixi-DtVzdqGb.js",
+      "_pixi-BW511S8E.js",
+      "_pixi-BQzmZckT.js",
+      "_pixi-BJJOeoSZ.js",
+      "_pixi-CTi3qx_a.js",
+      "_pixi-DZI0JHt9.js",
+      "_pixi-DSe2oF71.js",
+      "_pixi-_ZUa6G67.js",
+      "_pixi-B4Fg3xDo.js",
+      "_pixi-COEZjR7b.js",
+      "_pixi-ByRGQvHc.js",
+      "_pixi-DhGpFSSw.js"
+    ]
+  },
+  "_pixi-q-S6nZ4y.js": {
+    "file": "assets/pixi-q-S6nZ4y.js",
+    "name": "pixi",
+    "imports": [
+      "_rolldown-runtime-CNOWq4Kh.js",
+      "_pixi-DtVzdqGb.js",
+      "_pixi-BW511S8E.js",
+      "_pixi-BJJOeoSZ.js",
+      "_pixi-CTi3qx_a.js",
+      "_pixi-ed0nSAvr.js",
+      "_pixi-_ZUa6G67.js",
+      "_pixi-B4Fg3xDo.js",
+      "_pixi-COEZjR7b.js",
+      "_pixi-Ip91Bc_9.js"
+    ]
+  },
+  "_pixi-uPBGjyZU.js": {
+    "file": "assets/pixi-uPBGjyZU.js",
+    "name": "pixi",
+    "imports": [
+      "_rolldown-runtime-CNOWq4Kh.js"
+    ]
+  },
+  "_rolldown-runtime-CNOWq4Kh.js": {
+    "file": "assets/rolldown-runtime-CNOWq4Kh.js",
+    "name": "rolldown-runtime"
+  },
+  "_roof-play-BCXnpeL4.css": {
+    "file": "assets/roof-play-BCXnpeL4.css",
+    "src": "_roof-play-BCXnpeL4.css"
+  },
+  "_roof-play-iZjh2sEq.js": {
+    "file": "assets/roof-play-iZjh2sEq.js",
+    "name": "roof-play",
+    "imports": [
+      "_rolldown-runtime-CNOWq4Kh.js",
+      "_pixi-DtVzdqGb.js",
+      "_pixi-DWGmO4iW.js",
+      "_pixi-BW511S8E.js",
+      "_pixi-CTi3qx_a.js",
+      "_pixi-ed0nSAvr.js",
+      "_pixi-DZI0JHt9.js",
+      "_pixi-_ZUa6G67.js",
+      "_pixi-DhGpFSSw.js",
+      "_pixi-COmw-RZI.js"
+    ],
+    "dynamicImports": [
+      "src/music.ts",
+      "src/arc-ui.ts",
+      "_story-ui-CBsWq9Dr.js",
+      "src/sound-ui.ts",
+      "src/gallery.ts"
+    ],
+    "css": [
+      "assets/roof-play-BCXnpeL4.css"
+    ]
+  },
+  "_story-ui-CBsWq9Dr.js": {
+    "file": "assets/story-ui-CBsWq9Dr.js",
+    "name": "story-ui",
+    "imports": [
+      "_rolldown-runtime-CNOWq4Kh.js",
+      "_roof-play-iZjh2sEq.js"
+    ]
+  },
+  "index.html": {
+    "file": "assets/index-OEgTCvPk.js",
+    "name": "index",
+    "src": "index.html",
+    "isEntry": true,
+    "imports": [
+      "_roof-play-iZjh2sEq.js"
+    ]
+  },
+  "src/arc-ui.ts": {
+    "file": "assets/arc-ui-i5qGE85b.js",
+    "name": "arc-ui",
+    "src": "src/arc-ui.ts",
+    "isDynamicEntry": true,
+    "imports": [
+      "_rolldown-runtime-CNOWq4Kh.js",
+      "_roof-play-iZjh2sEq.js",
+      "_story-ui-CBsWq9Dr.js"
+    ]
+  },
+  "src/gallery.ts": {
+    "file": "assets/gallery-D59yjm55.js",
+    "name": "gallery",
+    "src": "src/gallery.ts",
+    "isDynamicEntry": true,
+    "imports": [
+      "_rolldown-runtime-CNOWq4Kh.js",
+      "_roof-play-iZjh2sEq.js"
+    ]
+  },
+  "src/music.ts": {
+    "file": "assets/music-A4BBULog.js",
+    "name": "music",
+    "src": "src/music.ts",
+    "isDynamicEntry": true,
+    "imports": [
+      "_rolldown-runtime-CNOWq4Kh.js",
+      "_roof-play-iZjh2sEq.js"
+    ]
+  },
+  "src/sound-ui.ts": {
+    "file": "assets/sound-ui-Dl-S7s10.js",
+    "name": "sound-ui",
+    "src": "src/sound-ui.ts",
+    "isDynamicEntry": true,
+    "imports": [
+      "_rolldown-runtime-CNOWq4Kh.js"
+    ]
+  }
+}

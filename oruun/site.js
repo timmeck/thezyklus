@@ -1,6 +1,6 @@
 'use strict';
 // Claude may switch this after Tim's game test and copying the game to /oruun/play/.
-const PLAY_LIVE = false;
+const PLAY_LIVE = true;
 const entry = document.querySelector('#play-entry');
 if (PLAY_LIVE && entry) {
   const link = document.createElement('a');

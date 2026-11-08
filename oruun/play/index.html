@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="theme-color" content="#102a31"><meta name="robots" content="noindex,nofollow"><meta name="description" content="UNDER-LID — keep a court of the Oruun, the first alien people humanity will meet."><link rel="icon" type="image/png" sizes="32x32" href="./art/q6-favicon-32.png"><link rel="icon" type="image/png" sizes="64x64" href="./art/q6-favicon-64.png"><link rel="apple-touch-icon" sizes="180x180" href="./art/q6-favicon-180.png"><title>UNDER-LID — keep a court of the Oruun, the first alien people humanity will meet.</title>  <script type="module" crossorigin src="./assets/index-OEgTCvPk.js"></script>
+  <link rel="modulepreload" crossorigin href="./assets/rolldown-runtime-CNOWq4Kh.js">
+  <link rel="modulepreload" crossorigin href="./assets/pixi-DWGmO4iW.js">
+  <link rel="modulepreload" crossorigin href="./assets/pixi-BQzmZckT.js">
+  <link rel="modulepreload" crossorigin href="./assets/pixi-BU6XLNqp.js">
+  <link rel="modulepreload" crossorigin href="./assets/pixi-Ip91Bc_9.js">
+  <link rel="modulepreload" crossorigin href="./assets/pixi-q-S6nZ4y.js">
+  <link rel="modulepreload" crossorigin href="./assets/pixi-COEZjR7b.js">
+  <link rel="modulepreload" crossorigin href="./assets/pixi-DhGpFSSw.js">
+  <link rel="modulepreload" crossorigin href="./assets/pixi-DSe2oF71.js">
+  <link rel="modulepreload" crossorigin href="./assets/pixi-ByRGQvHc.js">
+  <link rel="modulepreload" crossorigin href="./assets/pixi-B4Fg3xDo.js">
+  <link rel="modulepreload" crossorigin href="./assets/pixi-CM3RbrmR.js">
+  <link rel="modulepreload" crossorigin href="./assets/pixi-_ZUa6G67.js">
+  <link rel="modulepreload" crossorigin href="./assets/pixi-uPBGjyZU.js">
+  <link rel="modulepreload" crossorigin href="./assets/pixi-DZI0JHt9.js">
+  <link rel="modulepreload" crossorigin href="./assets/pixi-ed0nSAvr.js">
+  <link rel="modulepreload" crossorigin href="./assets/pixi-CTi3qx_a.js">
+  <link rel="modulepreload" crossorigin href="./assets/pixi-BJJOeoSZ.js">
+  <link rel="modulepreload" crossorigin href="./assets/pixi-BW511S8E.js">
+  <link rel="modulepreload" crossorigin href="./assets/pixi-CHA_oBUs.js">
+  <link rel="modulepreload" crossorigin href="./assets/pixi-DtVzdqGb.js">
+  <link rel="modulepreload" crossorigin href="./assets/pixi-COmw-RZI.js">
+  <link rel="modulepreload" crossorigin href="./assets/roof-play-iZjh2sEq.js">
+  <link rel="stylesheet" crossorigin href="./assets/roof-play-BCXnpeL4.css">
+</head>
+<body><main id="app">
+ <section id="welcome" aria-labelledby="welcome-title"><div class="welcome-map" aria-hidden="true"></div><div class="welcome-art" aria-hidden="true"></div><div class="welcome-copy"><p class="eyebrow">WHEN THE ROOF OPENED <span> / </span> A SETTLEMENT GAME</p><p class="wordmark">UNDER<span>—</span>LID</p><h1 id="welcome-title">Make room<br>for a little life.</h1><p class="world-setting">Stillwater. Beneath the ice, the Oruun keep their courts.</p><p>Dig into the rock. Keep a warm court.<br>When the roof answers, be ready.</p><div class="welcome-actions"><button id="new-game" class="primary">Begin a court <span>↗</span></button><button data-action="open-community" class="community-entry">A community on the move <span>10 banks · one shared story ↗</span></button><button data-action="open-campaign" class="campaign-entry">Explore the campaign <span>Separate bank challenges ↗</span></button><button data-action="open-sandbox" class="sandbox-entry">Make a sandbox <span>Choose your roof ↗</span></button><button data-action="open-gallery">Local gallery</button><button id="continue-game" hidden>Continue your court</button></div><p id="welcome-error" role="status"></p><p class="fineprint">Eight kinds of room · Six to ten neighbours<br>A shared journal · Five tool families<br>Progress stays here. Sound starts off; enable in settings.</p></div><footer><span><a href="/oruun/">THE ORUUN</a> · <a href="/impressum.html">Impressum</a> · <a href="/datenschutz.html">Datenschutz</a></span><span>A game adaptation before the graphic novel</span></footer></section>
+ <section id="game" hidden aria-label="Your court beneath the ice">
+  <header class="topbar"><div class="brand">UNDER—LID <small>THE LITTLE COURT</small></div><div class="time-controls"><button id="pause" aria-label="Pause court">Ⅱ</button><button id="speed" aria-label="Change game speed">1×</button><button data-action="open-progress" aria-label="Progress and settings">☷</button><button data-action="open-help" aria-label="Help and keyboard map">?</button></div></header>
+  <div id="resources" class="resources" aria-label="Court overview"></div>
+  <div id="stage"><div id="world" tabindex="0" aria-label="Excavation map"></div><div id="loading" role="status">Finding the warm edge…</div>
+   <div class="map-title" aria-hidden="true"><span>THE MIDDLE REACHES</span><b>The little court</b></div>
+   <div id="objective" class="objective"></div><div id="reward" class="reward" role="status" hidden></div><button id="wave-alert" class="wave-alert" data-action="open-calendar"></button>
+   <div class="camera-controls"><button id="zoom-out" aria-label="Zoom out">−</button><button id="centre" aria-label="Centre court">⌖</button><button id="zoom-in" aria-label="Zoom in">+</button></div>
+   <aside id="context" class="context" hidden aria-label="Map action"></aside><div id="paused-badge" hidden><span>Ⅱ Court paused</span><button id="resume">Resume</button></div>
+   <button id="advisor" class="advisor" data-action="advisor-place" aria-live="polite" title="Follow this message to its place on the map."></button><div id="held" hidden></div>
+  </div>
+  <div id="palette" class="palette" hidden></div><div class="dock"><p id="tool-hint"></p><p id="dig-backlog" role="status" hidden></p><nav id="toolbar" aria-label="Court tools"></nav></div>
+  <footer class="game-footer"><button id="campaign-button" data-action="open-campaign" title="Review the bank, its targets and the ten-map campaign.">Campaign</button><button id="gallery-button" data-action="open-gallery" title="Keep or revisit a local picture of your court.">Gallery</button><span id="save-status">Local progress</span><button id="journal-button" data-action="open-journal" title="Read the settlement journal; keyboard shortcut J.">Journal</button><span id="time">00:00</span></footer><div id="storage-warning" role="status" hidden></div>
+ </section>
+ <dialog id="modal"><div class="modal-head"><span class="eyebrow">THE COURT CAN WAIT</span><button data-action="close-modal" aria-label="Close dialog">×</button></div><div id="modal-content"></div></dialog>
+</main></body></html>
