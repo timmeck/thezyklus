@@ -21,3 +21,13 @@ footer{display:grid;grid-template-columns:1fr 1fr;gap:30px;padding:60px 5vw 45px
 /* Keep enlarged text inside narrow columns without hiding any content. */
 body{overflow-wrap:anywhere}
 .brand{white-space:normal}
+
+/* From Above: scoped addition; original Tales/chapter/game rules stay intact. */
+#above{background:#102b31}
+.above-frame{font:italic 23px/1.5 Georgia,serif;color:var(--gold);max-width:850px;margin:24px 0}
+.above-context{color:var(--muted);max-width:760px;margin:20px 0 38px}
+.above-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:45px 26px}
+.above-reader .vertical-strip figure{border:1px solid var(--line);background:#102b31}
+.above-reader .vertical-strip figcaption{padding:22px 26px;font:23px/1.5 Georgia,serif}
+@media(max-width:1050px){.above-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:700px){.above-grid{grid-template-columns:1fr;gap:35px}.above-frame{font-size:20px}.above-reader .vertical-strip figcaption{font-size:20px;padding:18px}}
