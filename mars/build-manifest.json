@@ -1,10 +1,11 @@
 {
-  "asOf": "2026-11-07T13:59:26.487896+01:00",
+  "asOf": "2026-11-09T18:06:25.566437+01:00",
   "review": false,
   "available": [
-    1
+    1,
+    2
   ],
-  "totalBytes": 10836942,
+  "totalBytes": 17644790,
   "files": [
     {
       "file": "app.js",
@@ -18,8 +19,8 @@
     },
     {
       "file": "data.js",
-      "bytes": 11604,
-      "sha256": "1779b47557749fccb136f43821afa7bb500cea1d56e7bfde5f6b4b4dd755368a"
+      "bytes": 18046,
+      "sha256": "ba7b311e93a86e5f715f9f9a0d138c280347c6d39f92ea936854bb7365b23ede"
     },
     {
       "file": "game.js",
@@ -28,8 +29,8 @@
     },
     {
       "file": "index.html",
-      "bytes": 15167,
-      "sha256": "1df40ecaf222ca582c01ecfdede8e4b1118932f71ac15eebc9c4072b9f262158"
+      "bytes": 15340,
+      "sha256": "8f61b1e9c96bb81fe336514ae20edf409ccdcb3f56c8351432feb895d94dcd1e"
     },
     {
       "file": "manga.js",
@@ -53,8 +54,8 @@
     },
     {
       "file": "sw.js",
-      "bytes": 1176,
-      "sha256": "2d4c4f4af5ccf95508cee795f30b9d951c1ec8204dc7be6f9904fe469f151476"
+      "bytes": 1201,
+      "sha256": "663e058f914749b6dfd6a5fbb595cf716d5ac0fa003d66b3931c7adfb57689fc"
     },
     {
       "file": "assets/Barlow-400-latin.woff2",
@@ -142,9 +143,19 @@
       "sha256": "337cd625f4d1cb4ee14c51a878d418c3de7874225d0597174bad2243b3d49d66"
     },
     {
+      "file": "missions/mission-2.js",
+      "bytes": 2981,
+      "sha256": "ca8c5e8e79a2ae429aed1185c2c47f43e2ab32245d2ef32d90db30efd0737370"
+    },
+    {
       "file": "missions/scene-1.js",
       "bytes": 1336,
       "sha256": "d5019c08509e83f010f39fbab2642ebdf2027d0fd5ba6fc3c94e34702ac5a846"
+    },
+    {
+      "file": "missions/scene-2.js",
+      "bytes": 3076,
+      "sha256": "3798b17777ef51438e0c0b257215b16bd05feef929fe0f25042c14bd8b3b025b"
     },
     {
       "file": "assets/b1/card-iona.webp",
@@ -280,6 +291,221 @@
       "file": "assets/b1/wallpaper-p34a.webp",
       "bytes": 931386,
       "sha256": "2c687c199038c60f859a7515ec5825f13441a4ecb2e12106981cf67e12f8e1f0"
+    },
+    {
+      "file": "assets/b2/cover.webp",
+      "bytes": 191012,
+      "sha256": "8cf975e26d9856a91056f1b6cfb766a3c347c3f5a8767e4d4fb6e632d85cda49"
+    },
+    {
+      "file": "assets/b2/fragment.svg",
+      "bytes": 199,
+      "sha256": "8bb0385bfd91fe0bdc850060fe01205e54d32e1a797441afaab9125f50c263d1"
+    },
+    {
+      "file": "assets/b2/medal-back-v3.webp",
+      "bytes": 221134,
+      "sha256": "4e0ebc02d009e2876bc0c237f5518fd8b12a9f9666a75b3f09437be5db090f4d"
+    },
+    {
+      "file": "assets/b2/medal-back.svg",
+      "bytes": 474,
+      "sha256": "4859502e67b41f615695c1b403bb8eac322f8ebb18b30df9eb7cb85aa63e82c0"
+    },
+    {
+      "file": "assets/b2/medal-front-v3.webp",
+      "bytes": 226524,
+      "sha256": "aaf194864868a454a71c888d10d551c3d77c4f5c0b25091a9634e7dceae08747"
+    },
+    {
+      "file": "assets/b2/medal-front.svg",
+      "bytes": 448,
+      "sha256": "49be7bf4d5159cf3f75f2fa299ba871d6ea9a7a2492e7910bd78fafa73491de3"
+    },
+    {
+      "file": "assets/b2/p01a.webp",
+      "bytes": 178032,
+      "sha256": "7a1595343c1e74f3bfa240bb2739f1482b9b9e55a35b566e2956b742af3e7236"
+    },
+    {
+      "file": "assets/b2/p01b.webp",
+      "bytes": 150308,
+      "sha256": "e2b31619617997ca70892ba9fd1e13e2239d758c18abe102f151f18577b2beae"
+    },
+    {
+      "file": "assets/b2/p01c.webp",
+      "bytes": 140004,
+      "sha256": "e5738706bc586142056b4c1c36e4f593ff19518463c407ac7a6beab867b5129c"
+    },
+    {
+      "file": "assets/b2/p06a.webp",
+      "bytes": 159862,
+      "sha256": "000012d31dd026ad77ebdafc9e0a19af8259c6ff063ffd11136923c35d26e0a2"
+    },
+    {
+      "file": "assets/b2/p20a.webp",
+      "bytes": 494264,
+      "sha256": "1ef2d60a01d74d447cab92f1043ce6a5ad3cb54525a234425d831f0e935c1f4e"
+    },
+    {
+      "file": "assets/b2/p21a.webp",
+      "bytes": 156028,
+      "sha256": "f1e2ed24dcac99f158b7bbd902c9f3c3fa4897d719333c6981e7d0aae1398135"
+    },
+    {
+      "file": "assets/b2/p23a.webp",
+      "bytes": 193952,
+      "sha256": "18502305bdf112308905a2da4be942fb96090d577e6aea57fe5ba9c993831bc3"
+    },
+    {
+      "file": "assets/b2/p26a.webp",
+      "bytes": 169140,
+      "sha256": "fd16703d1268c7c1bdfc4007a85d5aa1422b554a4969dd507b54ca749c4f0439"
+    },
+    {
+      "file": "assets/b2/p30a.webp",
+      "bytes": 556176,
+      "sha256": "977bf153c50abc9cb8e7ffab9025f72bbf4bd934673d64d072a31352c4655128"
+    },
+    {
+      "file": "assets/b2/p34c.webp",
+      "bytes": 112372,
+      "sha256": "ecf9d468ff98c4c93a671f60188cb8c48816dd1f246445ab4a3d30c08b926476"
+    },
+    {
+      "file": "assets/b2/p34d.webp",
+      "bytes": 113288,
+      "sha256": "8abd8c01ef97b2daf55c9f269ba13d24d8220ff39f90738137b7aba3fafafb57"
+    },
+    {
+      "file": "assets/b2/p39d.webp",
+      "bytes": 167096,
+      "sha256": "3961633fa65d25043db9d7524404e08188d514f0b29138f7cab1c3c74c3d2a3e"
+    },
+    {
+      "file": "assets/b2/p39e.webp",
+      "bytes": 165754,
+      "sha256": "d7afd669434b5078a44d9b42a7ed5c673064ee2341eb4611d35a06401f34fe4d"
+    },
+    {
+      "file": "assets/b2/p40a.webp",
+      "bytes": 133210,
+      "sha256": "9ee3cf4d7b4d5b4bcc34c2da8d4882ce21e0567defc0025f07072f184dec0cbb"
+    },
+    {
+      "file": "assets/b2/simulator-badge.webp",
+      "bytes": 141314,
+      "sha256": "d9c29d163947f30a5b6db68188b1c06f66b2e043f0bc5f272b43ddcc5d9e6422"
+    },
+    {
+      "file": "assets/b2/wallpaper-p30a.webp",
+      "bytes": 1132692,
+      "sha256": "5cbecceaaa549fd0a9f7254b32c14d8f11014dc50f6ebcdb86d4d77918241d49"
+    },
+    {
+      "file": "assets/b2/audio/B02L01a.m4a",
+      "bytes": 41892,
+      "sha256": "f5769f5927872ebea138c8d41727037f25c591a77549c5e4c10180825f682ede"
+    },
+    {
+      "file": "assets/b2/audio/B02L01b.m4a",
+      "bytes": 30609,
+      "sha256": "ea34b9f9a58fa2ac0af57a8be0f39a6cba5e7c8af5783ec88419f4b4b1bc349f"
+    },
+    {
+      "file": "assets/b2/audio/B02L01c.m4a",
+      "bytes": 24073,
+      "sha256": "f1647f08d95132e14110ecaaec579e49f505beac2d35a9217dfbdde98fbf0787"
+    },
+    {
+      "file": "assets/b2/audio/B02L06a1.m4a",
+      "bytes": 31911,
+      "sha256": "7c8e21fa8de8064d6457301c9e98e613ccc24976ec2b38d81cc81586cf804ffb"
+    },
+    {
+      "file": "assets/b2/audio/B02L23a.m4a",
+      "bytes": 33461,
+      "sha256": "b06393e7e4e92a56290434da5848b02abef2e7729b9ad92f74ee5dffd89a3670"
+    },
+    {
+      "file": "assets/b2/audio/B02L29c.m4a",
+      "bytes": 44377,
+      "sha256": "ec414475815874b5cc8fb985a09b30e7ad3c5d387e16aa1b5ec57f014909c08b"
+    },
+    {
+      "file": "assets/b2/audio/B02L31a.m4a",
+      "bytes": 63550,
+      "sha256": "5fe1d1b0e9c5781a5a007863917e2178e26a437c12277f3b15649d40b971b124"
+    },
+    {
+      "file": "assets/b2/audio/B02L34b.m4a",
+      "bytes": 19734,
+      "sha256": "cea1291f1d2e63ed04e40c7533a9baa504f56a03e731feee96ebe2cc5999a22b"
+    },
+    {
+      "file": "assets/b2/audio/B02L34c.m4a",
+      "bytes": 28209,
+      "sha256": "0c80abe5c327c265c46133043c3978d46b3010c055fe0e35f6475ee2d66b8217"
+    },
+    {
+      "file": "assets/b2/audio/B02L34d.m4a",
+      "bytes": 43973,
+      "sha256": "9686e8efc44a87dfd63d60677da595b709b9218e753c5a09d903336a578a262b"
+    },
+    {
+      "file": "assets/b2/audio/B02L39d.m4a",
+      "bytes": 27863,
+      "sha256": "53ac5f7c36c5554a3363429cd7f00a34000be23504169e64822100ac4de3abfd"
+    },
+    {
+      "file": "assets/b2/audio/B02L39e.m4a",
+      "bytes": 33848,
+      "sha256": "0647cc778e39964edefb9263c781b1f83323df052bb235e8d5dea9ec504ea484"
+    },
+    {
+      "file": "assets/b2/game/crell.webp",
+      "bytes": 205980,
+      "sha256": "d393ad501851917130dbcdcb9953028a03305eb0ecd63047e4bfdddfb87ae902"
+    },
+    {
+      "file": "assets/b2/game/dock.webp",
+      "bytes": 301390,
+      "sha256": "40e5074b2ad67f6f2bcccba50e6b15262752a69f4f578c6b5e3536bbee4ca7e2"
+    },
+    {
+      "file": "assets/b2/game/pip-hold.webp",
+      "bytes": 68764,
+      "sha256": "1e3f662ace6649be36acad51a40ac7730186bf680e7803b463eca94623a71a47"
+    },
+    {
+      "file": "assets/b2/game/pip-sera.webp",
+      "bytes": 482190,
+      "sha256": "55659ccd59c8dde17c868836fdfe0070e2eda3e8cea2a454c2253d5a60b3c9bb"
+    },
+    {
+      "file": "assets/b2/game/pip-up.webp",
+      "bytes": 63720,
+      "sha256": "063c947a5e91cc1d4579346ed1060df8031b53e237d74ae5c53fae97c50df3db"
+    },
+    {
+      "file": "assets/b2/game/pod.webp",
+      "bytes": 223570,
+      "sha256": "595db643665f676ffa4d0d8e45b44458c60eed88497cafcf79dcf7e428f007e9"
+    },
+    {
+      "file": "assets/b2/game/rook-winch.webp",
+      "bytes": 93454,
+      "sha256": "43324cad1151c47933861e36ecc07f0c74e6caefb04dfcbfa1cf3b6aadba3ae5"
+    },
+    {
+      "file": "assets/b2/game/sera-hand.webp",
+      "bytes": 59310,
+      "sha256": "0421e622bab602416dce6c6ea221300dcde5d1b986e2e5cd4107d0c290caa01e"
+    },
+    {
+      "file": "assets/b2/game/sera-hold.webp",
+      "bytes": 69990,
+      "sha256": "99355fc45b1c7a97b9641ede05418d276881089c952e47e7d6dc31b6d1e1d235"
     },
     {
       "file": "assets/b1/audio/V3L01a.m4a",
