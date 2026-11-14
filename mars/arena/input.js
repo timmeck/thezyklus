@@ -98,6 +98,9 @@ export class InputManager {
     this.touch = { ...EMPTY_INPUT };
     this.touchPresses = new Set();
     this.touchShotAim = null;
+    this.touchStick = { x: 0, y: 0 };
+    this.touchPrecision = { x: 0, y: 0 };
+    this.precisionAim = false;
     this.mouse = { active: false, down: false, pressed: false, x: 0, y: 0 };
     this.gamepads = new Map();
     this.menuDown = new Map();
@@ -162,6 +165,8 @@ export class InputManager {
     this.touch = { ...EMPTY_INPUT };
     this.touchPresses.clear();
     this.touchShotAim = null;
+    this.touchStick = { x: 0, y: 0 };
+    this.touchPrecision = { x: 0, y: 0 };
     this.mouse.active = false;
     this.mouse.down = false;
     this.mouse.pressed = false;
@@ -172,16 +177,31 @@ export class InputManager {
     else if (action === "jump" || action === "shoot" || action === "special"){
       if(value&&!this.touch[action])this.touchPresses.add(action);
       this.touch[action] = Boolean(value);
-      if (action === 'shoot' && value) this.touchShotAim = { aimX: this.touch.aimX, aimY: this.touch.aimY };
+      if (action === 'shoot' && value) this.touchShotAim = this.combinedTouchAim();
     }
     if (value) this.mouse.active = false;
   }
 
   setTouchAim(x, y) {
-    this.touch.aimX = clamp(x, -1, 1);
-    this.touch.aimY = clamp(y, -1, 1);
+    this.touchPrecision = { x: clamp(x, -1, 1), y: clamp(y, -1, 1) };
     if (this.touch.shoot && this.touchPresses.has('shoot'))
-      this.touchShotAim = { aimX: this.touch.aimX, aimY: this.touch.aimY };
+      this.touchShotAim = this.combinedTouchAim();
+  }
+
+  setTouchStick(x, y) {
+    const length = Math.hypot(x, y);
+    this.touchStick = length > 0.18
+      ? { x: x / length, y: y / length }
+      : { x: 0, y: 0 };
+    this.setTouch('move', Math.abs(x) < 0.15 ? 0 : x);
+    if (this.touch.shoot && this.touchPresses.has('shoot'))
+      this.touchShotAim = this.combinedTouchAim();
+  }
+
+  combinedTouchAim() {
+    const aim = this.precisionAim && Math.hypot(this.touchPrecision.x, this.touchPrecision.y) > 0.001
+      ? this.touchPrecision : this.touchStick;
+    return { aimX: aim.x, aimY: aim.y };
   }
 
   cancelTouchShot() {
@@ -222,7 +242,7 @@ export class InputManager {
   }
 
   touchFrame() {
-    const frame = { ...this.touch };
+    const frame = { ...this.touch, ...this.combinedTouchAim() };
     for (const action of this.touchPresses) frame[action] = true;
     if (!this.touch.shoot && this.touchPresses.has('shoot') && this.touchShotAim)
       Object.assign(frame, this.touchShotAim);
@@ -304,7 +324,12 @@ export class InputManager {
       const pad = match ? this.gamepads.get(Number(match[1])) : null;
       if (pad) {
         const dpad = Number(buttonDown(pad, 15)) - Number(buttonDown(pad, 14));
-        const aimX = clamp(pad.axes?.[2], -1, 1), aimY = clamp(pad.axes?.[3], -1, 1);
+        const rightX = clamp(pad.axes?.[2], -1, 1), rightY = clamp(pad.axes?.[3], -1, 1);
+        const rightLength = Math.hypot(rightX, rightY);
+        const leftX = dpad || clamp(pad.axes?.[0], -1, 1);
+        const leftY = Number(buttonDown(pad, 13)) - Number(buttonDown(pad, 12)) || clamp(pad.axes?.[1], -1, 1);
+        const aimX = rightLength > 0.22 ? rightX : leftX;
+        const aimY = rightLength > 0.22 ? rightY : leftY;
         const aimLength = Math.hypot(aimX, aimY);
         frame = {
           move: dpad || stick(pad.axes?.[0]),

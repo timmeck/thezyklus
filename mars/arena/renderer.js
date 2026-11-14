@@ -1,4 +1,6 @@
 import { CHARACTERS, ARENAS, BOUNDS } from "./engine.js";
+import { createSurface } from './webgl.js';
+import {drawDrawn,resetDrawn,DRAWN_HEIGHT} from './drawn.js';
 
 export const PLAYER_COLORS = ["#ff8160", "#83d7eb", "#d3a4ed", "#b9dc80"];
 export const ARENA_BACKGROUNDS = Object.freeze({
@@ -16,6 +18,24 @@ const clamp = (value, minimum, maximum) =>
 const lerp = (a, b, amount) => a + (b - a) * amount;
 const assets = new Map();
 
+// Presentation snapshots never mutate a simulation object. Teleports and recoveries
+// snap immediately, while ordinary movement receives one tick of interpolation.
+export function interpolateState(previous, state, alpha) {
+  if (!previous || previous.tick !== state.tick - 1) return state;
+  const amount = clamp(Number.isFinite(alpha) ? alpha : 1, 0, 1);
+  const output = {...state, tick:previous.tick + amount};
+  for (const key of ['fighters','projectiles','platforms','items']) {
+    const identify = item => key === 'fighters' ? item.index : item.id;
+    const old = new Map(previous[key].map(item => [identify(item), item]));
+    output[key] = state[key].map(item => {
+      const from = old.get(identify(item));
+      if (!from || Math.hypot(item.x-from.x,item.y-from.y)>220 || Boolean(from.respawn>0)!==Boolean(item.respawn>0) || from.alive!==item.alive) return item;
+      return {...item,x:lerp(from.x,item.x,amount),y:lerp(from.y,item.y,amount)};
+    });
+  }
+  return output;
+}
+
 function loadImage(url) {
   if (assets.has(url)) return assets.get(url);
   const entry = { image: new Image(), ready: false };
@@ -29,7 +49,7 @@ function loadImage(url) {
 
 export function preloadArt() {
   for (const character of CHARACTERS)
-    {loadImage('assets/'+character.id+'-atlas.webp');loadImage('assets/'+character.id+'-motion.webp');}
+    loadImage('assets/'+character.id+'-atlas.webp');
 }
 
 function polygon(context, points, fill, stroke, width = 2) {
@@ -69,8 +89,14 @@ function star(context, x, y, radius, color, rotation = 0) {
 
 export class Renderer {
   constructor(canvas, { preview = false, reduced = false } = {}) {
-    this.canvas = canvas;
-    this.context = canvas.getContext("2d", { alpha: false });
+    const surface = createSurface(canvas);
+    this.canvas = surface.canvas || canvas;
+    this.context = surface.context;
+    this.backend = surface.backend;
+    this.quality = 'auto';
+    this.effectiveQuality = preview ? 'medium' : 'high';
+    this.frameWindow = [];
+    this.qualityCooldown = 0;
     this.preview = preview;
     this.reduced = reduced;
     this.width = 0;
@@ -84,11 +110,18 @@ export class Renderer {
     this.clock = 0;
     this.previousPositions = new Map();
     this.motionStates = new Map();
-    this.spriteShadows = new Map();
+    this.shotUntil = new Map();
     this.dangerUntil = 0;
     this.resizeObserver = new ResizeObserver(() => this.resize());
-    this.resizeObserver.observe(canvas);
+    this.resizeObserver.observe(this.canvas);
     this.resize();
+  }
+
+  image(url) {
+    const cached=assets.get(url);
+    if(cached)return cached;
+    if(this.preview&&this.clock<2.5)return {ready:false};
+    return loadImage(url);
   }
 
   resize() {
@@ -96,6 +129,8 @@ export class Renderer {
     if (box.width < 1 || box.height < 1) return;
     this.width = box.width;
     this.height = box.height;
+    this.canvasLeft = box.left;
+    this.canvasTop = box.top;
     const css=getComputedStyle(document.documentElement),safe=name=>parseFloat(css.getPropertyValue(name))||0;
     const touch=document.documentElement.dataset.input==='touch',portrait=this.width<this.height;
     this.safeTop=safe('--safe-top')+(portrait?112:74);
@@ -105,6 +140,7 @@ export class Renderer {
       devicePixelRatio || 1,
       this.preview ? 1 : matchMedia("(pointer:coarse)").matches ? 1.25 : 1.5,
       this.ratioCap||2,
+      this.qualityRatio||1.5,
     );
     const width=Math.round(this.width*this.ratio),height=Math.round(this.height*this.ratio);
     if(this.canvas.width!==width||this.canvas.height!==height){this.canvas.width=width;this.canvas.height=height;this.cameraInitialized=false;}
@@ -114,9 +150,13 @@ export class Renderer {
     this.effects = [];this.closeup=null;this.medalRain=0;
     this.previousPositions.clear();
     this.motionStates.clear();
+    this.shotUntil.clear();
+    resetDrawn(this.context);
     this.dangerUntil = 0;
     this.cameraInitialized = false;
     this.lastTick = -1;
+    this.previousFrame = null;
+    this.context.trim?.();
     this.camera = {
       x: 0,
       y: -20,
@@ -126,9 +166,57 @@ export class Renderer {
     this.flash = 0;
   }
 
+  capture(state) {
+    this.previousFrame = {
+      tick: state.tick,
+      fighters: state.fighters.map(f => ({...f})),
+      projectiles: state.projectiles.map(p => ({...p})),
+      platforms: state.platforms.map(p => ({...p})),
+      items: state.items.map(p => ({...p})),
+    };
+  }
+
+  setQuality(value) {
+    this.quality = ['auto', 'high', 'medium', 'low'].includes(value) ? value : 'auto';
+    if (this.quality !== 'auto') this.effectiveQuality = this.quality;
+    this.frameWindow.length = 0;
+    this.applyQuality();
+  }
+
+  applyQuality() {
+    this.qualityRatio = {high:1.5, medium:1.25, low:1}[this.effectiveQuality];
+    this.backgroundKey = null;
+    this.resize();
+  }
+
+  measureFrame(dt, active) {
+    if (!active || this.quality !== 'auto' || dt > .15 || dt < .002) return;
+    this.qualityCooldown = Math.max(0, this.qualityCooldown - dt);
+    this.frameWindow.push(dt);
+    if (this.frameWindow.length < 120) return;
+    const mean = this.frameWindow.reduce((sum, value) => sum + value, 0) / this.frameWindow.length;
+    this.frameWindow.length = 0;
+    if (this.qualityCooldown > 0) return;
+    const levels = ['low', 'medium', 'high'], index = levels.indexOf(this.effectiveQuality);
+    const next = mean > .0176 ? Math.max(0, index - 1) : mean < .013 ? Math.min(2, index + 1) : index;
+    if (next !== index) {
+      this.effectiveQuality = levels[next];
+      this.qualityCooldown = next < index ? 4 : 20;
+      this.applyQuality();
+    }
+  }
+
+  stats() {
+    return {...this.context.stats?.(), backend:this.backend, quality:this.quality, effectiveQuality:this.effectiveQuality,
+      interpolatedTick:this.interpolatedTick, ratio:this.ratio, reduced:this.reduced,
+      fighters:this.fighterMeasurements || [],heroAuras:this.heroAuras || 0,heroMarkers:this.heroMarkers || 0,
+      protectedFighters:true,renderOrder:'world-postprocess-fighters'};
+  }
+
   events(events) {
     for (const event of events) {
       const position = { x: event.x || 0, y: event.y || 0 };
+      if (event.type === 'shot') this.shotUntil.set(event.player,this.clock + .2);
       if (event.type === "hit") {
         this.dangerUntil = this.clock + 0.85;
         this.shake = Math.max(
@@ -147,15 +235,16 @@ export class Renderer {
           word: words[(event.tick + event.target) % words.length],
           angle: ((event.tick % 9) - 4) * 0.08,
         });
-        for (let i = 0; i < 9; i++)
+        const particleCount = this.reduced ? 3 : this.effectiveQuality === 'low' ? 4 : this.effectiveQuality === 'medium' ? 7 : 12;
+        for (let i = 0; i < particleCount; i++)
           this.effects.push({
             ...position,
-            type: "spark",
+            type: i % 3 === 0 ? 'foam' : i % 3 === 1 ? 'paint' : 'spark',
             life: 0.28,
             total: 0.28,
             vx: Math.cos(i * 2.399 + event.tick) * ((i % 3) * 90 + 100),
             vy: Math.sin(i * 2.399 + event.tick) * ((i % 3) * 90 + 100),
-            color: i % 2 ? "#f0b64f" : "#c5f4ef",
+            color: i % 3 === 1 ? PLAYER_COLORS[event.player] || '#83d7eb' : i % 2 ? "#f0b64f" : "#c5f4ef",
           });
       }
       if (event.type === "ringout") {
@@ -246,13 +335,13 @@ export class Renderer {
     const player=state.fighters.find(f=>f.controller!=="bot"&&f.alive&&f.respawn<=0)||visible[0];
     if(portrait && !this.preview && player){
       // Reserve a readable silhouette even at the widest emergency framing.
-      const minScale=this.height/8/86;
+      const minScale=this.height/8/DRAWN_HEIGHT;
       const incoming=state.projectiles.some(p=>this.incoming(p,player));
       const bounds=state.bounds||BOUNDS;
       const edge=visible.some(f=>f.x>bounds.right-150||f.x<bounds.left+150||f.y>bounds.bottom-240||f.y<bounds.top+170);
       if(incoming||edge||visible.some(f=>f.index!==player.index&&(f.charge>0||f.specialDuration>0)))this.dangerUntil=this.clock+0.65;
       const danger=this.clock<this.dangerUntil;
-      targetScale=minScale*(danger?1:1.16);
+      targetScale=minScale*(danger?1.25:1.4);
       const threats=visible.filter(f=>f.index!==player.index).sort((a,b)=>Math.abs(a.x-player.x)-Math.abs(b.x-player.x));
       const threat=threats[0];
       const look=threat?clamp((threat.x-player.x)*0.22,-this.width*.17/targetScale,this.width*.17/targetScale):0;
@@ -260,7 +349,8 @@ export class Renderer {
       this.camera.minimumScale=minScale;
       this.camera.danger=danger;
     }
-    if(!this.preview)targetScale=Math.max(targetScale,this.height/8/86);
+    const minimumScale=this.height/(portrait?8:7)/DRAWN_HEIGHT;
+    if(!this.preview)targetScale=Math.max(targetScale,minimumScale*(portrait?1.25:this.height<500?1.5:1.3));
     let targetY =
       (minimumY + maximumY) / 2 -
       (insetTop - insetBottom) / 2 / Math.max(targetScale, 0.1);
@@ -274,11 +364,11 @@ export class Renderer {
     this.camera.scale = lerp(this.camera.scale, targetScale, smoothing);
     if(!this.preview&&player){
       // Safety bounds outrank smoothing: never lose the local cadet on a fast hit.
-      this.camera.scale=Math.max(this.height/8/86,this.camera.scale);
-      const s=this.camera.scale,margin=Math.max(38,60*s);
+      this.camera.scale=Math.max(minimumScale,this.camera.scale);
+      const s=this.camera.scale,margin=Math.max(46,90*s);
       this.camera.x=clamp(this.camera.x,player.x-this.width/(2*s)+(margin+this.safeRight)/s,player.x+this.width/(2*s)-(margin+this.safeLeft)/s);
       const safeTop=this.safeTop,safeBottom=this.safeBottom;
-      this.camera.y=clamp(this.camera.y,player.y-this.height/(2*s)+safeBottom/s,player.y-116+this.height/(2*s)-safeTop/s);
+      this.camera.y=clamp(this.camera.y,player.y-this.height/(2*s)+safeBottom/s,player.y-157+this.height/(2*s)-(safeTop+22)/s);
     }
   }
 
@@ -305,14 +395,21 @@ export class Renderer {
     }
   }
 
-  draw(state, dt = 1 / 60) {
+  draw(state, dt = 1 / 60, alpha = 1) {
     if (!this.width || !this.height) return;
+    state = interpolateState(this.previousFrame, state, alpha);
+    this.interpolatedTick = state.tick;
+    this.context.beginFrame?.();
     const c = this.context,
       w = this.width,
       h = this.height;
     this.clock += dt;
+    this.frameDelta = dt;
     this.updateCamera(state, dt);
     this.animateBodies(state,dt);
+    this.fighterMeasurements = [];
+    this.heroAuras = 0;
+    this.heroMarkers = 0;
     c.setTransform(this.ratio, 0, 0, this.ratio, 0, 0);
     this.background(state, w, h);
     // Screen spectacle is also behind the playable silhouettes.
@@ -322,6 +419,7 @@ export class Renderer {
     const shake = this.reduced || this.preview ? 0 : this.shake;
     const shakeX = Math.sin(this.clock * 149) * shake;
     const shakeY = Math.cos(this.clock * 173) * shake * 0.65;
+    this.renderOffset = {x:shakeX,y:shakeY};
     this.shake *= Math.exp(-dt * 19);
     c.save();
     c.translate(w / 2 + shakeX, h / 2 + shakeY);
@@ -336,23 +434,55 @@ export class Renderer {
     for (const projectile of state.projectiles)
       this.projectile(projectile, state);
     this.drawEffects(dt, state);
-    for (const fighter of [...state.fighters].sort((a,b)=>Number(a.controller!=='bot')-Number(b.controller!=='bot'))) {
-      this.fighter(fighter, state);
-      this.aimGuide(fighter, state);
-    }
     this.pickupLabels(state);
     this.boundaryArt(state);
     c.restore();
     this.foreground(state, w, h);
-    this.screenEdgeFighters(state);
-    this.screenEdgeShots(state);
     const vignette = c.createLinearGradient(0, 0, 0, h);
     vignette.addColorStop(0, "#071b2924");
     vignette.addColorStop(0.45, "#071b2900");
     vignette.addColorStop(1, "#071b2933");
     c.fillStyle = vignette;
     c.fillRect(0, 0, w, h);
+    // Composite the illuminated world first. Fighters and their ownership marks
+    // are subsequently drawn to the final framebuffer in every graphics path.
+    c.endFrame?.(this.postEffects(state));
+    c.beginOverlay?.();
+    c.save();
+    c.translate(w / 2 + shakeX,h / 2 + shakeY);
+    c.scale(this.camera.scale,this.camera.scale);
+    c.translate(-this.camera.x,-this.camera.y);
+    for (const fighter of state.fighters) {
+      if (!this.preview && fighter.controller !== 'bot' && fighter.alive && fighter.respawn <= 0)
+        this.heroAura(fighter,state,PLAYER_COLORS[fighter.index]);
+    }
+    for (const fighter of [...state.fighters].sort((a,b)=>Number(a.controller!=='bot')-Number(b.controller!=='bot'))) {
+      this.fighter(fighter,state);
+      this.aimGuide(fighter,state);
+    }
+    c.restore();
+    this.screenEdgeFighters(state);
+    this.screenEdgeShots(state);
+    c.finishOverlay?.();
     this.lastTick = state.tick;
+  }
+
+  postEffects(state) {
+    const screen = (x, y) => ({x:.5 + (x-this.camera.x)*this.camera.scale/this.width,
+      y:.5 + (y-this.camera.y)*this.camera.scale/this.height});
+    const scale = this.camera.scale*this.ratio;
+    const lights = state.projectiles.slice(-4).map(p => ({...screen(p.x,p.y),radius:90*scale,
+      strength:.45,color:PLAYER_COLORS[p.owner]||'#9de9ee'}));
+    for (const effect of this.effects) {
+      if (effect.type === 'impact' || effect.type === 'special') lights.push({...screen(effect.x,effect.y),
+        radius:(effect.type==='impact'?180:240)*scale,strength:effect.life/effect.total*.7,color:'#ffcf8c'});
+    }
+    for (const f of state.fighters) if(f.action==='shoot'&&f.actionTime>.1) lights.push({...screen(f.x+f.aimX*45,f.y-53+f.aimY*45),radius:125*scale,strength:.32,color:PLAYER_COLORS[f.index]});
+    const impact = this.effects.find(e=>e.type==='impact'&&e.power>600);
+    let wave=[0,0,0,0];
+    if(impact){const p=screen(impact.x,impact.y);wave=[p.x,1-p.y,(1-impact.life/impact.total)*.65,impact.life/impact.total];}
+    const tint={deck:[.99,1.01,1.02],gravity:[.96,1.025,1.0],yard:[1.035,.99,.96],studio:[1.025,1.005,.97],airlock:[1.025,1.0,.97]}[state.arena];
+    return {quality:this.effectiveQuality,reduced:this.reduced,tint,wave,lights:this.effectiveQuality==='low'?lights.slice(-3):lights.slice(-8)};
   }
 
 
@@ -432,7 +562,7 @@ export class Renderer {
   dramaticPanels(state,dt,w,h){
     const c=this.context;
     if(this.closeup&&this.closeup.life>0&&!this.reduced&&!this.preview){
-      this.closeup.life-=dt;const f=state.fighters[this.closeup.player],face=f&&loadImage('assets/'+f.id+'.webp');
+      this.closeup.life-=dt;const f=state.fighters[this.closeup.player],face=f&&this.image('assets/'+f.id+'.webp');
       if(face?.ready){
         const pw=Math.min(220,w*.31),ph=Math.min(115,h*.22),x=w-pw-10,y=h*.13;
         c.save();polygon(c,[[x+18,y],[x+pw,y],[x+pw,y+ph],[x,y+ph]],'#f1d9a6','#112735',4);c.clip();
@@ -444,14 +574,14 @@ export class Renderer {
       this.medalRain=Math.max(0,this.medalRain-dt);
       c.save();c.globalAlpha=Math.min(1,this.medalRain*2);
       for(let i=0;i<(this.reduced?6:18);i++){const x=((i*137)%w),y=((1.4-this.medalRain)*210+i*47)%(h+40)-20;star(c,x,y,5+(i%3)*2,'#f3ca6a',i+this.clock);}
-      const beam=loadImage('assets/beam.webp');const size=Math.min(80,w*.12);
+      const beam=this.image('assets/beam.webp');const size=Math.min(80,w*.12);
       if(beam.ready)c.drawImage(beam.image,w-size-18,h-size-20,size,size);
       c.fillStyle='#f3d27b';c.font='600 16px Condensed';c.textAlign='right';c.fillText('RECOVERED. OF COURSE.',w-18,h-size-30);c.restore();
     }
   }
 
   background(state, w, h) {
-    const c = this.context, art = loadImage(ARENA_BACKGROUNDS[state.arena]);
+    const c = this.context, art = this.image(ARENA_BACKGROUNDS[state.arena]);
     const key = [state.arena, this.canvas.width, this.canvas.height, art.ready].join('/');
     const margin = 48;
     if (this.backgroundKey !== key) {
@@ -465,7 +595,9 @@ export class Renderer {
       if (art.ready) {
         const scale = Math.max(bw / art.image.width, bh / art.image.height);
         const dw = art.image.width * scale, dh = art.image.height * scale;
-        back.drawImage(art.image,(bw-dw)/2,(bh-dh)/2,dw,dh);
+      back.filter=this.effectiveQuality==='low'?'none':`blur(${this.preview?.4:1.2}px)`;
+      back.drawImage(art.image,(bw-dw)/2,(bh-dh)/2,dw,dh);
+      back.filter='none';
       }
       // A uniform cool veil preserves fine architecture and a quiet combat plane.
       back.fillStyle = state.arena === 'studio' ? '#102b3c65' : '#102b3c38';
@@ -715,8 +847,9 @@ export class Renderer {
     if (f.respawn > 0) {
       const t = state.tick / 60;
       const s=this.camera.scale,cam=this.camera;
-      const x=clamp(f.x,cam.x-this.width/(2*s)+47/s,cam.x+this.width/(2*s)-47/s);
-      const y=clamp(f.y,cam.y-this.height/(2*s)+175/s,cam.y+this.height/(2*s)-30/s);
+      const margin=Math.max(47,90*s);
+      const x=clamp(f.x,cam.x-this.width/(2*s)+margin/s,cam.x+this.width/(2*s)-margin/s);
+      const y=clamp(f.y,cam.y-this.height/(2*s)+(this.safeTop+157*s+22)/s,cam.y+this.height/(2*s)-(this.safeBottom+20)/s);
       this.drone(
         x,
         y - 142 + (this.reduced?0:Math.sin(t * 4) * 3),
@@ -726,15 +859,24 @@ export class Renderer {
       c.setLineDash([4, 6]);
       line(c, x, y - 125, x, y - 102, "#a1d3d6", 2);
       c.setLineDash([]);
-      const atlas=loadImage('assets/'+f.id+'-atlas.webp');
-      if(atlas.ready){c.shadowColor=PLAYER_COLORS[f.index];c.shadowBlur=9;c.drawImage(atlas.image,0,0,256,256,x-57,y-110,114,114);c.shadowBlur=0;}
-      c.font='600 12px Condensed';c.textAlign='center';c.strokeStyle='#102735';c.lineWidth=3;c.fillStyle=PLAYER_COLORS[f.index];
-      const label='P'+(f.index+1)+' / RECOVERING '+f.respawn.toFixed(1)+'s';c.strokeText(label,x,y+18);c.fillText(label,x,y+18);
+      const atlas=this.image('assets/'+f.id+'-atlas.webp');
+      c.save();c.translate(x,y);
+      resetDrawn(c,`${f.index || 0}-${f.id}`);
+      resetDrawn(c,'trail-'+f.index);
+      const drawn=drawDrawn(c,f,{time:this.clock,dt:this.frameDelta,reduced:this.reduced,pose:'fall',aim:false,key:'recovery-'+f.index});
+      if(!drawn&&atlas.ready)c.drawImage(atlas.image,0,0,256,256,-64,-123.5,128,128);
       c.restore();
+      c.font='600 12px Condensed';c.textAlign='center';c.strokeStyle='#102735';c.lineWidth=3;c.fillStyle=PLAYER_COLORS[f.index];
+      const label='P'+(f.index+1)+' / RECOVERING '+f.respawn.toFixed(1)+'s';
+      const labelWidth=c.measureText(label).width;
+      const labelX=clamp(x,cam.x-this.width/(2*s)+labelWidth/2+(this.safeLeft+6)/s,cam.x+this.width/(2*s)-labelWidth/2-(this.safeRight+6)/s);
+      c.strokeText(label,labelX,y+18);c.fillText(label,labelX,y+18);
+      this.heroMarker({...f,x,y},state);
+      c.restore();
+      this.measureFighter(f,drawn,{x,y,recovery:true,labelX,labelWidth});
       return;
     }
     const color = PLAYER_COLORS[f.index];
-    if(!this.preview&&f.controller!=='bot'&&f.alive&&!(f.respawn>0)) this.heroAura(f,state,color);
     if (f.ledge) {
       const p=state.platforms.find(p=>p.id===f.ledge.id);
       if(p) {
@@ -840,58 +982,22 @@ export class Renderer {
       );
       c.restore();
     }
-    let atlas=loadImage('assets/'+f.id+'-atlas.webp'),frame=0;
-    const motion=loadImage('assets/'+f.id+'-motion.webp');
-    if(f.action==='shoot')frame=4;
-    if(f.action==='hit')frame=5;
-    if(f.action==='tumble')frame=6;
-    if(!f.grounded)frame=3;
-    if(state.phase==='finished'&&state.winner===f.index)frame=7;
-    if(motion.ready){
-      let mf=-1;
-      if(f.action==='run'&&f.grounded){const phase=Math.floor(state.tick/5)%6;mf=[0,-1,1,2,-1,3][phase];if(phase===1)frame=1;if(phase===4)frame=2;}
-      if(!f.grounded){mf=f.vy<-200?4:Math.abs(f.vy)<200?5:6;if(Math.abs(f.vy)<100&&Math.floor(state.tick/7)%2){mf=-1;frame=3;}}
-      if(f.action==='land')mf=7;
-      if(f.action==='hit'){mf=f.actionTime>0.23?-1:8;frame=5;}
-      if(f.action==='tumble'){mf=Math.floor(state.tick/10)%2?9:-1;frame=6;}
-      if(f.action==='getup')mf=f.actionTime>0.15?10:11;
-      if(f.action==='shoot'){mf=-1;frame=4;}
-      if((f.signatureTime||0)>0)mf=f.signatureTime>0.45?12:13;
-      if(state.phase==='finished'&&state.winner===f.index){const phase=Math.floor(this.clock*1.5)%3;mf=phase===0?14:phase===2?15:-1;frame=7;}
-      if(mf>=0){atlas=motion;frame=mf;}
-    }
-    const bob =
-      f.action === "idle" && f.grounded
-        ? Math.sin(this.clock * 3.8 + f.index) * 1.2
-        : 0;
     c.save();
-    c.translate(f.x, f.y + bob);
-    c.scale(f.facing || 1, 1);
-    const body=this.motionStates.get(f.index),shape=(body?.shape||0)*(this.reduced?.2:1);
-    c.scale(1-shape*.65,1+shape);
-    if (atlas.ready) {
-      if (f.invulnerable > 0 && Math.floor(state.tick / 5) % 2)
-        c.globalAlpha = 0.84;
-      const sx=(frame%4)*256,sy=Math.floor(frame/4)*256;
-      this.spriteShadow(atlas,frame,color,f.controller==='bot'?6:9);
-      c.drawImage(atlas.image,sx,sy,256,256,-57,-110,114,114);
-      // Small overlapping regions bend after the torso, preserving each drawing.
-      const sway=(body?.sway||0)*(this.reduced?.15:1)*f.facing;
-      if(Math.abs(sway)>.3&&f.action!=='tumble'){
-        if(['iona','rook','sera'].includes(f.id)){
-          c.save();c.translate(0,-89);c.rotate(sway*.004);c.drawImage(atlas.image,sx+78,sy+10,100,40,-22,-16,45,18);c.restore();
-        }
-        if(f.id==='beam'){
-          c.save();c.translate(-18,-76);c.rotate(-sway*.008);c.drawImage(atlas.image,sx+40,sy+86,44,111,-21,0,20,50);c.restore();
-        }
-      }
-    } else this.fallbackFighter(f, color);
-    c.restore();
-    if(f.action==='shoot' && f.id!=='beam' && !(f.signatureTime>0)){
-      c.save();c.translate(f.x,f.y-53);c.rotate(Math.atan2(f.aimY,f.aimX));
-      c.fillStyle='#e6ddc8';c.fillRect(18,-5,30,10);c.fillStyle='#112735';c.textAlign='center';c.font='600 3px Condensed';
-      c.fillText('TRAINING ONLY',33,-1);c.fillText('PROBABLY',33,3);c.restore();
+    c.translate(f.x, f.y);
+    const body=this.motionStates.get(f.index), shape=(body?.shape||0)*(this.reduced?.2:1);
+    if(f.controller==='bot'&&f.invulnerable>0&&Math.floor(state.tick/5)%2)c.globalAlpha=.84;
+    const pose=state.phase==='finished'?(state.winner===f.index?'victory':'defeat'):undefined;
+    const footY=this.height/2+(f.y-this.camera.y)*this.camera.scale;
+    const airRoom=this.preview?undefined:Math.max(0,(this.height-this.safeBottom-footY)/this.camera.scale);
+    const drawn=drawDrawn(c,f,{time:this.clock,dt:this.frameDelta,reduced:this.reduced,pose,shape,platforms:state.platforms,airRoom,firing:this.shotUntil.get(f.index)>this.clock,load:!this.preview||this.clock>2.5});
+    if(!drawn){
+      const atlas=this.image('assets/'+f.id+'-atlas.webp');
+      c.scale(f.facing||1,1);
+      if(atlas.ready)c.drawImage(atlas.image,0,0,256,256,-64,-123.5,128,128);
+      else this.fallbackFighter(f,color);
     }
+    c.restore();
+    this.measureFighter(f,drawn);
     this.itemRings(f,state);
     if(f.controller!=='bot'&&!f.grounded&&!this.preview) {
       c.save();c.fillStyle='#0b293ddd';c.fillRect(f.x-25,f.y+12,50,12);
@@ -939,70 +1045,90 @@ export class Renderer {
       c.fillStyle = "#f5ead4";
       c.fillText(characters[f.id].name.toUpperCase(), 0, -8);
     }
-    if(!this.preview&&f.controller!=='bot'){
-      // Own fighter marker: "YOU" (or P1/P2 with several humans) with a bobbing arrow.
-      const humans=state.fighters.filter(x=>x.controller!=='bot').length;
-      const label=humans>1?'P'+(f.index+1):'YOU';
-      const bob=Math.sin(state.tick*.14)*3;
-      c.font='700 20px Condensed,sans-serif';c.textAlign='center';c.lineWidth=5;c.strokeStyle='#102735';
-      c.strokeText(label,0,-30+bob);c.fillStyle=color;c.fillText(label,0,-30+bob);
-      polygon(c,[[-8,-24+bob],[8,-24+bob],[0,-16+bob]],color,'#102735',1.5);
-    }
     c.restore();
+    this.heroMarker(f,state);
   }
 
-  // Own fighter "broadcast aura" (player feedback 14.11.: hard to see which one is me).
-  // Victory Window keeps its spotlight on the human cadet: a soft cone from above,
-  // a pulsing glow in the player colour, rising sparks and a light pool on the floor.
-  heroAura(f,state,color){
-    const c=this.context,tk=state.tick,reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
-    const pulse=reduce?.6:.55+.25*Math.sin(tk*.11);
-    const cx=f.x,cy=f.y-58;
+  measureFighter(f,drawing,{x=f.x,y=f.y,recovery=false,labelX=x,labelWidth=0}={}) {
+    const scale=this.camera.scale,facing=drawing?.facing ?? (f.facing<0?-1:1);
+    const box=drawing?.renderBounds || {left:-64,right:64,top:-123.5,bottom:4.5};
+    const screenX=(this.canvasLeft || 0)+this.width/2+(x-this.camera.x)*scale+(this.renderOffset?.x || 0);
+    const screenY=(this.canvasTop || 0)+this.height/2+(y-this.camera.y)*scale+(this.renderOffset?.y || 0);
+    const bodyBounds={left:screenX+Math.min(box.left*facing,box.right*facing)*scale,
+      right:screenX+Math.max(box.left*facing,box.right*facing)*scale,
+      top:screenY+box.top*scale,bottom:screenY+box.bottom*scale};
+    const screenBounds={...bodyBounds};
+    if (!this.preview && f.controller!=='bot') {
+      const bob=this.reduced?0:Math.sin(this.clock*4.4)*1.8;
+      screenBounds.left=Math.min(screenBounds.left,screenX-21);
+      screenBounds.right=Math.max(screenBounds.right,screenX+21);
+      screenBounds.top=Math.min(screenBounds.top,screenY+(-157+bob)*scale-19);
+    }
+    if (recovery) {
+      screenBounds.left=Math.min(screenBounds.left,screenX-36*scale,screenX+(labelX-x-labelWidth/2-2)*scale);
+      screenBounds.right=Math.max(screenBounds.right,screenX+36*scale,screenX+(labelX-x+labelWidth/2+2)*scale);
+      screenBounds.top=Math.min(screenBounds.top,screenY-155*scale);
+      screenBounds.bottom=Math.max(screenBounds.bottom,screenY+22*scale);
+    }
+    this.fighterMeasurements.push({index:f.index,id:f.id,pose:drawing?.pose || 'fallback',variant:drawing?.variant,
+      frame:drawing?.index || 0,source:drawing?.source || 'geometry',armReach:drawing?.armReach,airRotation:drawing?.rotation,
+      facing,
+      screenX,screenY,screenBounds,renderBounds:screenBounds,bodyBounds,recovery,
+      bodyHeightPixels:bodyBounds.bottom-bodyBounds.top,standingHeightPixels:DRAWN_HEIGHT*scale,
+      viewportHeight:this.height,minimumFraction:this.width<this.height?1/8:1/7});
+  }
+
+  heroAura(f,state,color) {
+    const c = this.context;
+    const pulse = this.reduced ? .65 : .65 + Math.sin(this.clock * 3.4) * .12;
     c.save();
-    c.globalCompositeOperation='lighter';
-    // spotlight cone from above
-    const cone=c.createLinearGradient(cx,cy-420,cx,f.y);
-    cone.addColorStop(0,color+'00');cone.addColorStop(.75,color+'22');cone.addColorStop(1,color+'40');
-    c.fillStyle=cone;c.beginPath();c.moveTo(cx-14,cy-420);c.lineTo(cx+14,cy-420);c.lineTo(cx+58,f.y+4);c.lineTo(cx-58,f.y+4);c.closePath();c.fill();
-    // body glow
-    const g=c.createRadialGradient(cx,cy,8,cx,cy,95);
-    const a=Math.round(pulse*150).toString(16).padStart(2,'0');
-    g.addColorStop(0,color+a);g.addColorStop(.45,color+'33');g.addColorStop(1,color+'00');
-    c.fillStyle=g;c.beginPath();c.ellipse(cx,cy,62,98,0,0,Math.PI*2);c.fill();
-    // floor light pool
-    const fl=c.createRadialGradient(f.x,f.y+3,2,f.x,f.y+3,60);
-    fl.addColorStop(0,color+'aa');fl.addColorStop(1,color+'00');
-    c.fillStyle=fl;c.beginPath();c.ellipse(f.x,f.y+3,60,13,0,0,Math.PI*2);c.fill();
-    // rising sparks (deterministic from tick, no state)
-    if(!reduce){
-      for(let i=0;i<9;i++){
-        const life=((tk*1.3+i*37)%90)/90;
-        const sx=cx+Math.sin(i*2.3+tk*.03)*(26+i*3);
-        const sy=f.y-life*150;
-        c.globalAlpha=(1-life)*.95;c.fillStyle=i%3?color:'#fff3cf';
-        c.beginPath();c.arc(sx,sy,2.6*(1-life)+.8,0,Math.PI*2);c.fill();
+    const cone = c.createLinearGradient(f.x,f.y - 340,f.x,f.y + 4);
+    cone.addColorStop(0,color + '00');
+    cone.addColorStop(.65,color + '0c');
+    cone.addColorStop(1,color + '24');
+    polygon(c,[[f.x - 9,f.y - 340],[f.x + 9,f.y - 340],[f.x + 49,f.y + 4],[f.x - 49,f.y + 4]],cone);
+    for (let radius = 5; radius > 0; radius--) {
+      c.globalAlpha = pulse * .035;
+      c.fillStyle = color;
+      c.beginPath();
+      c.ellipse(f.x,f.y - 54,34 + radius * 7,60 + radius * 8,0,0,Math.PI * 2);
+      c.fill();
+    }
+    c.globalAlpha = .5;
+    c.fillStyle = color + '33';
+    c.beginPath();c.ellipse(f.x,f.y + 2,44,9,0,0,Math.PI * 2);c.fill();
+    c.strokeStyle = color;c.lineWidth = 2 / this.camera.scale;
+    c.beginPath();c.ellipse(f.x,f.y + 2,32,6,0,0,Math.PI * 2);c.stroke();
+    if (!this.reduced) {
+      for (let index = 0; index < 7; index++) {
+        const life = (this.clock * .4 + index / 7) % 1;
+        const x = f.x + Math.sin(index * 2.3 + this.clock * .8) * (31 + index * 2);
+        const y = f.y - life * 154;
+        c.globalAlpha = (1 - life) * .7;
+        c.fillStyle = index % 3 ? color : '#fff0cd';
+        c.fillRect(x - 1,y - 2,2,4);
       }
     }
     c.restore();
+    this.heroAuras++;
   }
 
-  spriteShadow(atlas, frame, color, blur) {
-    const key = [atlas.image.src,frame,color,blur].join('/');
-    let shadow = this.spriteShadows.get(key);
-    if (!shadow) {
-      shadow = document.createElement('canvas');
-      shadow.width = shadow.height = 154;
-      const c = shadow.getContext('2d');
-      const sx = frame % 4 * 256, sy = Math.floor(frame / 4) * 256;
-      c.shadowColor = color;c.shadowBlur = blur;
-      c.drawImage(atlas.image,sx,sy,256,256,20,20,114,114);
-      c.shadowBlur = 0;c.globalCompositeOperation = 'destination-out';
-      c.drawImage(atlas.image,sx,sy,256,256,20,20,114,114);
-      // Keep the soft rim cached and draw the original sharp sprite above it.
-      if (this.spriteShadows.size >= 64) this.spriteShadows.delete(this.spriteShadows.keys().next().value);
-      this.spriteShadows.set(key,shadow);
-    }
-    this.context.drawImage(shadow,-77,-130,154,154);
+  heroMarker(f,state) {
+    if (this.preview || f.controller === 'bot') return;
+    const c = this.context, scale = this.camera.scale;
+    const humans = state.fighters.filter(fighter => fighter.controller !== 'bot').length;
+    const label = humans > 1 ? 'P' + (f.index + 1) : 'YOU';
+    const bob = this.reduced ? 0 : Math.sin(this.clock * 4.4) * 1.8;
+    c.save();
+    c.translate(f.x,f.y - 157 + bob);
+    c.scale(1 / scale,1 / scale);
+    c.fillStyle = '#0d2939';c.strokeStyle = PLAYER_COLORS[f.index];c.lineWidth = 1.5;
+    c.fillRect(-19,-17,38,21);c.strokeRect(-19,-17,38,21);
+    c.font = '600 15px Condensed,sans-serif';c.textAlign = 'center';c.fillStyle = '#fff2da';
+    c.fillText(label,0,-1);
+    polygon(c,[[-5,5],[5,5],[0,10]],PLAYER_COLORS[f.index],'#102735',1);
+    c.restore();
+    this.heroMarkers++;
   }
 
   fallbackFighter(f, color) {
@@ -1044,10 +1170,8 @@ export class Renderer {
     if (speed < 380) return;
     const c = this.context;
     if(!this.reduced&&!this.preview&&speed>560){
-      const atlas=loadImage('assets/'+f.id+'-atlas.webp');
-      if(atlas.ready){
-        c.save();c.globalAlpha=.10;c.translate(f.x-f.vx*.035,f.y-f.vy*.035);c.scale(f.facing||1,1);c.drawImage(atlas.image,768,0,256,256,-57,-110,114,114);c.restore();
-      }
+      c.save();c.globalAlpha=.09;c.translate(f.x-f.vx*.035,f.y-f.vy*.035);
+      drawDrawn(c,f,{time:this.clock-.035,dt:0,reduced:this.reduced,key:'trail-'+f.index,aim:false});c.restore();
     }
     const length = clamp(speed * 0.11, 25, 120);
     const dx = (-f.vx / speed) * length,
@@ -1261,7 +1385,7 @@ export class Renderer {
         if (!this.preview) {
           c.translate(effect.x + 12, effect.y - 25 - (1 - fraction) * 40);
           c.rotate(effect.angle);
-          c.font = `italic 600 ${30 + (1 - fraction) * 8}px Condensed,sans-serif`;
+          c.font = `italic 600 ${Math.round(30 + (1 - fraction) * 8)}px Condensed,sans-serif`;
           c.lineWidth = 5;
           c.strokeStyle = "#102735";
           c.strokeText(effect.word, 0, 0);
@@ -1281,6 +1405,16 @@ export class Renderer {
           effect.color,
           2,
         );
+      }
+      if (effect.type === 'foam' || effect.type === 'paint') {
+        effect.x += effect.vx * dt;
+        effect.y += effect.vy * dt;
+        effect.vy += dt * 170;
+        c.fillStyle = effect.color;
+        c.globalAlpha = fraction * .8;
+        c.beginPath();
+        c.ellipse(effect.x,effect.y,effect.type==='foam'?3+fraction*3:2+fraction*2,effect.type==='foam'?2+fraction*2:5*fraction,Math.atan2(effect.vy,effect.vx),0,Math.PI*2);
+        c.fill();
       }
       if (effect.type === "ring") {
         c.strokeStyle =

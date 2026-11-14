@@ -600,4 +600,111 @@ dialog { max-height: calc(var(--app-height) - var(--safe-top) - var(--safe-botto
   #game .fighter-hud:has(> .hud-card:nth-child(4)) .recovery-pips { position: absolute; top: 3px; right: 4px; bottom: auto; }
   #game .fighter-hud:has(> .hud-card:nth-child(4)) .net-score { font-size: 6px; }
 }
+/* The training deck behaves as a single application surface. */
+button { transition: transform 120ms ease, background-color 160ms ease, box-shadow 160ms ease; -webkit-tap-highlight-color: transparent; }
+button:active, button.touch-feedback { transform: scale(.965); }
+dialog[open] { animation: orbit-dialog-in 240ms cubic-bezier(.18,.75,.25,1) both; }
+dialog::backdrop { animation: orbit-backdrop-in 240ms ease both; }
+#game:not([hidden]) { animation: orbit-screen-in 220ms ease both; }
+#pause-overlay:not([hidden]) > div { animation: orbit-dialog-in 180ms ease both; }
+#lobby[data-panel="home"] .cover, #lobby[data-panel="course"] .academy-panel,
+#lobby[data-panel="setup"] #setup > :is(.crew-grid,.match-options,.slots-field),
+#lobby[data-panel="setup"] .character-readout { animation: orbit-screen-in 220ms ease both; }
+@keyframes orbit-dialog-in { from { opacity: 0; transform: translateY(6px) scale(.985); } to { opacity: 1; transform: translateY(0) scale(1); } }
+@keyframes orbit-backdrop-in { from { background-color: transparent; } to { background-color: #071722c9; } }
+@keyframes orbit-screen-in { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+
+/* Whole manga portraits lead the choice. The selected cadet has a separate stage. */
+#lobby[data-setup="crew"] .crew-grid {
+  grid-template-columns: repeat(3,minmax(0,1fr)) minmax(145px,1.3fr);
+  grid-template-rows: repeat(2,minmax(0,1fr));
+  max-height: 350px;
+}
+#lobby .crew-card { isolation: isolate; overflow: hidden; }
+#lobby .crew-card[aria-pressed="true"] { grid-column: auto; grid-row: auto; }
+#lobby .crew-card > img { opacity: 1; object-position: 50% 82%; }
+#lobby .crew-card[data-character="sera"] > img { object-position: 50% 58%; }
+#lobby .crew-card[data-character="beam"] > img { object-position: 50% 55%; }
+#lobby .crew-card[data-character="pip"] > img { object-position: 50% 30%; }
+#lobby .crew-card .crew-name { font-size: 24px; left: 9px; bottom: 7px; }
+#lobby .crew-card .crew-tag { top: 7px; bottom: auto; right: 7px; }
+#lobby .crew-selected {
+  grid-column: 4;
+  grid-row: 1 / 3;
+  position: relative;
+  overflow: hidden;
+  border: 1px solid #829b95;
+  background: radial-gradient(ellipse at 50% 70%,#526c6b 0%,#213c49 57%,#102735 100%);
+}
+#lobby .crew-animation { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; }
+#lobby .crew-selected .crew-seal { position: absolute; top: 12px; left: 8px; right: 8px; color: #f3d9a6; font: 500 8px/1.3 Barlow,sans-serif; letter-spacing: .07em; text-align: center; }
+#lobby .crew-signature { position: absolute; bottom: 0; left: 6px; right: 6px; padding: 2px; background: #f2b54f; color: #112735; font: 600 9px/1.1 Condensed,sans-serif; text-align: center; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; transform: translateY(8px); opacity: 0; transition: opacity 180ms ease, transform 180ms ease; }
+#lobby .crew-selected.signature-preview .crew-signature { opacity: 1; transform: translateY(0); }
+.precision-note { margin: -3px 0 8px 34px; color: #4b5b60; font-size: 11px; line-height: 1.25; }
+@media (max-height: 700px) and (orientation: portrait) {
+  .settings-dialog { padding: 16px 20px; }
+  .settings-dialog h2 { font-size: 32px; margin: 8px 0; }
+  .settings-dialog .setting-check, .settings-dialog .control-size { min-height: 44px; margin: 0; }
+  .settings-dialog > .primary-button { margin-top: 8px; }
+}
+#result .result-art { position: relative; overflow: hidden; }
+#result-victor { display: block; position: absolute; width: 100%; height: 70%; bottom: 12%; left: 0; pointer-events: none; }
+#result .result-art > p { position: absolute; bottom: 12px; left: 18px; font-size: 22px; }
+#result .medal-art { position: absolute; z-index: 2; width: 58px; height: 78px; right: 14px; top: 28px; transform: none; transform-origin: 50% 20%; scale: 1; animation: orbit-medal-drop 650ms cubic-bezier(.23,.62,.31,1) both; }
+#result .medal-art::before { width: 22px; height: 62px; border-width: 1px; }
+#result .medal-art > span { width: 48px; height: 48px; border-width: 3px; font-size: 24px; }
+@media (max-height: 780px) and (orientation: landscape) {
+  #result[open]:has(.academy-assessment:not([hidden])) { grid-template-columns: minmax(80px,16%) minmax(0,1fr); }
+  #result[open]:has(.academy-assessment:not([hidden])) .result-art { display: block; padding: 6px; }
+  #result[open]:has(.academy-assessment:not([hidden])) .result-kicker { font-size: 5px; }
+  #result[open]:has(.academy-assessment:not([hidden])) .result-art > p { font-size: 13px; left: 8px; }
+}
+@keyframes orbit-medal-drop { 0% { opacity: 0; translate: 0 -160px; rotate: 18deg; } 58% { opacity: 1; translate: 0 5px; rotate: -11deg; } 75% { translate: 0 -10px; rotate: -4deg; } 100% { opacity: 1; translate: 0 0; rotate: -9deg; } }
+@media (max-width: 600px) and (orientation: portrait) {
+  #lobby[data-setup="crew"] .crew-grid { grid-template-columns: repeat(3,minmax(0,1fr)) minmax(clamp(77px,26vw,104px),1.1fr); grid-template-rows: repeat(2,minmax(0,1fr)); max-height: 300px; gap: 5px; }
+  #lobby .crew-card .crew-name { font-size: 19px; left: 5px; bottom: 6px; }
+  #lobby .crew-card .crew-tag { top: 5px; right: 4px; font-size: 5px; }
+  #lobby .crew-selected .crew-seal { top: 7px; font-size: 6px; left: 3px; right: 3px; }
+  #lobby .crew-signature { font-size: 9px; }
+  #result[open] .result-art { display: block; position: absolute; width: 77px; height: 90px; right: 9px; top: 10px; padding: 0; background: none; pointer-events: none; }
+  #result .result-art > :is(.result-kicker,p) { display: none; }
+  #result-victor { height: 100%; bottom: 0; }
+  #result .result-copy h2 { padding-right: 69px; }
+  #result .medal-art { right: 1px; top: 48px; width: 28px; height: 38px; scale: 1; }
+  #result .medal-art::before { width: 12px; height: 29px; }
+  #result .medal-art > span { width: 25px; height: 25px; border-width: 2px; font-size: 14px; }
+}
+@media (max-height: 500px) and (orientation: landscape) {
+  #lobby .crew-seal { top: 5px; font-size: 6px; }
+  #lobby .crew-signature { bottom: 0; font-size: 9px; padding: 2px; }
+  #result-victor { height: 85%; bottom: 5%; }
+  #result .result-art > p { font-size: 15px; bottom: 5px; }
+  #result .medal-art { top: 6px; right: 6px; scale: 1; }
+  .settings-dialog .precision-note { font-size: 9px; margin-bottom: 3px; }
+  .settings-dialog[open] { display: grid; grid-template-columns: 1fr 1fr; column-gap: 18px; }
+  .settings-dialog > :is(.eyebrow,h2,.primary-button) { grid-column: 1 / -1; }
+  .settings-dialog .precision-note { margin: 0; align-self: center; }
+  .settings-dialog > .secondary-button { grid-column: 1; }
+  .settings-dialog:has(#home-tip-open:not([hidden])) > .primary-button { grid-column: 2; }
+}
 @media (prefers-reduced-motion: reduce) { #lobby *, #game *, dialog * { scroll-behavior: auto; animation-duration: .001ms; transition-duration: .001ms; } }
+html[data-reduced-motion="true"] :is(#lobby,#game,dialog), html[data-reduced-motion="true"] :is(#lobby,#game,dialog) * { animation-duration: .001ms; transition-duration: .001ms; }
+dialog {
+  opacity: 0;
+  transform: translateY(6px) scale(.985);
+  transition: opacity 180ms ease, transform 180ms ease, display 180ms allow-discrete, overlay 180ms allow-discrete;
+}
+dialog[open] { opacity: 1; transform: translateY(0) scale(1); }
+dialog::backdrop {
+  animation: none;
+  background-color: #07172200;
+  transition: background-color 180ms ease, display 180ms allow-discrete, overlay 180ms allow-discrete;
+}
+dialog[open]::backdrop { background-color: #071722c9; }
+@starting-style { dialog[open]::backdrop { background-color: #07172200; } }
+@media (prefers-reduced-motion: reduce) { dialog, dialog::backdrop { animation: none; transition: none; } }
+html[data-reduced-motion="true"] dialog, html[data-reduced-motion="true"] dialog::backdrop { animation: none; transition: none; }
+
+#game.is-loading #arena-canvas { visibility: hidden; }
+#game.is-loading #touch-controls { pointer-events: none; opacity: .45; }
+#game.is-loading #countdown { font-size: 24px; letter-spacing: .08em; }

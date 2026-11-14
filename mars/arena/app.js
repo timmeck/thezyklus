@@ -7,7 +7,7 @@ import {
   snapshot,
   finishMatch,
 } from "./engine.js";
-import { Renderer, PLAYER_COLORS, ARENA_BACKGROUNDS, preloadArt } from "./renderer.js";
+import { Renderer, PLAYER_COLORS, ARENA_BACKGROUNDS } from "./renderer.js";
 import { InputManager } from "./input.js";
 import { Sound } from "./audio.js";
 import RELEASE from "./release.js";
@@ -17,6 +17,8 @@ import {VoiceDirector} from './voice.js';
 import {getDailyDrill,readDailyBest,saveDailyResult,dailyShareText,dailyPNG,assessDailyDrill,dailyProgressText} from './daily.js';
 import {sharePrepared,PLAY_URL} from './share.js';
 import {ArenaViewport} from './viewport.js';
+import {touchAimAssist} from './aim.js';
+import {drawDrawn,preloadDrawn,preloadFighterCore,resetDrawn,cacheDrawn,drawnPoseBounds} from './drawn.js';
 
 applyVolumeContent(RELEASE);
 
@@ -68,7 +70,7 @@ function saveRecord() {
   } catch {}
 }
 let lessonIndex=Math.max(0,Math.min(6,record.lessons.findIndex(l=>!l?.passed)<0?record.lessons.length:record.lessons.findIndex(l=>!l?.passed))),
-  assessment=null,signatureTimer=0,signaturePriorityUntil=0,slowMoment=0,launchPending=false;
+  assessment=null,signatureTimer=0,signaturePriorityUntil=0,slowMoment=0,launchPending=false,launchGeneration=0;
 let mode = "academy",
   activeSeat = 0,
   arenaId = "deck",
@@ -105,7 +107,20 @@ let finishTimer = 0,
   toastTimer = 0,
   lastCommentTick = 0;
 let dailyDrill=null,dailyResult=null,volumeDrill=null,preparedShare=null,shareGeneration=0;
+let fullscreenEntry = Promise.resolve();
 let resetTouchControls = () => {};
+const PRESENTATION_STORAGE = 'mars-arena-presentation-v1';
+const presentation = { quality: 'auto', precision: false, autoFullscreen: true };
+try {
+  const stored = JSON.parse(localStorage.getItem(PRESENTATION_STORAGE));
+  if (['auto','high','medium','low'].includes(stored?.quality)) presentation.quality = stored.quality;
+  if (typeof stored?.precision === 'boolean') presentation.precision = stored.precision;
+  if (typeof stored?.autoFullscreen === 'boolean') presentation.autoFullscreen = stored.autoFullscreen;
+} catch {}
+function savePresentation() {
+  try { localStorage.setItem(PRESENTATION_STORAGE, JSON.stringify(presentation)); } catch {}
+}
+let crewCanvases = [], menuArtReady = false, resultMedalTimer = 0, resultCountStart = 0, resultPoseBounds = null;
 const sound = new Sound();
 sound.set(record.sound);
 const fleet=new FleetScreen(sound,RELEASE.voices);
@@ -135,6 +150,47 @@ const previewRenderer = new Renderer($("#preview"), {
   reduced: record.reduced,
 });
 const renderer = new Renderer($("#arena-canvas"), { reduced: record.reduced });
+input.precisionAim = presentation.precision;
+renderer.setQuality(presentation.quality);
+previewRenderer.setQuality(presentation.quality);
+$('#precision-aim').checked = presentation.precision;
+$('#auto-fullscreen').checked = presentation.autoFullscreen;
+$('#auto-fullscreen').addEventListener('change', () => {
+  presentation.autoFullscreen = $('#auto-fullscreen').checked;
+  savePresentation();
+});
+$('#quality-setting').value = presentation.quality;
+$('#precision-aim').addEventListener('change', () => {
+  presentation.precision = $('#precision-aim').checked;
+  input.precisionAim = presentation.precision;
+  resetTouchControls();
+  savePresentation();
+});
+$('#quality-setting').addEventListener('change', () => {
+  presentation.quality = $('#quality-setting').value;
+  renderer.setQuality(presentation.quality);
+  previewRenderer.setQuality(presentation.quality);
+  savePresentation();
+});
+function ensureMenuArt(ids = [seats[activeSeat].character]) {
+  preloadDrawn(ids,{all:true}).then(() => { menuArtReady = true; }).catch(() => {});
+}
+const buttonPresses = new WeakMap();
+document.addEventListener('pointerdown', event => {
+  const button = event.target.closest('button');
+  if (!button || button.disabled) return;
+  if (event.pointerType === 'touch' || event.pointerType === 'mouse') viewport.setMethod(event.pointerType);
+  buttonPresses.set(button, performance.now());
+  sound.unlock().then(() => sound.ui());
+  button.classList.remove('touch-feedback');
+  requestAnimationFrame(() => button.classList.add('touch-feedback'));
+  setTimeout(() => button.classList.remove('touch-feedback'), 180);
+}, {capture:true});
+document.addEventListener('click', event => {
+  const button = event.target.closest('button');
+  if (button && !button.disabled && performance.now() - (buttonPresses.get(button) || -1000) > 600)
+    sound.unlock().then(() => sound.ui());
+}, {capture:true});
 let powerSaving=false;
 const viewport=new ArenaViewport({
   onResize:()=>{renderer.resize();previewRenderer.resize();},
@@ -152,8 +208,10 @@ input.bindMouse($('#arena-canvas'), (clientX, clientY) => {
   };
 });
 $('#effects-setting').checked=record.reduced;
+document.documentElement.dataset.reducedMotion = String(record.reduced);
 function showLobbyPanel(panel){
   $('#lobby').dataset.panel=panel;
+  if (panel === 'setup') ensureMenuArt();
   for(const button of all('.deck-nav [data-panel]'))button.setAttribute('aria-pressed',String(button.dataset.panel===panel));
   previewRenderer.resize();
 }
@@ -195,6 +253,7 @@ function isPipUnlocked() {
 function renderCrew() {
   const container = $("#crew-grid");
   container.replaceChildren();
+  crewCanvases = [];
   for (const character of CHARACTERS) {
     const locked = character.id === "pip" && !isPipUnlocked();
     const status = locked
@@ -215,18 +274,19 @@ function renderCrew() {
       `${character.name} ${status}. ${locked ? "Complete Camera suitability." : `Choose for seat ${activeSeat + 1}.`}`,
     );
     const image = new Image();
+    image.loading = "lazy";
+    image.decoding = "async";
     image.src = `assets/${character.id}.webp`;
     image.alt = "";
     image.width = 420;
     image.height = 520;
-    image.loading = "lazy";
     const name = document.createElement("span");
     name.className = "crew-name";
     name.textContent = character.name.toUpperCase();
     const tag = document.createElement("span");
     tag.className = "crew-tag";
     tag.textContent = status;
-    button.append(image, name, document.createTextNode(" "), tag);
+    button.append(image,name,document.createTextNode(' '),tag);
     button.addEventListener("click", () => {
       if (locked) {
         notify(
@@ -235,6 +295,7 @@ function renderCrew() {
         return;
       }
       seats[activeSeat].character = character.id;
+      ensureMenuArt([character.id]);
       renderCrew();
       renderSlots();
       renderCharacter();
@@ -245,6 +306,22 @@ function renderCrew() {
     });
     container.append(button);
   }
+  const character = CHARACTERS.find(entry => entry.id === seats[activeSeat].character);
+  const preview = document.createElement('div');
+  preview.className = 'crew-selected';
+  preview.setAttribute('aria-hidden','true');
+  const canvas = document.createElement('canvas');
+  canvas.className = 'crew-animation';
+  const seal = document.createElement('span');
+  seal.className = 'crew-seal';
+  seal.textContent = SIGNATURES[character.id].seal;
+  const signature = document.createElement('span');
+  signature.className = 'crew-signature';
+  signature.textContent = character.specialName;
+  preview.append(canvas,seal,signature);
+  container.append(preview);
+  crewCanvases.push({canvas,button:preview,character,context:canvas.getContext('2d'),phase:0,
+    idleBounds:drawnPoseBounds(character.id,'idle'),specialBounds:drawnPoseBounds(character.id,'special'),view:null});
   $("#unlock-note").textContent = isPipUnlocked()
     ? "Pip recovered. The whole crew is here."
     : "Pip joins after passing lesson 3: Camera suitability.";
@@ -481,6 +558,10 @@ async function startMatch({ rematch = false, advance = false } = {}) {
   }
   if (mode === "gauntlet")
     gauntlet = { round: nextGauntletRound, complete: false, won: false };
+  const launch = ++launchGeneration;
+  const coreArt = preloadFighterCore(options.characters);
+  preloadDrawn(options.characters,{priority:'high',all:true});
+  launchPending = true;
   assessment=null;
   preparedShare=null;shareGeneration++;dailyResult=null;
   clearTimeout(finishTimer);
@@ -498,7 +579,7 @@ async function startMatch({ rematch = false, advance = false } = {}) {
     assist: mode==='daily'?false:record.assist,
   });
   matchBindings = options.bindings;
-  playing = true;
+  playing = false;
   paused = false;
   resultShown = false;
   countdown = mode==='quick'?0:mode==='daily'?.65:rematch ? 1.1 : 2.1;
@@ -510,6 +591,14 @@ async function startMatch({ rematch = false, advance = false } = {}) {
   runLog.length = 0;
   $("#lobby").hidden = true;
   $("#game").hidden = false;
+  setCrewLoading(true);
+  // This call remains in the start gesture, before audio or briefing awaits.
+  // Fullscreen exits stay respected until the next explicit match start.
+  fullscreenEntry = Promise.resolve();
+  if (presentation.autoFullscreen && viewport.method === 'touch' && !viewport.iphone &&
+      !viewport.standalone() && !document.fullscreenElement && $('#game').requestFullscreen) {
+    fullscreenEntry = viewport.fullscreen().catch(() => {});
+  }
   $('#game').classList.remove('is-paused');
   document.documentElement.classList.add('arena-playing');
   viewport.schedule();$('#home-screen-tip').hidden=true;
@@ -532,17 +621,23 @@ async function startMatch({ rematch = false, advance = false } = {}) {
   input.clear();
   $("#signature-flash").hidden=true;signaturePriorityUntil=0;slowMoment=0;
   resetTouchControls();
-  input.setActive(true);
+  input.setActive(false);
   renderer.resize();
   renderer.reset();
   renderHud(true);
   $("#arena-canvas").focus({ preventScroll: true });
-  await audioReady;
+  await Promise.all([audioReady,coreArt]);
+  await fullscreenEntry;
+  if (launch !== launchGeneration) return;
+  setCrewLoading(false);
+  playing = true;
+  launchPending = false;
   sound.resume();
   if(!['quick','daily','volume'].includes(mode)){
     launchPending=true;
     input.setActive(false);
     await fleet.show({lesson:mode==="academy"?COURSE[lessonIndex]:COURSE[mode==="gauntlet"?gauntlet.round:Math.max(0,ARENAS.findIndex(a=>a.id===match.arena))]});
+    if (launch !== launchGeneration) return;
     launchPending=false;
   }
   if(!playing)return;
@@ -550,6 +645,18 @@ async function startMatch({ rematch = false, advance = false } = {}) {
   director.trigger(mode==='quick'?'quick':mode==='daily'?'daily':mode==='academy'?'lesson:'+COURSE[lessonIndex].id:'start');
   input.clear();input.setActive(true);lastFrame=performance.now();
   $("#arena-canvas").focus({preventScroll:true});
+}
+
+function setCrewLoading(loading) {
+  $('#game').classList.toggle('is-loading',loading);
+  $('#countdown').textContent = loading ? 'CREW ARRIVING' : '';
+  $('#pause').textContent = loading ? '×' : 'Ⅱ';
+  $('#pause').setAttribute('aria-label',loading ? 'Cancel loading' : 'Pause match');
+}
+
+function openGameMenu() {
+  if (launchPending && !playing) returnToLobby();
+  else pauseMatch();
 }
 
 function pauseMatch(
@@ -584,17 +691,18 @@ function resumeMatch() {
   $("#arena-canvas").focus({ preventScroll: true });
 }
 
-function returnToLobby() {
+async function returnToLobby() {
+  launchGeneration++;
+  launchPending = false;
+  setCrewLoading(false);
   const destination=resultShown&&mode==='quick'?'course':'setup';
   clearTimeout(finishTimer);
   clearTimeout(broadcastTimer);
+  clearTimeout(resultMedalTimer);
   playing = false;
   paused = false;
   resultShown = false;
   $("#result").close();
-  $("#game").hidden = true;
-  $("#lobby").hidden = false;
-  document.documentElement.classList.remove('arena-playing');
   $('#game').classList.remove('is-paused');$('#home-screen-tip').hidden=true;
   $("#pause-overlay").hidden = true;
   $("#pause-overlay").removeAttribute("aria-modal");
@@ -606,6 +714,13 @@ function returnToLobby() {
   director.stop();
   clearTimeout(signatureTimer);$('#signature-flash').hidden=true;
   document.body.style.overflow = "";
+  await fullscreenEntry;
+  if (document.fullscreenElement === $('#game')) {
+    try { await document.exitFullscreen(); } catch {}
+  }
+  $("#game").hidden = true;
+  $("#lobby").hidden = false;
+  document.documentElement.classList.remove('arena-playing');
   if(['quick','daily','volume'].includes(mode))chooseMode('academy');
   renderCrew();
   renderSlots();
@@ -785,6 +900,8 @@ function showResult() {
   $('#result-voice').textContent='';
   $("#countdown").textContent = "";
   const winner = match.fighters[match.winner];
+  resetDrawn($('#result-victor').getContext('2d'));
+  ensureMenuArt([winner.id]);
   $("#result-eyebrow").textContent =
     mode === "gauntlet"
       ? gauntlet.complete
@@ -822,6 +939,7 @@ function showResult() {
     ]) {
       const span = document.createElement("span");
       span.textContent = value;
+      if (row.childElementCount >= 2) span.dataset.count = value;
       row.append(span);
     }
     scores.append(row);
@@ -881,6 +999,13 @@ function showResult() {
     $('#result-note').textContent=volumeDrill.rule;$('#rematch').textContent='Repeat the drill ↗';
   }
   $("#result").showModal();
+  resultCountStart = performance.now();
+  $('#result').dataset.winner = winner.id;
+  resultPoseBounds = drawnPoseBounds(winner.id,'victory');
+  clearTimeout(resultMedalTimer);
+  resultMedalTimer = setTimeout(() => {
+    if ($('#result').open) sound.medal();
+  }, record.reduced ? 0 : 420);
   viewport.showHomeTip();
   const voice = RELEASE.voices.find((voice) => voice.id === "finish");
   if (voice&&!['daily','volume','quick'].includes(mode)) {
@@ -947,11 +1072,13 @@ function setSound(enabled) {
 }
 
 function setReduced(enabled) {
+  enabled = Boolean(enabled || matchMedia('(prefers-reduced-motion: reduce)').matches);
   record.reduced = enabled;
   renderer.reduced = enabled||powerSaving;
   previewRenderer.reduced = enabled||powerSaving;
   $('#effects-setting').checked=enabled;
   $("#reduced-motion").checked = enabled;
+  document.documentElement.dataset.reducedMotion = String(enabled);
   saveRecord();
 }
 
@@ -967,15 +1094,12 @@ function bindTouch() {
       dy = (event.clientY - box.top - box.height / 2) / radius;
     const length = Math.max(1, Math.hypot(dx, dy));
     knob.style.transform = `translate(${(dx / length) * radius * 0.66}px,${(dy / length) * radius * 0.66}px)`;
-    input.setTouch(
-      "move",
-      Math.abs(dx) < 0.15 ? 0 : Math.max(-1, Math.min(1, dx)),
-    );
+    input.setTouchStick(dx / length, dy / length);
   }
   function release() {
     pointer = null;
     knob.style.transform = "";
-    input.setTouch("move", 0);
+    input.setTouchStick(0, 0);
   }
   resets.push(release);
   stick.addEventListener("pointerdown", (event) => {
@@ -996,6 +1120,7 @@ function bindTouch() {
   const fire = $('#touch-shoot'), fireKnob = $('#aim-knob');
   let firePointer = null, origin = null;
   function aim(event) {
+    if (!presentation.precision) return;
     const dx = event.clientX - origin.x, dy = event.clientY - origin.y;
     const length = Math.hypot(dx, dy), radius = fire.clientWidth * 0.34;
     const reach = Math.min(length, radius);
@@ -1071,9 +1196,7 @@ function frame(now) {
   const rawDelta = (now - lastFrame) / 1000,
     dt = Math.min(rawDelta, 0.08);
   lastFrame = now;
-  if(playing&&!paused&&!document.hidden&&rawDelta>.025&&rawDelta<.15){renderer.slowFrames=(renderer.slowFrames||0)+1;}
-  else renderer.slowFrames=Math.max(0,(renderer.slowFrames||0)-.03);
-  if(renderer.slowFrames>12&&renderer.ratio>1){renderer.ratioCap=1;renderer.reduced=true;renderer.resize();}
+  renderer.measureFrame?.(rawDelta, playing && !paused && !resultShown && !fleet.open && !document.hidden);
   input.pollGamepads();
   if (!document.hidden) {
     if (playing) {
@@ -1102,11 +1225,12 @@ function frame(now) {
           accumulator += dt*(slowMoment>0?0.36:1);
           slowMoment=Math.max(0,slowMoment-dt);
           while (accumulator >= 1 / 60 && !resultShown) {
-            const inputs = match.fighters.map((fighter, index) =>
-              matchBindings[index] === "bot"
-                ? botInput(match, index)
-                : input.read(matchBindings[index], index === 0),
-            );
+            const inputs = match.fighters.map((fighter, index) => {
+              if (matchBindings[index] === 'bot') return botInput(match, index);
+              const value = input.read(matchBindings[index], index === 0);
+              return touchAimAssist(match, fighter, value, index === 0 && viewport.method === 'touch');
+            });
+            renderer.capture(match);
             stepMatch(match, inputs);
             completeDrill();
             processEvents(match.events);
@@ -1116,7 +1240,8 @@ function frame(now) {
           }
         }
       }
-      renderer.draw(match, paused ? 0 : dt);
+      renderer.draw(match, paused ? 0 : dt, paused || resultShown ? 1 : accumulator * 60);
+      sound.update(match, renderer.camera);
       if (match.tick !== hudTick && (match.tick % 5 === 0 || resultShown)) {
         renderHud();
         hudTick = match.tick;
@@ -1124,6 +1249,7 @@ function frame(now) {
     } else if (previewVisible && !$("#guide").open && !$("#credits").open) {
       previewAccumulator += dt;
       while (previewAccumulator >= 1 / 60) {
+        previewRenderer.capture(previewMatch);
         stepMatch(
           previewMatch,
           previewMatch.fighters.map((fighter, index) =>
@@ -1132,7 +1258,7 @@ function frame(now) {
         );
         previewRenderer.events(previewMatch.events);
         previewAccumulator -= 1 / 60;
-        if (previewMatch.phase === "finished")
+        if (previewMatch.phase === "finished") {
           previewMatch = createMatch({
             characters: ["iona", "rook", "sera", "beam"],
             controllers: ["bot", "bot", "bot", "bot"],
@@ -1140,11 +1266,69 @@ function frame(now) {
             arena: arenaId,
             seed: 1411,
           });
+          previewRenderer.reset();
+        }
       }
-      previewRenderer.draw(previewMatch, dt);
+      previewRenderer.draw(previewMatch, dt, previewAccumulator * 60);
     }
+    animateMenuArt(now,dt);
   }
   requestAnimationFrame(frame);
+}
+
+function animateMenuArt(now,dt) {
+  const time = now / 1000;
+  if (menuArtReady && !playing && $('#lobby').dataset.panel === 'setup' && $('#lobby').dataset.setup === 'crew') {
+    for (const entry of crewCanvases) {
+      const {canvas,button,character,context,phase} = entry;
+      const width = button.clientWidth, height = button.clientHeight;
+      if (!width || !height) continue;
+      const ratio = Math.min(devicePixelRatio || 1, 1.5);
+      if (canvas.width !== Math.round(width * ratio) || canvas.height !== Math.round(height * ratio)) {
+        canvas.width = Math.round(width * ratio); canvas.height = Math.round(height * ratio);
+        entry.view = null;
+      }
+      const special = !record.reduced && time % 5 > 3.8;
+      const wideView = !record.reduced && time % 5 > 3.55;
+      button.classList.toggle('signature-preview', special);
+      context.setTransform(ratio, 0, 0, ratio, 0, 0);
+      context.clearRect(0, 0, width, height);
+      const bounds = wideView ? entry.specialBounds : entry.idleBounds;
+      const poseHeight = Math.max(122,bounds.bottom-bounds.top);
+      const scale = Math.min(width/60,(width-12)/(bounds.right-bounds.left),(height-35)/poseHeight);
+      const target = {scale,x:width/2-(bounds.left+bounds.right)/2*scale,y:height-16-bounds.bottom*scale};
+      const view = entry.view ||= {...target};
+      const settle = record.reduced ? 1 : 1-Math.exp(-dt*14);
+      view.scale += (target.scale-view.scale)*settle;
+      view.x += (target.x-view.x)*settle;
+      view.y += (target.y-view.y)*settle;
+      context.translate(view.x,view.y);
+      context.scale(view.scale,view.scale);
+      const drawn = drawDrawn(context, {id:character.id,index:0,facing:1,vx:0,vy:0,grounded:true,action:'idle',aimX:1,aimY:0},
+        {time:record.reduced ? 0 : time + phase,dt:1/60,reduced:record.reduced,pose:special?'special':'idle'});
+      button.classList.toggle('drawn-ready', Boolean(drawn));
+    }
+  }
+  if (!$('#result').open) return;
+  const progress = record.reduced ? 1 : Math.min(1, (now - resultCountStart) / 850);
+  const eased = 1 - Math.pow(1 - progress, 3);
+  for (const counter of all('#scoreboard [data-count]'))
+    counter.textContent = String(Math.round(Number(counter.dataset.count) * eased));
+  if (!menuArtReady) return;
+  const canvas = $('#result-victor'), context = canvas.getContext('2d');
+  const width = canvas.clientWidth, height = canvas.clientHeight;
+  if (!width || !height) return;
+  const ratio = Math.min(devicePixelRatio || 1, 1.5);
+  if (canvas.width !== Math.round(width * ratio) || canvas.height !== Math.round(height * ratio)) {
+    canvas.width = Math.round(width * ratio); canvas.height = Math.round(height * ratio);
+  }
+  context.setTransform(ratio, 0, 0, ratio, 0, 0);context.clearRect(0,0,width,height);
+  const bounds = resultPoseBounds;
+  const scale = Math.min((width-16)/(bounds.right-bounds.left),(height-16)/(bounds.bottom-bounds.top));
+  context.translate(width/2-(bounds.left+bounds.right)/2*scale,height-8-bounds.bottom*scale);
+  context.scale(scale,scale);
+  drawDrawn(context,{id:$('#result').dataset.winner,index:0,facing:1,vx:0,vy:0,grounded:true,action:'victory',aimX:1,aimY:0},
+    {time:record.reduced ? 0 : time,dt:1/60,reduced:record.reduced,pose:'victory'});
 }
 
 function completeDrill(){
@@ -1234,7 +1418,7 @@ for (const button of all("[data-rule]"))
       );
   });
 $("#start").addEventListener("click", () => startMatch());
-$("#pause").addEventListener("click", () => pauseMatch());
+$("#pause").addEventListener("click", openGameMenu);
 $("#resume").addEventListener("click", resumeMatch);
 for (const eventName of ["keydown", "keyup"]) {
   $("#pause-overlay").addEventListener(eventName, (event) => {
@@ -1245,7 +1429,7 @@ $("#restart").addEventListener("click", () => startMatch({ rematch: true }));
 $("#leave").addEventListener("click", returnToLobby);
 $("#game-menu").addEventListener("click", (event) => {
   event.preventDefault();
-  pauseMatch();
+  openGameMenu();
 });
 $("#rematch").addEventListener("click", nextRound);
 $("#back-lobby").addEventListener("click", returnToLobby);
@@ -1285,11 +1469,10 @@ for (const button of all("[data-close]"))
     document.getElementById(button.dataset.close).close(),
   );
 $("#fullscreen").addEventListener("click", async () => {
-  try {
-    await viewport.fullscreen();
-  } catch {
+  fullscreenEntry = viewport.fullscreen().catch(() => {
     notify("Fullscreen is unavailable in this browser.");
-  }
+  });
+  await fullscreenEntry;
 });
 $("#erase-record").addEventListener("click", () => {
   record = { ...defaults,lessons:[],seen:[] };lessonIndex=0;refreshCourse();
@@ -1334,16 +1517,15 @@ renderCrew();
 renderSlots();
 renderCharacter();
 setSound(record.sound);
+setReduced(record.reduced);
 performance.mark("arena-ready");
 requestAnimationFrame(frame);
-if ("requestIdleCallback" in window)
-  requestIdleCallback(preloadArt, { timeout: 1000 });
-else setTimeout(preloadArt, 100);
 if ("serviceWorker" in navigator) {
   // During an update the outgoing worker can receive the first painting request.
   // Prime the newly controlling worker with the arena already on screen.
   navigator.serviceWorker.addEventListener('controllerchange', () => {
     fetch(ARENA_BACKGROUNDS[match?.arena || 'deck'], {cache:'reload'}).catch(() => {});
+    cacheDrawn();
   });
   navigator.serviceWorker
     .register("sw.js", { scope: "./" })
@@ -1367,15 +1549,18 @@ if ("serviceWorker" in navigator) {
 // Local-only instrumentation for reproducible browser QA and input recordings.
 if (qaEnabled) {
   window.MARS_ARENA = {
+    get graphics(){return renderer.stats();},
+    get soundStats(){return sound.stats();},
+    get presentation(){return {...presentation};},
     get viewport(){return {method:viewport.method,preferences:{...viewport.preferences},ratio:renderer.ratio,powerSaving,input:{active:input.active,suspended:input.suspended}};},
-    botExhibition(){if(!match)return;matchBindings=match.fighters.map(()=>"bot");match.fighters.forEach(f=>f.controller="bot");renderHud(true);},
-    get academy(){return {lessonIndex,assessment,record:JSON.parse(JSON.stringify(record)),mode,feedOpen:fleet.open,camera:{...renderer.camera},canvas:{width:renderer.width,height:renderer.height},spriteHeight:98*renderer.camera.scale};},
+    botExhibition({humanMarkers=false}={}){if(!match)return;matchBindings=match.fighters.map(()=>"bot");match.fighters.forEach(f=>f.controller=humanMarkers?"human":"bot");renderHud(true);},
+    get academy(){return {lessonIndex,assessment,record:JSON.parse(JSON.stringify(record)),mode,feedOpen:fleet.open,camera:{...renderer.camera},canvas:{width:renderer.width,height:renderer.height},spriteHeight:110*renderer.camera.scale};},
     get audio(){return {initialized:Boolean(sound.context),state:sound.context?.state,voice:Boolean(sound.voice),enabled:sound.enabled};},
     voiceTest(trigger){return director.trigger(trigger);},
     get daily(){return {drill:dailyDrill,result:dailyResult};},
     get visibility(){
       const canvas=$('#arena-canvas').getBoundingClientRect();
-      return {camera:{...renderer.camera},viewport:{width:innerWidth,height:innerHeight},signature:$('#signature-flash').getBoundingClientRect().toJSON(),canvas:canvas.toJSON(),fighters:match?.fighters.map(f=>({index:f.index,id:f.id,controller:f.controller,alive:f.alive,respawn:f.respawn,x:canvas.left+renderer.width/2+(f.x-renderer.camera.x)*renderer.camera.scale,y:canvas.top+renderer.height/2+(f.y-renderer.camera.y)*renderer.camera.scale,height:86*renderer.camera.scale,width:65*renderer.camera.scale})),effects:renderer.effects.map(e=>({type:e.type,life:e.life}))};
+      return {camera:{...renderer.camera},viewport:{width:innerWidth,height:innerHeight},signature:$('#signature-flash').getBoundingClientRect().toJSON(),canvas:canvas.toJSON(),fighters:match?.fighters.map(f=>({index:f.index,id:f.id,controller:f.controller,alive:f.alive,respawn:f.respawn,x:canvas.left+renderer.width/2+(f.x-renderer.camera.x)*renderer.camera.scale,y:canvas.top+renderer.height/2+(f.y-renderer.camera.y)*renderer.camera.scale,height:110*renderer.camera.scale,width:65*renderer.camera.scale})),effects:renderer.effects.map(e=>({type:e.type,life:e.life}))};
     },
     visibilityFixture(kind){
       if(!match)return;
@@ -1421,6 +1606,7 @@ if (qaEnabled) {
       match.fighters[winner].score += 50;
       match.fighters[winner].stocks = 9;
       match.tick = Math.round(match.duration * 60) - 1;
+      renderer.capture(match);
       stepMatch(match, []);
       processEvents(match.events);
       renderHud();
@@ -1434,6 +1620,7 @@ if (qaEnabled) {
         i < Math.min(36000, ticks) && match.phase === "playing";
         i++
       ) {
+        renderer.capture(match);
         stepMatch(
           match,
           typeof inputs==="function"?inputs(match):inputs || match.fighters.map((f, index) => botInput(match, index)),

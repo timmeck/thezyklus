@@ -3,7 +3,7 @@ export const RANKS=['Applicant','Deck Candidate','Recovery Cadet','Camera-Ready 
 export const COURSE=[
  {id:'lowg',title:'Low-g procedures',section:'01 / KNOW YOUR LEGS',arena:'deck',duration:65,icon:'recovery',
  rule:'Air-jump. Press JUMP after your last air jump to recover. Catch an edge and steer in. Fire ↑ ↓, land 3 hits, use SPECIAL.',
- order:'Use every air jump, then JUMP once more for recovery. Walk off an edge, then steer back to climb. Drag FIRE to aim.',target:'AIR JUMP · RECOVER · CLIMB · AIM ↑ ↓ · 3 HITS · SPECIAL',
+ order:'Air-jump, then JUMP again to recover. Steer at an edge to climb. Aim ↑ ↓ with the movement stick and tap FIRE. Precision aim enables FIRE dragging.',target:'AIR JUMP · RECOVER · CLIMB · AIM ↑ ↓ · 3 HITS · SPECIAL',
  medal:'THE ORDER OF MOSTLY UPRIGHT CONDUCT',commendation:'For occupying several approved altitudes without a reservation.',
  headline:'YOUR CAREER IS LOOKING UP.',copy:'Join the fleet. See the ceiling. Meet it personally.',poll:'97% of floors recommend a softer cadet.'},
  {id:'rescue',title:'Recovery under fire',section:'02 / BRING SOMETHING BACK',arena:'yard',duration:65,icon:'rescue',

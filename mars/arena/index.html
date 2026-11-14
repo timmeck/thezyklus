@@ -193,7 +193,7 @@
         </section>
         <div class="dispatch-strip">
           <img
-            src="assets/beam.webp"
+            loading="lazy" src="assets/beam.webp"
             alt="Captain Beam"
             width="64"
             height="64"
@@ -266,15 +266,15 @@
       </div>
       <div class="fighter-hud" id="fighter-hud"></div>
       <div id="touch-controls" class="touch-controls">
-        <div id="stick" class="stick" role="group" aria-label="Movement stick">
-          <div class="stick-cross" aria-hidden="true">↔</div>
+        <div id="stick" class="stick" role="group" aria-label="Movement and aiming stick">
+          <div class="stick-cross" aria-hidden="true">✛</div>
           <div id="stick-knob" class="stick-knob"></div>
-          <span>MOVE</span>
+          <span>MOVE / AIM</span>
         </div>
         <div class="touch-buttons">
           <button id="touch-jump" aria-label="Jump"><span>↑</span>JUMP</button
-          ><button id="touch-shoot" aria-label="Aim and fire. Drag in any direction, or tap to fire forwards.">
-            <span id="aim-knob" aria-hidden="true">✳</span><small>AIM / FIRE</small></button
+          ><button id="touch-shoot" aria-label="Fire in the movement stick direction. At rest, a light aim assist follows opponents ahead.">
+            <span id="aim-knob" aria-hidden="true">✳</span><small>FIRE</small></button
           ><button id="touch-special" aria-label="Special move">
             <span>ϟ</span>SPECIAL
           </button>
@@ -291,6 +291,10 @@
       <button class="dialog-close" data-close="settings" aria-label="Close settings">×</button>
       <p class="eyebrow">YOUR DEVICE / YOUR FLIGHT DECK</p><h2 id="settings-title">MAKE ROOM<br><em>FOR ORBIT.</em></h2>
       <label class="control-size">Touch control size<select id="control-size"><option value="compact">Compact</option><option value="standard" selected>Standard</option><option value="large">Large</option></select></label>
+      <label class="control-size">Visual quality<select id="quality-setting"><option value="auto">Automatic</option><option value="high">High</option><option value="medium">Medium</option><option value="low">Low</option></select></label>
+      <label class="setting-check"><input id="auto-fullscreen" type="checkbox" checked> Auto fullscreen</label>
+      <label class="setting-check"><input id="precision-aim" type="checkbox"> Precision aim</label>
+      <p class="precision-note">Drag FIRE for independent aim. Otherwise the movement stick aims.</p>
       <label class="setting-check"><input id="left-handed" type="checkbox"> Left-handed controls</label>
       <label id="vibration-setting" class="setting-check" hidden><input id="vibration" type="checkbox"> Vibration</label>
       <label class="setting-check"><input id="effects-setting" type="checkbox"> Reduce motion & effects</label>
@@ -300,6 +304,7 @@
     <dialog id="result" class="result-dialog" aria-labelledby="result-title">
       <div class="result-art">
         <span class="result-kicker">VICTORY WINDOW / OFFICIAL RESULT</span>
+        <canvas id="result-victor" role="img" aria-label="The winning cadet celebrates"></canvas>
         <div id="medal-art" class="medal-art" aria-hidden="true">
           <span>✦</span>
         </div>
@@ -328,7 +333,7 @@
     </dialog>
     <dialog id="fleet-screen" class="fleet-screen" aria-labelledby="fleet-headline">
       <div class="fleet-top"><span><i></i> VICTORY WINDOW</span><span id="fleet-serial">FLEET RECRUITMENT / 2705</span><button id="fleet-skip">Skip broadcast ↗</button></div>
-      <div class="fleet-body"><div class="fleet-poster"><div class="fleet-rays"></div><span id="fleet-label" class="fleet-label">YOUR FUTURE / BROADCAST APPROVED</span><h2 id="fleet-headline"></h2><p id="fleet-copy"></p><img id="fleet-face" src="assets/beam-victory.webp" alt="Captain Beam presenting the fleet broadcast"><div id="fleet-seal" class="fleet-seal">FLEET<br><b>APPROVED</b><br>BY THE FLEET</div><small class="fleet-disclaimer">SIMULATED CONFIDENCE / ACTUAL TRAINING</small></div>
+      <div class="fleet-body"><div class="fleet-poster"><div class="fleet-rays"></div><span id="fleet-label" class="fleet-label">YOUR FUTURE / BROADCAST APPROVED</span><h2 id="fleet-headline"></h2><p id="fleet-copy"></p><img id="fleet-face" loading="lazy" src="assets/beam-victory.webp" alt="Captain Beam presenting the fleet broadcast"><div id="fleet-seal" class="fleet-seal">FLEET<br><b>APPROVED</b><br>BY THE FLEET</div><small class="fleet-disclaimer">SIMULATED CONFIDENCE / ACTUAL TRAINING</small></div>
       <div class="fleet-handbook"><p id="fleet-section" class="eyebrow"></p><div id="fleet-pictogram"></div><h3 id="fleet-lesson"></h3><p id="fleet-rule"></p><blockquote id="fleet-order"></blockquote><p id="fleet-safety" class="fleet-safety"></p><p id="fleet-poll" class="fleet-poll"></p><small id="fleet-count">TRANSMISSION 6s / ALWAYS SKIPPABLE</small><div class="fleet-progress"><i></i></div></div></div>
       <div class="fleet-ticker"><span id="fleet-ticker"></span></div>
     </dialog>
@@ -363,20 +368,21 @@
         <div>
           <h3>Controller & touch</h3>
           <p>
-            Left stick or D-pad moves. Right stick aims all around. A jumps.
+            Left stick or D-pad moves and aims. The right stick takes priority for independent aim. A jumps.
             X or right trigger fires. B or Y uses the special. Menu pauses.
             Up to four standard controllers.
           </p>
           <p>
-            On a phone, the MOVE stick steers. Drag AIM / FIRE to aim and keep
-            firing in any direction. Tap to fire forwards. JUMP works again in
+            On a phone, the movement stick steers and aims. Hold it upwards and tap FIRE to shoot up.
+            At rest, a light aim assist follows nearby opponents ahead. Enable Precision aim in settings
+            to drag FIRE for independent aim. JUMP works again in
             the air. The thin arrow shows your aim. Controls can be mirrored
             and resized in settings.
           </p>
         </div>
       </div>
       <p>Hold a direction and fire for eight-way keyboard aim. Up aims upwards.
-        Jump has its own key. With no aim input, shots follow your facing direction.</p>
+        Jump has its own key. With no keyboard direction held, shots follow your facing direction.</p>
       <h3>Your cadet course</h3><p>Begin with Low-g procedures. Read the handbook panel before each fight; its rules decide your grade. Pass each exercise to advance, unlock Pip after lesson 3, and earn the optional Victory Lap after graduation. Failed exercises can be retried. The course and certificates stay on your device.</p><h3>Make your own trouble</h3>
       <p>
         Biscuits ease strain. Gold medals protect briefly. Tape sticks
