@@ -1,0 +1,417 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width,initial-scale=1,viewport-fit=cover"
+    />
+    <meta name="theme-color" content="#112735" />
+    <meta
+      name="description"
+      content="Enlist in seven cadet training drills. Original MARS platform combat, signature specials, local crew play and excessive fleet publicity."
+    />
+    <title>OUT OF ORBIT · MARS</title>
+    <link rel="icon" href="icon.svg" type="image/svg+xml" />
+    <link rel="manifest" href="manifest.webmanifest" />
+    <link rel="stylesheet" href="style.css" />
+    <link
+      rel="preload"
+      href="assets/BarlowCondensed-600-latin.woff2"
+      as="font"
+      type="font/woff2"
+      crossorigin
+    />
+    <script type="module" src="app.js"></script>
+  </head>
+  <body>
+    <a class="skip-link" href="#setup">Skip to match setup</a>
+    <div id="lobby">
+      <header class="masthead">
+        <a class="mars-wordmark" href="../"
+          ><span class="fleet-mark" aria-hidden="true">//</span> MARS
+          <span class="wordmark-sub">HEROICALLY<br />UNQUALIFIED</span></a
+        >
+        <div class="broadcast-label">
+          <i></i> VICTORY WINDOW <span>LIVE-FIRE TRAINING</span>
+        </div>
+        <button class="text-button" id="guide-open">
+          How to play <span aria-hidden="true">↗</span>
+        </button>
+      </header>
+      <main>
+        <section class="cover" aria-labelledby="title">
+          <div class="cover-copy">
+            <p class="eyebrow">
+              <span class="red-rule"></span> MARS FLEET ACADEMY / CLASS OF 2705
+            </p>
+            <h1 id="title">OUT OF<br /><em>ORBIT.</em></h1>
+            <p class="cover-deck">
+              Your first duty?<br />Come back spectacularly.
+            </p>
+            <div class="cover-spec">
+              <span><b>0.38</b> g</span><span>1–4 PLAYERS<br />ONE DEVICE</span
+              ><span>150 SECONDS<br />TIMED OR THREE RECOVERIES</span>
+            </div>
+            <button id="quick-start" class="academy-start">ENLIST IN THE CADET COURSE <span aria-hidden="true">↗</span></button><p class="enlist-fine">7 field lessons. Zero sensible publicity.</p><a class="cover-jump" href="#setup"
+              >Explore the training deck. <span aria-hidden="true">↓</span></a
+            >
+          </div>
+          <div class="cover-scene">
+            <canvas
+              id="preview"
+              aria-label="Live demonstration of four MARS crew members training on floating platforms"
+            ></canvas>
+            <div class="scene-top">
+              <span><i></i> TRAINING FEED / 001</span
+              ><span id="preview-arena">NEEDLEWAKE</span>
+            </div>
+            <div class="scene-bottom">
+              <span>RECOVERY SERVICE<br />ALL FALLS ACCOUNTED FOR</span
+              ><span class="scene-g">0.38<small>g</small></span>
+            </div>
+            <div class="orbit-stamp" aria-hidden="true">
+              CERTIFIED<br /><strong>AIRBORNE</strong
+              ><span>BY CAPTAIN BEAM</span>
+            </div>
+          </div>
+        </section>
+        <section class="academy-panel" aria-labelledby="academy-title">
+ <div class="academy-heading"><div><p class="eyebrow">RECOVERY SERVICE / TRAINING DIRECTIVE 2705</p><h2 id="academy-title">EARN YOUR <em>UPRIGHT.</em></h2></div><div class="service-record"><span id="cadet-rank">APPLICANT</span><strong id="course-count">00 / 07</strong><small>LOCAL SERVICE RECORD</small></div></div>
+ <div id="course-map" class="course-map" aria-label="Cadet training syllabus"></div>
+ <div class="academy-foot"><p id="course-note">Your first duty is getting everyone home.</p><button id="watch-feed" class="text-button">Watch the recruitment spot ↗</button></div>
+ </section><section id="setup" class="setup" aria-labelledby="setup-title">
+          <div class="section-line">
+            <h2 id="setup-title">ASSEMBLE THE PROBLEM.</h2>
+            <p id="unlock-note">Pip joins after lesson 3. Graduate for the Victory Lap bonus.</p>
+          </div>
+          <div
+            class="crew-grid"
+            id="crew-grid"
+            aria-label="Choose a character for the selected player"
+          ></div>
+          <div
+            class="character-readout"
+            id="character-readout"
+            aria-live="polite"
+          ></div>
+          <div class="setup-grid">
+            <div class="match-options">
+              <fieldset class="mode-field">
+                <legend>THE OCCASION</legend>
+                <div class="segmented" id="modes">
+                  <button type="button" data-mode="academy" aria-pressed="true">Cadet course</button><button type="button" data-mode="solo" aria-pressed="false">
+                    Solo</button
+                  ><button type="button" data-mode="local" aria-pressed="false">
+                    Local crew</button
+                  ><button
+                    type="button"
+                    data-mode="gauntlet"
+                    aria-pressed="false"
+                  >
+                    Beam’s Gauntlet
+                  </button>
+                </div>
+              </fieldset>
+              <fieldset class="rule-field">
+                <legend>ROUND RULES</legend>
+                <div class="segmented" id="rules">
+                  <button type="button" data-rule="timed" aria-pressed="true">
+                    150 seconds</button
+                  ><button
+                    type="button"
+                    data-rule="stocks"
+                    aria-pressed="false"
+                  >
+                    Three recoveries
+                  </button>
+                </div>
+              </fieldset>
+              <div class="select-row">
+                <label>TRAINING GROUND<select id="arena-select"></select></label
+                ><label
+                  >BOT TEMPERAMENT<select id="difficulty">
+                    <option value="0">Recruits · easy</option>
+                    <option value="1" selected>Regulars · medium</option>
+                    <option value="2">Veterans · hard</option>
+                  </select></label
+                >
+              </div>
+              <p id="arena-description" class="arena-description"></p>
+            </div>
+            <fieldset class="slots-field">
+              <legend>
+                THE PARTICIPANTS
+                <span>SELECT A SEAT TO CHANGE ITS CREW MEMBER</span>
+              </legend>
+              <div id="player-slots" class="player-slots"></div>
+              <p id="input-notice" class="input-notice" role="status"></p>
+            </fieldset>
+            <div class="launch-panel">
+              <button id="start" class="launch-button">
+                <span>REPORT FOR<br /><strong>TRAINING</strong></span
+                ><span class="launch-arrow" aria-hidden="true">↗</span>
+              </button>
+              <div class="launch-options">
+                <label><input type="checkbox" id="assist" /> Assistance</label
+                ><button
+                  id="sound-lobby"
+                  class="text-button"
+                  aria-pressed="true"
+                >
+                  Sound on
+                </button>
+              </div>
+              <p id="mode-description">
+                Seven lessons. One increasingly questionable certificate.
+              </p>
+            </div>
+          </div>
+        </section>
+        <div class="dispatch-strip">
+          <img
+            src="assets/beam.webp"
+            alt="Captain Beam"
+            width="64"
+            height="64"
+          />
+          <p>
+            “A successful landing is simply<br /><strong
+              >an unscheduled victory.”</strong
+            >
+          </p>
+          <span>CAPTAIN BEAM<br />GAME COMMENTARY</span>
+          <div class="dispatch-dots" aria-hidden="true">✦ ✦ ✦</div>
+        </div>
+      </main>
+      <footer>
+        <span
+          >© Tim Mecklenburg <span class="footer-divider">/</span> Original
+          MARS game</span
+        >
+        <div>
+          <span id="offline-status">Offline copy preparing</span
+          ><button id="credits-open" class="text-button">
+            Credits & Impressum
+          </button>
+        </div>
+      </footer>
+    </div>
+    <section id="game" class="game" hidden aria-label="MARS arena match">
+      <header class="game-bar">
+        <a class="game-brand" href="#" id="game-menu"
+          >MARS <span>OUT OF ORBIT</span></a
+        >
+        <div class="match-clock">
+          <span id="match-label">NEEDLEWAKE</span
+          ><strong id="clock">2:30</strong
+          ><span id="round-label">LIVE TRAINING</span>
+        </div>
+        <div class="game-actions">
+          <button
+            id="sound-game"
+            aria-label="Toggle game sound"
+            aria-pressed="true"
+          >
+            ♪</button
+          ><button id="fullscreen" aria-label="Toggle fullscreen">⛶</button
+          ><button id="pause" aria-label="Pause match">Ⅱ</button>
+        </div>
+      </header>
+      <div class="battlefield" id="battlefield">
+        <canvas
+          id="arena-canvas"
+          tabindex="0"
+          aria-label="Platform arena. Move with A and D, jump with W or Space, shoot with F and use your special with G. Pause with Escape."
+        ></canvas>
+        <div id="broadcast" class="beam-broadcast" aria-live="polite">
+          <img src="assets/beam.webp" alt="" />
+          <div>
+            <span>BEAM / VICTORY WINDOW</span>
+            <p></p>
+          </div>
+        </div>
+        <div id="lesson-objective" class="lesson-objective" hidden></div><div id="lesson-coach" class="lesson-coach" hidden></div><div id="signature-flash" class="signature-flash" hidden><img alt=""><div><small>SIGNATURE MANOEUVRE</small><strong></strong><span></span></div></div><div id="countdown" class="countdown" aria-live="assertive"></div>
+        <div class="hazard-banner" id="hazard-banner" aria-live="polite"></div>
+        <div id="pause-overlay" class="pause-overlay" hidden>
+          <div>
+            <p class="eyebrow">THE BROADCAST CAN WAIT</p>
+            <h2>HOLD THAT<br /><em>POSE.</em></h2>
+            <p id="pause-reason">Training paused.</p>
+            <button id="resume" class="primary-button">
+              Back into orbit <span>↗</span></button
+            ><button id="restart" class="secondary-button">Restart round</button
+            ><button id="leave" class="text-button">
+              Return to crew selection
+            </button>
+          </div>
+        </div>
+      </div>
+      <div class="fighter-hud" id="fighter-hud"></div>
+      <div id="touch-controls" class="touch-controls">
+        <div id="stick" class="stick" role="group" aria-label="Movement stick">
+          <div class="stick-cross" aria-hidden="true">↔</div>
+          <div id="stick-knob" class="stick-knob"></div>
+          <span>MOVE</span>
+        </div>
+        <div class="touch-buttons">
+          <button id="touch-jump" aria-label="Jump"><span>↑</span>JUMP</button
+          ><button id="touch-shoot" aria-label="Shoot">
+            <span>✳</span>FIRE</button
+          ><button id="touch-special" aria-label="Special move">
+            <span>ϟ</span>SPECIAL
+          </button>
+        </div>
+      </div>
+      <div class="keyboard-hint" id="keyboard-hint">
+        A D MOVE <span>·</span> W / SPACE JUMP <span>·</span> F FIRE
+        <span>·</span> G SPECIAL <span>·</span> ESC PAUSE
+      </div>
+    </section>
+    <dialog id="result" class="result-dialog" aria-labelledby="result-title">
+      <div class="result-art">
+        <span class="result-kicker">VICTORY WINDOW / OFFICIAL RESULT</span>
+        <div id="medal-art" class="medal-art" aria-hidden="true">
+          <span>✦</span>
+        </div>
+        <p>EVERYONE<br />RECOVERED.</p>
+      </div>
+      <div class="result-copy">
+        <p id="result-eyebrow" class="eyebrow">AN ENTIRELY PLANNED OUTCOME</p>
+        <h2 id="result-title">GLORIOUS<br /><em>RECOVERY.</em></h2>
+        <p id="medal-name" class="medal-name"></p>
+        <div id="academy-assessment" class="academy-assessment" hidden></div><div id="scoreboard" class="scoreboard"></div>
+        <p id="result-note" class="result-note"></p>
+        <p id="result-voice" class="result-voice"></p>
+        <button id="rematch" class="primary-button">
+          Immediate rematch <span>↗</span>
+        </button>
+        <div class="result-actions">
+          <button id="save-result" class="secondary-button">
+            Save result PNG ↓</button
+          ><button id="back-lobby" class="text-button">Change crew</button>
+        </div>
+        <p id="export-status" class="fine" role="status">
+          © Tim Mecklenburg · Saved on this device.
+        </p>
+      </div>
+    </dialog>
+    <dialog id="fleet-screen" class="fleet-screen" aria-labelledby="fleet-headline">
+      <div class="fleet-top"><span><i></i> VICTORY WINDOW</span><span id="fleet-serial">FLEET RECRUITMENT / 2705</span><button id="fleet-skip">Skip broadcast ↗</button></div>
+      <div class="fleet-body"><div class="fleet-poster"><div class="fleet-rays"></div><span id="fleet-label" class="fleet-label">YOUR FUTURE / BROADCAST APPROVED</span><h2 id="fleet-headline"></h2><p id="fleet-copy"></p><img id="fleet-face" src="assets/beam-victory.webp" alt="Captain Beam presenting the fleet broadcast"><div id="fleet-seal" class="fleet-seal">FLEET<br><b>APPROVED</b><br>BY THE FLEET</div><small class="fleet-disclaimer">SIMULATED CONFIDENCE / ACTUAL TRAINING</small></div>
+      <div class="fleet-handbook"><p id="fleet-section" class="eyebrow"></p><div id="fleet-pictogram"></div><h3 id="fleet-lesson"></h3><p id="fleet-rule"></p><blockquote id="fleet-order"></blockquote><p id="fleet-safety" class="fleet-safety"></p><p id="fleet-poll" class="fleet-poll"></p><small id="fleet-count">TRANSMISSION 6s / ALWAYS SKIPPABLE</small><div class="fleet-progress"><i></i></div></div></div>
+      <div class="fleet-ticker"><span id="fleet-ticker"></span></div>
+    </dialog>
+    <dialog id="guide" class="info-dialog" aria-labelledby="guide-title">
+      <button
+        class="dialog-close"
+        data-close="guide"
+        aria-label="Close controls"
+      >
+        ×
+      </button>
+      <p class="eyebrow">RECOVERY SERVICE / FIELD GUIDE</p>
+      <h2 id="guide-title">STAY UP.<br /><em>SEND THEM OUT.</em></h2>
+      <p>
+        Training hits build <strong>strain</strong>. More strain means a bigger
+        launch. Send the other cadets beyond the arena. A recovery drone brings
+        everyone back. In a timed round, you have 150 seconds. Your ring-outs
+        minus your own recoveries decide the winner. Choose Three recoveries for
+        a last-crew-standing match with a 150-second limit. Ties use ring-outs,
+        then strain and precise hit statistics.
+      </p>
+      <div class="guide-columns">
+        <div>
+          <h3>Keyboard crews</h3>
+          <p><b>Seat 1</b> A / D move · W or Space jump · F fire · G special</p>
+          <p><b>Seat 2</b> ← / → move · ↑ jump · K fire · L special</p>
+          <p><b>Seat 3</b> N / M move · H jump · Y fire · U special</p>
+          <p>
+            <b>Seat 4</b> Numpad 4 / 6 move · 8 jump · 0 fire · decimal special
+          </p>
+        </div>
+        <div>
+          <h3>Controller & touch</h3>
+          <p>
+            Left stick or D-pad moves. A jumps. X or right trigger fires. B or Y
+            uses the special. Menu pauses. Up to four standard controllers.
+          </p>
+          <p>
+            On a phone, drag the left stick and use the three buttons. Jump
+            again in the air. Fire follows your facing direction. Stick up or
+            down angles your shot.
+          </p>
+        </div>
+      </div>
+      <h3>Your cadet course</h3><p>Begin with Low-g procedures. Read the handbook panel before each fight; its rules decide your grade. Pass each exercise to advance, unlock Pip after lesson 3, and earn the optional Victory Lap after graduation. Failed exercises can be retried. The course and certificates stay on your device.</p><h3>Make your own trouble</h3>
+      <p>
+        Biscuits ease strain. Gold medals protect briefly. Tape sticks
+        opponents. Gravity buttons make the next jump floatier. A warning
+        announces each arena’s moving parts.
+      </p>
+      <p>
+        Assistance gives human players a stronger recovery, gentler incoming
+        launches and easier recovery from below the stage. Reduced motion
+        follows your device preference. A tab change pauses the match.
+      </p>
+      <label class="setting-check"
+        ><input id="reduced-motion" type="checkbox" /> Reduce camera shake and
+        impact flashes</label
+      ><button class="primary-button" data-close="guide">
+        Ready for questionable decisions <span>↗</span>
+      </button>
+    </dialog>
+    <dialog id="credits" class="info-dialog" aria-labelledby="credits-title">
+      <button
+        class="dialog-close"
+        data-close="credits"
+        aria-label="Close credits"
+      >
+        ×
+      </button>
+      <p class="eyebrow">MARS / OUT OF ORBIT</p>
+      <h2 id="credits-title">THE PEOPLE<br /><em>BEHIND THE FALL.</em></h2>
+      <p>
+        <strong>© Tim Mecklenburg.</strong> Story, world and characters by Tim
+        Mecklenburg. An original game adaptation of MARS, with AI-assisted code,
+        illustration and synthetic voices. Character animation assets were
+        generated with OpenAI’s image tool using the original MARS colour
+        sheets. Original Beam recordings and portraits come from released Volume
+        1.
+      </p>
+      <p>
+        Game comments and arena rules are new game material. Recorded dialogue
+        is identified with its original volume and panel. Training uses foam,
+        paint and compressed air. Everyone is recovered.
+      </p>
+      <h3>Impressum</h3>
+      <p>
+        Responsible for this local MARS project<br />Tim Mecklenburg<br />© Tim
+        Mecklenburg<br />AI-assisted artwork, software and synthetic audio.
+      </p>
+      <h3>Your device, your record</h3>
+      <p>
+        Completed rounds, Pip’s unlock, assistance, sound and reduced-motion
+        preferences are saved in this browser. The offline cache stores this
+        game. No account, analytics or external requests are used. The PNG
+        button saves a local image.
+      </p>
+      <p>
+        Barlow and Barlow Condensed by Jeremy Tribby, SIL Open Font License.
+        Sound effects, five arena scores, the broadcast march and rank fanfare use original Web Audio
+        synthesis.
+      </p>
+      <button id="erase-record" class="secondary-button">
+        Reset local arena record
+      </button>
+      <p id="erase-feedback" role="status"></p>
+      <a class="text-button" href="../">Back to MARS ↗</a>
+    </dialog>
+    <div id="toast" class="toast" role="status" aria-live="polite"></div>
+    <noscript
+      ><p class="noscript">
+        This arena needs JavaScript. <a href="../">Return to MARS.</a>
+      </p></noscript
+    >
+  </body>
+</html>

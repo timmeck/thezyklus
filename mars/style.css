@@ -62,3 +62,6 @@ dialog{color:var(--paper);background:var(--ink);border:1px solid var(--line);pad
 @media(max-width:700px){.moth-ship{top:24px;right:-2%;height:310px}}
 
 .x-share{display:inline-block;font-size:13px;margin:6px 0 4px;padding:6px 0;border-bottom:1px solid var(--line);color:#b8c5c6}.x-share:hover{color:var(--cyan)}
+
+/* ARENA ADDITION */
+.arena-entry{display:flex;align-items:center;justify-content:space-between;gap:30px;padding:42px max(5vw,24px);background:#efe6d2;color:#132e3a;border-top:1px solid #132e3a;border-bottom:1px solid #132e3a}.arena-entry h2{font:600 clamp(35px,5vw,70px)/.95 Condensed,sans-serif;margin:10px 0 14px;letter-spacing:-1px}.arena-entry .eyebrow{color:#a7482b}.arena-entry p{margin:0;font-size:15px}.arena-entry .button{flex-shrink:0}@media(max-width:650px){.arena-entry{flex-direction:column;align-items:flex-start;padding:30px 22px}.arena-entry .button{width:100%;justify-content:space-between}.arena-entry p{font-size:13px}}

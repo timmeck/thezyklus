@@ -1,0 +1,270 @@
+{
+  "available": [
+    1
+  ],
+  "asOf": "2026-11-14T12:09:18.458729+01:00",
+  "version": "12c719ddcf80",
+  "bytes": 3575015,
+  "files": [
+    {
+      "file": "academy.js",
+      "bytes": 9428,
+      "sha256": "7578d89795d8003998e8dadfa81fb7cbd8a4c0aca642c1db70fd216d2f223bfe"
+    },
+    {
+      "file": "app.js",
+      "bytes": 45862,
+      "sha256": "09925706a452adacc4ea5a7bc99b549b3ef1e8c5601870cedff2871f0af1e1e6"
+    },
+    {
+      "file": "assets/airlock-bg.webp",
+      "bytes": 129268,
+      "sha256": "5685e7707218ec8d7eb6508944145fd511e3ead93f9c8a7b9f8ce86c6ecbd4e6"
+    },
+    {
+      "file": "assets/audio/V3L01a.m4a",
+      "bytes": 65943,
+      "sha256": "1dad5c0ee8e2328bf1fd9998b897f517abc2e8a3c2c3b25a074d14ec4df2904a"
+    },
+    {
+      "file": "assets/audio/V3L03d.m4a",
+      "bytes": 65967,
+      "sha256": "df1e51dabd11d5eb5b902b0b117aaed2b4fc882e859c26595eb67777a799e3af"
+    },
+    {
+      "file": "assets/audio/V3L37a.m4a",
+      "bytes": 56481,
+      "sha256": "686e0fb16eec018a28841acaffdd92baf2e8b7f2f3f6dbe7113bad3aead38b12"
+    },
+    {
+      "file": "assets/Barlow-400-latin.woff2",
+      "bytes": 22196,
+      "sha256": "b0a8ad37ac45f5fb22ced461576db72e44e295107aad7a9c8a7a4bad728fd03b"
+    },
+    {
+      "file": "assets/Barlow-500-latin.woff2",
+      "bytes": 22008,
+      "sha256": "cd759df8ef9efc98fee14307b4eb5ba27f08b1f8f2f3ad2872432e25c89907a8"
+    },
+    {
+      "file": "assets/barlow-OFL.txt",
+      "bytes": 4377,
+      "sha256": "186d750eb496a4c17a76385f82be6aea2ac1cf2de074a811d63786cf374ea73f"
+    },
+    {
+      "file": "assets/BarlowCondensed-600-latin.woff2",
+      "bytes": 22308,
+      "sha256": "215a93c696f442034a46fbb382958f753fda60e30490683aeea6b235fcbb2b66"
+    },
+    {
+      "file": "assets/barlowcondensed-OFL.txt",
+      "bytes": 4377,
+      "sha256": "186d750eb496a4c17a76385f82be6aea2ac1cf2de074a811d63786cf374ea73f"
+    },
+    {
+      "file": "assets/beam-atlas.webp",
+      "bytes": 108012,
+      "sha256": "0b45ee4109b2792659eb5deb0de559c8e66ef56dc58bf956809b48ce23540d88"
+    },
+    {
+      "file": "assets/beam-motion.webp",
+      "bytes": 274620,
+      "sha256": "6f2023df07a337c7938bf203b59f681c63e7858702bae1d4b2cf2fa950b26d74"
+    },
+    {
+      "file": "assets/beam-victory.webp",
+      "bytes": 45460,
+      "sha256": "fb47e907ee5c088db075b5a534eaf0456c1363c2c67345dc8d7228aa105abfa7"
+    },
+    {
+      "file": "assets/beam.webp",
+      "bytes": 29396,
+      "sha256": "83d431d255b4bb089c6be6eefeb78aeb011a564100a9f642a603a9ae18d00d3f"
+    },
+    {
+      "file": "assets/gravity-bg.webp",
+      "bytes": 190188,
+      "sha256": "a60f67c85de212ee573ec73e34ae6c6a21f292ccccb1dcda5b3c854cdd8604e0"
+    },
+    {
+      "file": "assets/hangar.webp",
+      "bytes": 170366,
+      "sha256": "844ed7200e841b626420ab75eae8ba84a6f149a55e5c755c21d58f048e4c6d1b"
+    },
+    {
+      "file": "assets/iona-atlas.webp",
+      "bytes": 81684,
+      "sha256": "01318be9f4d1bff4fe10e1484d441e4c03826c79ebee09814104f4b0cb3c2578"
+    },
+    {
+      "file": "assets/iona-motion.webp",
+      "bytes": 214712,
+      "sha256": "b3c119a535cc1acb730b2eb58682c808f709c6ec03701289abef87c0b8bcb7fd"
+    },
+    {
+      "file": "assets/iona-victory.webp",
+      "bytes": 31616,
+      "sha256": "02849e04d3cdeac079235e36fe698eca1b9145df36c826e04fbea85ee9c79e7c"
+    },
+    {
+      "file": "assets/iona.webp",
+      "bytes": 40146,
+      "sha256": "8eb9d28721b27db0080dc07f0df86229301c3e0e2b3e5ca6c343533686d396e6"
+    },
+    {
+      "file": "assets/pip-atlas.webp",
+      "bytes": 80352,
+      "sha256": "4adb981f03fa932f23087c6201331de4c180e21fa446bb62f2eeb7db7204f819"
+    },
+    {
+      "file": "assets/pip-motion.webp",
+      "bytes": 203102,
+      "sha256": "008a41fee2189ef99c07d10efb4f3074f2528e37e6b20a86f1c74077cabe8024"
+    },
+    {
+      "file": "assets/pip-victory.webp",
+      "bytes": 31606,
+      "sha256": "1372b4e42c4b5ce67ad7c41359fff7f83a8ecd417c05f1f72280d07b1173f31d"
+    },
+    {
+      "file": "assets/pip.webp",
+      "bytes": 26856,
+      "sha256": "27ba72354381818b1857601104e5b1572669675be5392c1d6e8b9846cb9f592e"
+    },
+    {
+      "file": "assets/rook-atlas.webp",
+      "bytes": 82418,
+      "sha256": "50b7f69d50eee45831bd32a41b83c03e5d88b1902faf09907dae6eb6dd536675"
+    },
+    {
+      "file": "assets/rook-motion.webp",
+      "bytes": 177046,
+      "sha256": "6d4b92adc150c3dae4ccb43a6bbc3addd591c3531c1d0407ab16b91f5c83f896"
+    },
+    {
+      "file": "assets/rook-victory.webp",
+      "bytes": 32850,
+      "sha256": "08ddb880e009919cb7a49b96783b2ed82ac7d7df03d26915e70e26ef61e78558"
+    },
+    {
+      "file": "assets/rook.webp",
+      "bytes": 35538,
+      "sha256": "c43e4f3bb8b3d99c0f5ad28ecaac5a380c0b166eee0f5eb07ab740c4d2febd8b"
+    },
+    {
+      "file": "assets/sera-atlas.webp",
+      "bytes": 91402,
+      "sha256": "12fe603532a25a849ff39be9a4b04db3d9d475e8573ef2e07212022b274cf002"
+    },
+    {
+      "file": "assets/sera-motion.webp",
+      "bytes": 237700,
+      "sha256": "245fb594084d2357c90de21db8456b49c003057a13b08dc17fde3f7dadc9f86d"
+    },
+    {
+      "file": "assets/sera-victory.webp",
+      "bytes": 29602,
+      "sha256": "5494a6b9682484fd361182c6355752a677ade248893be3a678b82c270faddcec"
+    },
+    {
+      "file": "assets/sera.webp",
+      "bytes": 33408,
+      "sha256": "9ec57ecd215ddc46504a2bc5a8fbcac12212de36eccd89f42d7073f976086e94"
+    },
+    {
+      "file": "assets/studio-bg.webp",
+      "bytes": 160724,
+      "sha256": "69e120aa836846aedb4b0f537906a1076fd9e24bf620c6db0515ccb8681fa98a"
+    },
+    {
+      "file": "assets/tavi-atlas.webp",
+      "bytes": 106602,
+      "sha256": "476f896732c04c0d90c5607ef5e97256e9fc86f3153389965c53b3aa93fadbc2"
+    },
+    {
+      "file": "assets/tavi-motion.webp",
+      "bytes": 217550,
+      "sha256": "d366853e43607942530cf2d5c0515711cc5570fb159feba98a4b702a4caf9ac0"
+    },
+    {
+      "file": "assets/tavi-victory.webp",
+      "bytes": 33660,
+      "sha256": "eb6a829a3cec402e1e3947b21b2474696546208145984f76b64e6fbc58f918c0"
+    },
+    {
+      "file": "assets/tavi.webp",
+      "bytes": 35778,
+      "sha256": "8d2d5e46d249b00f6d67b363fc9a4da6694595ce501ef084c8c2eea58ed5bf34"
+    },
+    {
+      "file": "assets/yard-bg.webp",
+      "bytes": 130682,
+      "sha256": "c04f6edce737e634f6d146b22d86f1ca8f6f1bb30587b1dd7b04040c45a010bb"
+    },
+    {
+      "file": "audio.js",
+      "bytes": 11757,
+      "sha256": "5bef64f8a3bdf3b3d023e62489a4e70b5555c341167162382fb713519bf88781"
+    },
+    {
+      "file": "certificate.js",
+      "bytes": 3813,
+      "sha256": "b081c6d02355e5cbb07e430e5ad73a99ffbf51c0791436c65cac795365c72a11"
+    },
+    {
+      "file": "engine.js",
+      "bytes": 45817,
+      "sha256": "a4850935e20533fb6577eb385b25b49bc7134fd1f90439bdccaf7aa2c854dce7"
+    },
+    {
+      "file": "export.js",
+      "bytes": 4318,
+      "sha256": "2c55d6544d89e2f823f5aeb581bef76dcd12ec497e271eab6e68d907cc181f18"
+    },
+    {
+      "file": "fleet.js",
+      "bytes": 4948,
+      "sha256": "480cda104cc7d8b9634ee54a3c7a8e6d3821aadf33e5dd269e9f7cc4e508fd7d"
+    },
+    {
+      "file": "icon.svg",
+      "bytes": 244,
+      "sha256": "62ac3c44272702f71e98c9135ffc5fb24b30a8ef3f1472ae5cf4d5e2519076db"
+    },
+    {
+      "file": "index.html",
+      "bytes": 19614,
+      "sha256": "2a67d6c940bfc3c2018fc390588eb198b7d62695a1bcc5b224dc2174cb505443"
+    },
+    {
+      "file": "input.js",
+      "bytes": 6713,
+      "sha256": "7075a7c7c36e25e0eb3d937e102e4d231be2db2fa9fe1169cb43f45e1cc2f807"
+    },
+    {
+      "file": "manifest.webmanifest",
+      "bytes": 267,
+      "sha256": "efc07071d04c16a622fb6b18d36a5f810b65f3b0e9d7cd3ba56963a0ad13c1db"
+    },
+    {
+      "file": "release.js",
+      "bytes": 527,
+      "sha256": "8115231550ba74b290a87c7d27e66a3fdf22af10bed1b0065c4439640e4bb7f7"
+    },
+    {
+      "file": "renderer.js",
+      "bytes": 39180,
+      "sha256": "8b2e4cdb718bdc6b8a27f0a8fa9abcc85790803b94c4d2341e10d2337816243b"
+    },
+    {
+      "file": "style.css",
+      "bytes": 54382,
+      "sha256": "12d13cdb0115d4dd77f7d70b501db6d8ad4f5baeb745e8c47231e0ad17d206d7"
+    },
+    {
+      "file": "sw.js",
+      "bytes": 2144,
+      "sha256": "e050cbe12fc58767b2f1a358ab05b04c4c7ec20c4e4e2e71090b19cbc59181b3"
+    }
+  ]
+}

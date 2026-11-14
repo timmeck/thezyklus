@@ -1,0 +1,1 @@
+{"name": "MARS · Out of Orbit", "short_name": "MARS Arena", "start_url": "./", "scope": "./", "display": "standalone", "background_color": "#112735", "theme_color": "#112735", "icons": [{"src": "icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any"}]}
