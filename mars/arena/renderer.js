@@ -1486,14 +1486,15 @@ export class Renderer {
         (f.y - 50 - this.camera.y) * this.camera.scale + this.height / 2;
       if (x >= 15 && x <= this.width - 15 && y >= 15 && y <= this.height - 15)
         continue;
+      const top=this.preview?18:(this.safeTop||0)+18; // Randpfeile nie unter Zeit/Statuskarten/Knöpfen (14.11.)
       const cx = clamp(x, 18, this.width - 18),
-        cy = clamp(y, 18, this.height - 18);
+        cy = clamp(y, top, this.height - 18);
       const a=Math.atan2(y-cy,x-cx),color=PLAYER_COLORS[f.index];
       c.save();c.translate(cx,cy);c.rotate(a);polygon(c,[[13,0],[-7,-9],[-3,0],[-7,9]],color,'#102735',2);c.restore();
       c.fillStyle = "#102735";
       c.font = "600 11px Barlow,sans-serif";
       c.textAlign = "center";
-      c.fillStyle=color;c.fillText('P'+(f.index+1),clamp(cx-24*Math.cos(a),18,this.width-18),clamp(cy-24*Math.sin(a),16,this.height-16)+4);
+      c.fillStyle=color;c.fillText('P'+(f.index+1),clamp(cx-24*Math.cos(a),18,this.width-18),clamp(cy-24*Math.sin(a),top-2,this.height-16)+4);
     }
   }
 
@@ -1506,7 +1507,7 @@ export class Renderer {
       if(!this.incoming(p,player))continue;
       const x=(p.x-this.camera.x)*this.camera.scale+this.width/2,y=(p.y-this.camera.y)*this.camera.scale+this.height/2;
       if(x>=12&&x<=this.width-12&&y>=12&&y<=this.height-12)continue;
-      const px=clamp(x,24,this.width-24),py=clamp(y,30,this.height-24);
+      const px=clamp(x,24,this.width-24),py=clamp(y,(this.safeTop||0)+30,this.height-24);
       if(used.some(q=>Math.hypot(px-q.x,py-q.y)<36))continue;
       used.push({x:px,y:py});const a=Math.atan2(p.vy||0,p.vx||0);
       c.save();c.translate(px,py);c.rotate(a);polygon(c,[[-12,-8],[0,0],[-12,8],[9,0]],'#fff1c6','#e96949',3);c.restore();
