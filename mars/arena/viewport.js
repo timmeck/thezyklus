@@ -69,7 +69,10 @@ export class ArenaViewport {
   }
   showHomeTip(force=false){
     if(!this.ios||this.standalone()||(!force&&this.preferences.homeTipSeen))return;
-    $('#home-screen-tip').hidden=false;this.preferences.homeTipSeen=true;this.save();
+    const tip=$('#home-screen-tip');
+    const host=$('dialog[open]')||document.body;
+    host.append(tip);
+    tip.hidden=false;this.preferences.homeTipSeen=true;this.save();
   }
   async fullscreen(){
     if(document.fullscreenElement){await document.exitFullscreen();return;}

@@ -18,7 +18,7 @@ export const CHARACTERS = Object.freeze([
     color: "#ef664c",
     speed: 370,
     weight: 0.88,
-    fireRate: 0.26,
+    fireRate: 0.30,
     specialName: "The Return Route",
     description:
       "Fast foam bursts. Two air jumps. A grapple that brings you home.",
@@ -30,7 +30,7 @@ export const CHARACTERS = Object.freeze([
     color: "#4bb6d1",
     speed: 325,
     weight: 1,
-    fireRate: 0.31,
+    fireRate: 0.35,
     specialName: "The Majestic Emergency Exit",
     description: "Paint blaster. A very confident jet-assisted escape.",
   },
@@ -40,8 +40,8 @@ export const CHARACTERS = Object.freeze([
     role: "NEEDLEWAKE CAPTAIN",
     color: "#bc8be0",
     speed: 270,
-    weight: 1.38,
-    fireRate: 0.54,
+    weight: 1.22,
+    fireRate: 0.60,
     specialName: "Quiet, please.",
     description:
       "Heavy footing. Precise air slugs. A devastating charged shot.",
@@ -53,7 +53,7 @@ export const CHARACTERS = Object.freeze([
     color: "#70c49b",
     speed: 300,
     weight: 1.06,
-    fireRate: 0.38,
+    fireRate: 0.42,
     specialName: "One careful adjustment",
     description:
       "Magnetic tool traps. Field repairs. Enthusiasm for dangerous hinges.",
@@ -65,7 +65,7 @@ export const CHARACTERS = Object.freeze([
     color: "#e8b94c",
     speed: 300,
     weight: 0.98,
-    fireRate: 0.4,
+    fireRate: 0.44,
     specialName: "The Golden Rebuttal",
     description: "Arcing medals. A blinding spotlight. A heroic counter-pose.",
   },
@@ -76,7 +76,7 @@ export const CHARACTERS = Object.freeze([
     color: "#64c9c4",
     speed: 345,
     weight: 0.96,
-    fireRate: 0.3,
+    fireRate: 0.34,
     specialName: "Still here!",
     description:
       "Light foam fire. A protective recovery pulse. Earned through cadet training.",
@@ -177,6 +177,23 @@ const approach = (value, target, amount) =>
     : Math.max(value - amount, target);
 const distance = (a, b) => Math.hypot(a.x - b.x, a.y - b.y);
 
+// All devices and bots enter the same 64-direction simulation lattice.
+const AIM_DIRECTIONS = Object.freeze(Array.from({ length: 64 }, (_, index) => {
+  const angle = index * Math.PI / 32;
+  return Object.freeze({
+    aimX: Math.round(Math.cos(angle) * 1e6) / 1e6 || 0,
+    aimY: Math.round(Math.sin(angle) * 1e6) / 1e6 || 0,
+  });
+}));
+
+export function quantizeAim(x, y) {
+  const aimX = Number(x), aimY = Number(y);
+  if (!Number.isFinite(aimX) || !Number.isFinite(aimY) || Math.hypot(aimX, aimY) < 0.001)
+    return { aimX: 0, aimY: 0 };
+  const index = (Math.round(Math.atan2(aimY, aimX) * 32 / Math.PI) + 64) % 64;
+  return { ...AIM_DIRECTIONS[index] };
+}
+
 function random(state) {
   state.rng = (Math.imul(state.rng, 1664525) + 1013904223) >>> 0;
   return state.rng / 4294967296;
@@ -192,7 +209,7 @@ function inputFrame(input = {}) {
     jump: Boolean(input.jump),
     shoot: Boolean(input.shoot),
     special: Boolean(input.special),
-    aimY: clamp(Number(input.aimY) || 0, -0.65, 0.65),
+    ...quantizeAim(input.aimX ?? 0, input.aimY ?? 0),
   };
 }
 
@@ -207,6 +224,8 @@ function fighterFor(id, index, controller, stocks, seed) {
     vx: 0,
     vy: 0,
     facing: index % 2 === 0 ? 1 : -1,
+    aimX: index % 2 === 0 ? 1 : -1,
+    aimY: 0,
     damage: 0,
     stocks,
     alive: true,
@@ -230,6 +249,7 @@ function fighterFor(id, index, controller, stocks, seed) {
     jumpBuffer: 0,
     bufferedJump: false,
     bufferedSpecial: false,
+    bufferedShot: null,
     score: 0,
     lastAttacker: -1,
     lastHitTick: -1000,
@@ -342,31 +362,31 @@ function setAction(fighter, action, duration = 0.15) {
 function spawnProjectile(state, fighter, options = {}) {
   const character = CHARACTER_MAP[fighter.id];
   const special = Boolean(options.special);
-  const aimY = options.aimY ?? fighter.input.aimY;
+  const aimX = fighter.aimX;
+  const aimY = fighter.aimY;
   const speed = options.speed || (fighter.id === "sera" ? 1080 : 860);
-  const direction = options.direction || fighter.facing;
   const normalDamage = {
-    iona: 6.5,
-    rook: 9,
-    sera: 14,
+    iona: 7,
+    rook: 9.3,
+    sera: 12.5,
     tavi: 8,
     beam: 11,
-    pip: 9,
+    pip: 9.3,
   };
   const bullet = {
     id: state.nextId++,
     owner: fighter.index,
-    x: fighter.x + direction * 29,
-    y: fighter.y - (options.height || 53),
-    vx: direction * speed * Math.sqrt(1 - aimY * aimY),
+    x: fighter.x + aimX * 29,
+    y: fighter.y - (options.height || 53) + aimY * 29,
+    vx: aimX * speed,
     vy: aimY * speed,
     radius:
       options.radius ||
       (fighter.id === "sera" ? 8 : fighter.id === "beam" ? 10 : 7),
     damage: options.damage || normalDamage[fighter.id],
-    power: options.power || (fighter.id === "sera" ? 1.18 : 1),
+    power: options.power || (fighter.id === "sera" ? 1.12 : 1),
     gravity: fighter.id === "beam" && !special ? 230 : 0,
-    life: options.life || 1.25,
+    life: options.life || 0.9,
     kind:
       options.kind ||
       (fighter.id === "beam"
@@ -379,6 +399,10 @@ function spawnProjectile(state, fighter, options = {}) {
   };
   state.projectiles.push(bullet);
   fighter.stats.shots += 1;
+  if (fighter.index === 0 && (fighter.input.aimX !== 0 || fighter.input.aimY !== 0)) {
+    if (aimY < -0.5) state.training.aimUp = true;
+    if (aimY > 0.5) state.training.aimDown = true;
+  }
   state.stats.shots += 1;
   event(state, "shot", {
     player: fighter.index,
@@ -386,6 +410,8 @@ function spawnProjectile(state, fighter, options = {}) {
     y: bullet.y,
     kind: bullet.kind,
     special,
+    aimX,
+    aimY,
   });
   if (!options.noAction) setAction(fighter, "shoot", special ? 0.35 : 0.17);
   return bullet;
@@ -400,6 +426,7 @@ function hit(
   direction,
   lift = 0.28,
   kind = "foam",
+  trajectory = null,
 ) {
   if (!target.alive || target.respawn > 0 || target.invulnerable > 0)
     return false;
@@ -412,7 +439,7 @@ function hit(
         state,
         attacker,
         target.index,
-        19,
+        16,
         1.5,
         sign(attacker.x - target.x),
         0.55,
@@ -434,12 +461,14 @@ function hit(
   const force =
     (((170 + target.damage * 3.3) * power) / Math.pow(character.weight, 0.85)) *
     assistance;
-  target.vx = direction * force;
-  target.vy = -force * lift - 60;
+  target.vx = (trajectory?.aimX ?? direction) * force;
+  target.vy = trajectory
+    ? force * (trajectory.aimY - Math.abs(trajectory.aimX) * lift) - 60
+    : -force * lift - 60;
   target.grounded = false;
   target.platformId = null;
   target.stun = Math.min(0.48, 0.12 + force / 2900) * (target.id === "sera" ? 0.75 : 1);
-  target.invulnerable = 0.1;
+  target.invulnerable = 0.16;
   target.lastAttacker = ownerIndex;
   target.lastHitTick = state.tick;
   target.stats.taken += damage;
@@ -481,9 +510,23 @@ function useSpecial(state, fighter) {
   if (fighter.id === "iona") {
     const active = state.platforms.filter((p) => p.active);
     const higher = active.filter((p) => p.y < fighter.y - 65);
-    const footholds = fighter.grounded && higher.length ? higher : active;
+    let footholds = fighter.grounded && higher.length ? higher : active;
+    const aiming = fighter.input.aimX !== 0 || fighter.input.aimY !== 0;
+    let directedGrapple = false;
+    if (aiming) {
+      const directed = footholds.filter(p => {
+        const x = clamp(fighter.x + fighter.aimX * 300, p.x + 20, p.x + p.w - 20);
+        const dy = p.y - 10 - (fighter.y - 53), dx = x - fighter.x;
+        const reach = Math.hypot(dx, dy);
+        return reach > 30 && reach < 650 && (dx * fighter.aimX + dy * fighter.aimY) / reach > 0.55;
+      });
+      if (directed.length) {
+        footholds = directed;
+        directedGrapple = true;
+      }
+    }
     const ledge = footholds.reduce((best, p) => {
-      const point = { x: clamp(fighter.x, p.x + 30, p.x + p.w - 30), y: p.y };
+      const point = { x: clamp(fighter.x + (directedGrapple ? fighter.aimX * 300 : 0), p.x + 20, p.x + p.w - 20), y: p.y };
       const score = Math.hypot(point.x - fighter.x, point.y - fighter.y);
       return !best || score < best.score ? { ...point, score } : best;
     }, null);
@@ -547,14 +590,14 @@ function useSpecial(state, fighter) {
       armed: 0.3,
       radius: 45,
     });
-    fighter.damage = Math.max(0, fighter.damage - 8);
+    fighter.damage = Math.max(0, fighter.damage - 6);
     fighter.specialCooldown = 6;
     event(state, "item", {
       player: fighter.index,
       x: fighter.x,
       y: fighter.y - 50,
       kind: "repair",
-      amount: 8,
+      amount: 6,
     });
   } else if (fighter.id === "beam") {
     fighter.counter = 0.65;
@@ -577,7 +620,7 @@ function useSpecial(state, fighter) {
           state,
           opponent,
           fighter.index,
-          6,
+          4,
           0.62,
           sign(opponent.x - fighter.x),
           0.36,
@@ -825,8 +868,19 @@ function recoverFighter(state, fighter) {
   });
 }
 
+function applyRecoil(fighter, force) {
+  fighter.vx -= fighter.aimX * force;
+  // Keep grounded footing. The existing airborne kick follows the shot vector.
+  if (!fighter.grounded) fighter.vy -= fighter.aimY * force;
+}
+
 function updateFighter(state, fighter, suppliedInput) {
   const input = inputFrame(suppliedInput);
+  if (fighter.bufferedShot && !input.shoot) {
+    input.shoot = true;
+    Object.assign(input, fighter.bufferedShot);
+  }
+  fighter.bufferedShot = null;
   fighter.input = input;
   const jumpPressed =
     fighter.bufferedJump || (input.jump && !fighter.previousInput.jump);
@@ -902,6 +956,14 @@ function updateFighter(state, fighter, suppliedInput) {
         (fighter.grounded ? 2400 : 330) * STEP,
       );
     }
+    if (input.aimX !== 0 || input.aimY !== 0) {
+      fighter.aimX = input.aimX;
+      fighter.aimY = input.aimY;
+      if (Math.abs(input.aimX) > 0.001) fighter.facing = sign(input.aimX);
+    } else {
+      fighter.aimX = fighter.facing;
+      fighter.aimY = 0;
+    }
     const canJump =
       fighter.grounded ||
       fighter.coyote > 0 ||
@@ -938,7 +1000,7 @@ function updateFighter(state, fighter, suppliedInput) {
     if (input.shoot && fighter.cooldown <= 0 && fighter.charge <= 0) {
       spawnProjectile(state, fighter);
       fighter.cooldown = character.fireRate;
-      fighter.vx -= fighter.facing * (fighter.id === "sera" ? 48 : 16);
+      applyRecoil(fighter, fighter.id === "sera" ? 48 : 16);
     }
   } else {
     fighter.vx = fighter.vx * 0.992 + input.move * 200 * STEP;
@@ -948,14 +1010,14 @@ function updateFighter(state, fighter, suppliedInput) {
     if (fighter.charge === 0 && fighter.stun <= 0) {
       spawnProjectile(state, fighter, {
         special: true,
-        damage: 25,
-        power: 1.8,
+        damage: 22,
+        power: 1.65,
         radius: 17,
         speed: 1250,
         kind: "pressure",
-        life: 1.4,
+        life: 0.9,
       });
-      fighter.vx -= fighter.facing * 160;
+      applyRecoil(fighter, 160);
     }
   }
   if (!fighter.grounded) fighter.vy += state.gravity * STEP;
@@ -997,7 +1059,7 @@ function updateFighter(state, fighter, suppliedInput) {
   }
   if(fighter.index===0) state.training.travel+=Math.abs(input.move)*Math.abs(fighter.vx)*STEP;
   if(fighter.id==='rook' && !fighter.grounded) fighter.specialCooldown=Math.max(0,fighter.specialCooldown-STEP*0.25);
-  if(fighter.id==='beam' && fighter.onCamera) fighter.damage=Math.max(0,fighter.damage-1.5*STEP);
+  if(fighter.id==='beam' && fighter.onCamera) fighter.damage=Math.max(0,fighter.damage-1.0*STEP);
   if (fighter.actionTime <= 0)
     fighter.action = fighter.grounded
       ? Math.abs(fighter.vx) > 35
@@ -1070,6 +1132,7 @@ function updateProjectiles(state) {
             sign(bullet.vx),
             bullet.special ? 0.22 : 0.28,
             bullet.kind,
+            quantizeAim(bullet.vx, bullet.vy),
           )
         ) {
           bullet.life = 0;
@@ -1128,7 +1191,7 @@ function updateTraps(state) {
             state,
             fighter,
             trap.owner,
-            18,
+            16,
             1.38,
             sign(fighter.x - trap.x),
             0.8,
@@ -1326,6 +1389,7 @@ export function stepMatch(state, inputs = []) {
       fighter.bufferedJump ||= input.jump && !fighter.previousInput.jump;
       fighter.bufferedSpecial ||=
         input.special && !fighter.previousInput.special;
+      if (input.shoot) fighter.bufferedShot = { aimX: input.aimX, aimY: input.aimY };
     }
     if (state.time === 0) finishMatch(state);
     return state;
@@ -1501,24 +1565,20 @@ export function botInput(state, index) {
     (Math.abs(trap.x - fighter.x) < 65 || sign(trap.x - fighter.x) === sign(move)));
   if(approachingTrap && fighter.grounded && state.tick-ai.lastJump>30) jump=true;
   const horizontal = target.x - fighter.x;
-  // Aiming is imperfect at lower levels. No access to uncommitted human input.
-  const aimError = (botRandom(ai) - 0.5) * [0.24, 0.13, 0.06][state.difficulty];
-  const aimY = clamp(
-    (target.y - fighter.y) / Math.max(220, Math.abs(horizontal)) + aimError -
-      (fighter.id === 'beam' ? 0.5 * 230 * Math.abs(horizontal) / (860 * 860) : 0),
-    -0.6,
-    0.6,
-  );
-  const facingTarget =
-    sign(horizontal) === fighter.facing || Math.abs(horizontal) < 30;
+  const vertical = target.y - fighter.y;
+  const range = Math.hypot(horizontal, vertical);
+  // One held angular error per visible reaction, with a broad cone on Easy.
+  const aimError = (botRandom(ai) - 0.5) * [0.64, 0.32, 0.14][state.difficulty];
+  const arc = fighter.id === 'beam' ? 0.5 * 230 * Math.pow(range / 860, 2) : 0;
+  const angle = Math.atan2(vertical - arc, horizontal) + aimError;
+  const aimX = Math.cos(angle), aimY = Math.sin(angle);
   const shoot =
-    facingTarget &&
-    Math.abs(horizontal) < 820 &&
-    Math.abs(target.y - fighter.y) < 330 &&
+    range < 780 &&
     botRandom(ai) > [0.38, 0.17, 0.04][state.difficulty];
   if (jump) ai.lastJump = state.tick;
   if (special) ai.lastSpecial = state.tick;
-  ai.decision = inputFrame({ move, jump, shoot, special, aimY });
+  ai.decision = inputFrame({ move, jump, shoot, special,
+    aimX: recovery && special ? 0 : aimX, aimY: recovery && special ? 0 : aimY });
   return { ...ai.decision };
 }
 

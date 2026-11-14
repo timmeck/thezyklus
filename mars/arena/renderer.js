@@ -336,7 +336,10 @@ export class Renderer {
     for (const projectile of state.projectiles)
       this.projectile(projectile, state);
     this.drawEffects(dt, state);
-    for (const fighter of [...state.fighters].sort((a,b)=>Number(a.controller!=='bot')-Number(b.controller!=='bot'))) this.fighter(fighter, state);
+    for (const fighter of [...state.fighters].sort((a,b)=>Number(a.controller!=='bot')-Number(b.controller!=='bot'))) {
+      this.fighter(fighter, state);
+      this.aimGuide(fighter, state);
+    }
     this.pickupLabels(state);
     c.restore();
     this.screenEdgeFighters(state);
@@ -350,6 +353,22 @@ export class Renderer {
     this.lastTick = state.tick;
   }
 
+
+  aimGuide(fighter, state) {
+    if (this.preview || fighter.controller === 'bot' || !fighter.alive || fighter.respawn > 0 || state.phase !== 'playing') return;
+    if (!fighter.input.aimX && !fighter.input.aimY && !fighter.input.shoot && fighter.charge <= 0) return;
+    const c = this.context, x = fighter.aimX, y = fighter.aimY;
+    c.save();
+    c.translate(fighter.x, fighter.y - 53);
+    c.rotate(Math.atan2(y, x));
+    c.strokeStyle = '#f7f4dc';
+    c.lineWidth = 1.4 / this.camera.scale;
+    c.shadowColor = '#102d3b'; c.shadowBlur = 3;
+    c.globalAlpha = 0.8;
+    c.beginPath(); c.moveTo(35, 0); c.lineTo(86, 0);
+    c.moveTo(77, -5); c.lineTo(86, 0); c.lineTo(77, 5); c.stroke();
+    c.restore();
+  }
 
   trainingArt(state){
     const c=this.context,cam=state.cameraFeed;
@@ -392,6 +411,7 @@ export class Renderer {
       polygon(c,[[-d*12,-14],[-d*160,75],[-d*40,0]],'#e9ffff');
       for(let i=0;i<4;i++)line(c,-d*(70+i*37),-20,-d*(50+i*37),30,'#80def4',5);
     }else if(kind==='sera'){
+      c.rotate(Math.atan2(f?.aimY || 0, f?.aimX ?? d) - (d < 0 ? Math.PI : 0));
       for(let i=0;i<3;i++){const q=r+i*28;c.strokeStyle=i%2?'#f2ead7':'#a8e5f1';c.beginPath();c.ellipse(d*(60+i*25),0,q*0.3,q*0.7,0,-1.5,1.5);c.stroke();}
       line(c,d*35,0,d*230,0,'#f3f7e7',7);
     }else if(kind==='tavi'){
@@ -783,8 +803,8 @@ export class Renderer {
       c.globalAlpha = 0.5;
       star(
         c,
-        f.x + f.facing * 40,
-        f.y - 56,
+        f.x + f.aimX * 40,
+        f.y - 53 + f.aimY * 40,
         22 + Math.sin(state.tick * 0.8) * 5,
         "#9be0ef",
         state.tick * 0.1,
@@ -838,11 +858,12 @@ export class Renderer {
         }
       }
     } else this.fallbackFighter(f, color);
-    if(f.action==='shoot' && f.id!=='beam' && !(f.signatureTime>0)){
-      c.fillStyle='#e6ddc8';c.fillRect(18,-62,30,10);c.fillStyle='#112735';c.textAlign='center';c.font='600 3px Condensed';
-      c.fillText('TRAINING ONLY',33,-58);c.fillText('PROBABLY',33,-54);
-    }
     c.restore();
+    if(f.action==='shoot' && f.id!=='beam' && !(f.signatureTime>0)){
+      c.save();c.translate(f.x,f.y-53);c.rotate(Math.atan2(f.aimY,f.aimX));
+      c.fillStyle='#e6ddc8';c.fillRect(18,-5,30,10);c.fillStyle='#112735';c.textAlign='center';c.font='600 3px Condensed';
+      c.fillText('TRAINING ONLY',33,-1);c.fillText('PROBABLY',33,3);c.restore();
+    }
     this.itemRings(f,state);
     if(f.medalMass>0){
       line(c,f.x-10,f.y-78,f.x,f.y-38,"#d75d45",5);line(c,f.x+10,f.y-78,f.x,f.y-38,"#d75d45",5);

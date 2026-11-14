@@ -2,8 +2,8 @@
 export const RANKS=['Applicant','Deck Candidate','Recovery Cadet','Camera-Ready Cadet','Gravity Specialist','Decorated Liability','Rescue Officer','Certified Airborne Hero (Provisional)'];
 export const COURSE=[
  {id:'lowg',title:'Low-g procedures',section:'01 / KNOW YOUR LEGS',arena:'deck',duration:50,icon:'jump',
- rule:'Move, jump twice, land 3 hits and use your special. Learn on the deck.',
- order:'Find your footing. Then find it somewhere else.',target:'MOVE · 2 JUMPS · 3 HITS · 1 SPECIAL',
+ rule:'Move, jump twice, fire up and down, land 3 hits and use your special.',
+ order:'Drag FIRE to aim. Or use the right stick, mouse, or WASD + F. Space jumps.',target:'MOVE · 2 JUMPS · AIM ↑ ↓ · 3 HITS · SPECIAL',
  medal:'THE ORDER OF MOSTLY UPRIGHT CONDUCT',commendation:'For occupying several approved altitudes without a reservation.',
  headline:'YOUR CAREER IS LOOKING UP.',copy:'Join the fleet. See the ceiling. Meet it personally.',poll:'97% of floors recommend a softer cadet.'},
  {id:'rescue',title:'Recovery under fire',section:'02 / BRING SOMETHING BACK',arena:'yard',duration:65,icon:'rescue',
@@ -58,7 +58,7 @@ export const SIGNATURES={
  rook:{passive:'RESERVE CONFIDENCE',detail:'Jetpack recharges 25% faster while airborne.',seal:'CONFIDENCE / PRESSURE TESTED',pitch:'Every escape deserves a name longer than the escape.'},
  sera:{passive:'BACK ON YOUR FEET',detail:'Hit stun is 25% shorter. The head count continues.',seal:'ALL CREW / ACCOUNTED FOR',pitch:'She counts people before medals.'},
  tavi:{passive:'SALVAGE INSTINCT',detail:'Collect broken parts after nearby hits: repair 4 strain and recharge tools, once per 3 seconds.',seal:'PREVIOUSLY BROKEN / APPROVED',pitch:'Nothing is scrap until he has complimented the hinge.'},
- beam:{passive:'GOOD LIGHTING',detail:'Heals 1.5 strain a second while the camera films him.',seal:'INDEPENDENTLY SELF-ENDORSED',pitch:'The worse the landing, the better the lighting.'},
+ beam:{passive:'GOOD LIGHTING',detail:'Heals 1 strain a second while the camera films him.',seal:'INDEPENDENTLY SELF-ENDORSED',pitch:'The worse the landing, the better the lighting.'},
  pip:{passive:'SECOND CHANCE',detail:'A safe landing after an air jump repairs 3 strain, once per 5 seconds.',seal:'STILL HERE / VERIFIED',pitch:'Relief is a perfectly respectable flight technique.'}
 };
 export const COMMS={
@@ -70,14 +70,14 @@ export const COMMS={
 };
 export function assess(match,index){
  const f=match.fighters[0],t=match.training,s=f.stats;
- const checks=[[t.travel>=110,t.jumps>=2,s.hits>=3,t.specials>=1],[t.deliveries>=2],[t.points>=10],[t.heavyTime>=8,s.hits>=6],[t.medalTime>=8,s.hits>=10],[s.pickups>=3,s.hits>=8],[match.rankings.indexOf(0)<2,t.points>=12,t.specials>=3]][index];
+ const checks=[[t.travel>=110,t.jumps>=2,s.hits>=3,t.specials>=1,Boolean(t.aimUp&&t.aimDown)],[t.deliveries>=2],[t.points>=10],[t.heavyTime>=8,s.hits>=6],[t.medalTime>=8,s.hits>=10],[s.pickups>=3,s.hits>=8],[match.rankings.indexOf(0)<2,t.points>=12,t.specials>=3]][index];
  const passed=checks.every(Boolean),merit=s.hits+s.ringouts*4-s.recoveries*2;
  return {passed,checks,grade:passed?(merit>30?'A+':merit>14?'A':'B'):'RETAKE',rank:RANKS[passed?index+1:index],comment:passed?COURSE[index].commendation:'The footage shows potential. The exercise requests evidence.'};
 }
 export function progressText(state){
  const t=state.training,s=state.fighters[0].stats;
  return {
- lowg:'MOVE '+Math.min(110,Math.floor(t.travel))+'/110 · JUMP '+Math.min(2,t.jumps)+'/2 · HITS '+Math.min(3,s.hits)+'/3 · SPECIAL '+Math.min(1,t.specials)+'/1',
+ lowg:'MOVE '+Math.min(110,Math.floor(t.travel))+'/110 · JUMP '+Math.min(2,t.jumps)+'/2 · AIM '+(t.aimUp?'↑':'○')+(t.aimDown?'↓':'○')+' · HITS '+Math.min(3,s.hits)+'/3 · SPECIAL '+Math.min(1,t.specials)+'/1',
  rescue:'CAPSULES '+t.deliveries+'/2 · '+(t.carrying?'CYAN BAY '+(t.bayX>state.fighters[0].x?'→':'←'):'YELLOW CAPSULE '+(t.capsule.x>state.fighters[0].x?'→':'←')),
  camera:'ON-CAMERA HITS '+t.points+'/10 · '+(state.fighters[0].onCamera?'IN FRAME':'FIND THE GOLD BEAM'),
  centrifuge:'HEAVY-g '+t.heavyTime.toFixed(1)+'/8s · HITS '+s.hits+'/6',
@@ -92,4 +92,4 @@ export function pictogram(kind){
 }
 
 
-export const CHECK_LABELS=[['110 movement','2 jumps','3 hits','1 special'],['2 capsule deliveries'],['10 on-camera hits'],['8 seconds of heavy-g footing','6 hits'],['8 seconds with medal','10 hits'],['3 supply drops','8 hits'],['top-two finish','12 on-camera hits','3 specials']];
+export const CHECK_LABELS=[['110 movement','2 jumps','3 hits','1 special','fire up and down'],['2 capsule deliveries'],['10 on-camera hits'],['8 seconds of heavy-g footing','6 hits'],['8 seconds with medal','10 hits'],['3 supply drops','8 hits'],['top-two finish','12 on-camera hits','3 specials']];

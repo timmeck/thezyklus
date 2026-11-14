@@ -115,7 +115,7 @@ const input = new InputManager({
     viewport.setMethod(method);
     if(playing&&mode!=='local'&&matchBindings.length){
       if(method==='gamepad'&&Number.isInteger(padIndex))matchBindings[0]='gamepad'+padIndex;
-      else if(method==='keyboard')matchBindings[0]='keyboard1';
+      else if(method==='keyboard'||method==='mouse')matchBindings[0]='keyboard1';
     }
   },
   onPause: () => {
@@ -141,6 +141,15 @@ const viewport=new ArenaViewport({
   onRotate:()=>{resetTouchControls();pauseMatch('The arena turned with you. Ready when you are.');renderer.cameraInitialized=false;},
   onMethod:method=>{resetTouchControls();if(playing&&mode!=='local'&&method==='touch')matchBindings[0]='keyboard1';},
   onReduced:enabled=>setReduced(enabled),
+});
+input.bindMouse($('#arena-canvas'), (clientX, clientY) => {
+  const fighter = match?.fighters[0];
+  if (!fighter) return { aimX: 0, aimY: 0 };
+  const box = $('#arena-canvas').getBoundingClientRect(), camera = renderer.camera;
+  return {
+    aimX: camera.x + (clientX - box.left - renderer.width / 2) / camera.scale - fighter.x,
+    aimY: camera.y + (clientY - box.top - renderer.height / 2) / camera.scale - (fighter.y - 53),
+  };
 });
 $('#effects-setting').checked=record.reduced;
 function showLobbyPanel(panel){
@@ -518,8 +527,8 @@ async function startMatch({ rematch = false, advance = false } = {}) {
         : "THREE RECOVERIES") + (record.assist&&mode!=='daily' ? " / ASSIST" : "");
   $("#keyboard-hint").textContent =
     mode === "local"
-      ? "P1 A D / W / F G   ·   P2 ← → / ↑ / K L   ·   P3 N M / H / Y-Z U   ·   P4 NUMPAD   ·   ESC PAUSE"
-      : "A D MOVE   ·   W / SPACE JUMP   ·   F FIRE   ·   G SPECIAL   ·   ESC PAUSE";
+      ? "P1 WASD / SPACE / F G · P2 ARROWS / R SHIFT / K L · P3 N M I , / H / Y U · P4 NUM 4 6 8 2 / 5 / 0 ."
+      : "WASD MOVE / AIM · SPACE JUMP · F FIRE · G SPECIAL · MOUSE AIM / CLICK FIRE · ESC PAUSE";
   input.clear();
   $("#signature-flash").hidden=true;signaturePriorityUntil=0;slowMoment=0;
   resetTouchControls();
@@ -656,7 +665,7 @@ function renderHud(force = false) {
   $("#lesson-coach").hidden=mode!=="academy"||match.tick>1200;
   if(mode==="academy"&&match.tick<=1200){
     const t=match.training;
-    $("#lesson-coach").textContent=lessonIndex===0? t.travel<110?"MOVE / A D · left stick":t.jumps<2?"JUMP / W or SPACE · A on controller · UP touch":match.fighters[0].stats.hits<3?"FIRE / F · X on controller · FIRE touch":t.specials<1?"SPECIAL / G · B on controller · SPECIAL touch":"OBJECTIVES MET / Practise until the bell.":COURSE[lessonIndex].order;
+    $("#lesson-coach").textContent=lessonIndex===0? t.travel<110?"MOVE / A D · left stick":t.jumps<2?"JUMP / SPACE · A on controller · JUMP touch":!t.aimUp?"AIM UP / drag FIRE ↑ · right stick ↑ · W + F":!t.aimDown?"AIM DOWN / drag FIRE ↓ · right stick ↓ · S + F":match.fighters[0].stats.hits<3?"LAND 3 HITS / aim at a cadet, then fire":t.specials<1?"SPECIAL / G · B on controller · SPECIAL touch":"OBJECTIVES MET / Practise until the bell.":COURSE[lessonIndex].order;
   }
   const seconds = Math.ceil(match.time);
   $("#clock").textContent =
@@ -713,7 +722,6 @@ function processEvents(events) {
 function finishRound() {
   if (resultShown) return;
   resultShown = true;
-  setTimeout(()=>viewport.showHomeTip(),1200);
   input.setActive(false);
   input.clear();
   record.rounds++;
@@ -873,6 +881,7 @@ function showResult() {
     $('#result-note').textContent=volumeDrill.rule;$('#rematch').textContent='Repeat the drill ↗';
   }
   $("#result").showModal();
+  viewport.showHomeTip();
   const voice = RELEASE.voices.find((voice) => voice.id === "finish");
   if (voice&&!['daily','volume','quick'].includes(mode)) {
     $("#result-voice").textContent = `“${voice.text}” — BEAM / ${voice.source}`;
@@ -962,16 +971,11 @@ function bindTouch() {
       "move",
       Math.abs(dx) < 0.15 ? 0 : Math.max(-1, Math.min(1, dx)),
     );
-    input.setTouch(
-      "aimY",
-      Math.abs(dy) < 0.25 ? 0 : Math.max(-0.65, Math.min(0.65, dy * 0.65)),
-    );
   }
   function release() {
     pointer = null;
     knob.style.transform = "";
     input.setTouch("move", 0);
-    input.setTouch("aimY", 0);
   }
   resets.push(release);
   stick.addEventListener("pointerdown", (event) => {
@@ -989,7 +993,47 @@ function bindTouch() {
     stick.addEventListener(name, (event) => {
       if (event.pointerId === pointer) release();
     });
-  for (const action of ["jump", "shoot", "special"]) {
+  const fire = $('#touch-shoot'), fireKnob = $('#aim-knob');
+  let firePointer = null, origin = null;
+  function aim(event) {
+    const dx = event.clientX - origin.x, dy = event.clientY - origin.y;
+    const length = Math.hypot(dx, dy), radius = fire.clientWidth * 0.34;
+    const reach = Math.min(length, radius);
+    fireKnob.style.transform = length > 0 ? `translate(${dx / length * reach}px,${dy / length * reach}px)` : '';
+    fire.classList.toggle('aiming', length >= 7);
+    input.setTouchAim(length >= 7 ? dx / length : 0, length >= 7 ? dy / length : 0);
+  }
+  function releaseFire(cancelled = false) {
+    firePointer = null;
+    origin = null;
+    fire.classList.remove('active', 'aiming');
+    fireKnob.style.transform = '';
+    input.setTouch('shoot', false);
+    input.setTouchAim(0, 0);
+    if (cancelled) {
+      input.cancelTouchShot();
+    }
+  }
+  resets.push(() => releaseFire(true));
+  fire.addEventListener('pointerdown', event => {
+    event.preventDefault();
+    if (firePointer !== null) return;
+    firePointer = event.pointerId;
+    origin = { x: event.clientX, y: event.clientY };
+    fire.setPointerCapture(firePointer);
+    fire.classList.add('active');
+    input.setTouchAim(0, 0);
+    input.setTouch('shoot', true);
+    viewport.pulse();
+  });
+  fire.addEventListener('pointermove', event => {
+    if (event.pointerId === firePointer) aim(event);
+  });
+  for (const name of ['pointerup', 'pointercancel', 'lostpointercapture'])
+    fire.addEventListener(name, event => {
+      if (event.pointerId === firePointer) releaseFire(name !== 'pointerup');
+    });
+  for (const action of ["jump", "special"]) {
     const button = $(`#touch-${action}`);
     const pointers = new Set();
     resets.push(() => {
@@ -1061,7 +1105,7 @@ function frame(now) {
             const inputs = match.fighters.map((fighter, index) =>
               matchBindings[index] === "bot"
                 ? botInput(match, index)
-                : input.read(matchBindings[index]),
+                : input.read(matchBindings[index], index === 0),
             );
             stepMatch(match, inputs);
             completeDrill();

@@ -273,15 +273,15 @@
         </div>
         <div class="touch-buttons">
           <button id="touch-jump" aria-label="Jump"><span>↑</span>JUMP</button
-          ><button id="touch-shoot" aria-label="Shoot">
-            <span>✳</span>FIRE</button
+          ><button id="touch-shoot" aria-label="Aim and fire. Drag in any direction, or tap to fire forwards.">
+            <span id="aim-knob" aria-hidden="true">✳</span><small>AIM / FIRE</small></button
           ><button id="touch-special" aria-label="Special move">
             <span>ϟ</span>SPECIAL
           </button>
         </div>
       </div>
       <div class="keyboard-hint" id="keyboard-hint">
-        A D MOVE <span>·</span> W / SPACE JUMP <span>·</span> F FIRE
+        WASD MOVE / AIM <span>·</span> SPACE JUMP <span>·</span> F FIRE
         <span>·</span> G SPECIAL <span>·</span> ESC PAUSE
       </div>
       <p id="rotate-tip" class="rotate-tip">Turn your phone for more arena</p>
@@ -353,26 +353,30 @@
       <div class="guide-columns">
         <div>
           <h3>Keyboard crews</h3>
-          <p><b>Seat 1</b> A / D move · W or Space jump · F fire · G special</p>
-          <p><b>Seat 2</b> ← / → move · ↑ jump · K fire · L special</p>
-          <p><b>Seat 3</b> N / M move · H jump · Y fire · U special</p>
+          <p><b>Seat 1</b> WASD move / aim · Space jump · F fire · G special. Mouse aims, left click fires.</p>
+          <p><b>Seat 2</b> Arrow keys move / aim · Right Shift jump · K fire · L special</p>
+          <p><b>Seat 3</b> N / M move · I / comma aim up / down · H jump · Y or Z fire · U special</p>
           <p>
-            <b>Seat 4</b> Numpad 4 / 6 move · 8 jump · 0 fire · decimal special
+            <b>Seat 4</b> Numpad 4 / 6 move · 8 / 2 aim up / down · 5 jump · 0 fire · decimal special
           </p>
         </div>
         <div>
           <h3>Controller & touch</h3>
           <p>
-            Left stick or D-pad moves. A jumps. X or right trigger fires. B or Y
-            uses the special. Menu pauses. Up to four standard controllers.
+            Left stick or D-pad moves. Right stick aims all around. A jumps.
+            X or right trigger fires. B or Y uses the special. Menu pauses.
+            Up to four standard controllers.
           </p>
           <p>
-            On a phone, drag the left stick and use the three buttons. Jump
-            again in the air. Fire follows your facing direction. Stick up or
-            down angles your shot.
+            On a phone, the MOVE stick steers. Drag AIM / FIRE to aim and keep
+            firing in any direction. Tap to fire forwards. JUMP works again in
+            the air. The thin arrow shows your aim. Controls can be mirrored
+            and resized in settings.
           </p>
         </div>
       </div>
+      <p>Hold a direction and fire for eight-way keyboard aim. Up aims upwards.
+        Jump has its own key. With no aim input, shots follow your facing direction.</p>
       <h3>Your cadet course</h3><p>Begin with Low-g procedures. Read the handbook panel before each fight; its rules decide your grade. Pass each exercise to advance, unlock Pip after lesson 3, and earn the optional Victory Lap after graduation. Failed exercises can be retried. The course and certificates stay on your device.</p><h3>Make your own trouble</h3>
       <p>
         Biscuits ease strain. Gold medals protect briefly. Tape sticks

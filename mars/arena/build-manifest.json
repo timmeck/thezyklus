@@ -3,20 +3,20 @@
     1,
     2
   ],
-  "asOf": "2026-11-14T16:34:12.940745+01:00",
-  "gameVersion": "3.1.0",
-  "version": "5d168350ef7b",
-  "bytes": 4067473,
+  "asOf": "2026-11-14T16:34:13.368324+01:00",
+  "gameVersion": "3.2.0",
+  "version": "75f66a055be5",
+  "bytes": 4077697,
   "files": [
     {
       "file": "academy.js",
-      "bytes": 9917,
-      "sha256": "115f8638197c9bfedec3057edd509fcd44d97974c19bb57f69e291359d451291"
+      "bytes": 10058,
+      "sha256": "5cffa79c26d8124bc87e4254fe6f8fad05e94bb700c0d8d42dda65cafe06e7e8"
     },
     {
       "file": "app.js",
-      "bytes": 60840,
-      "sha256": "b6be6b5d17b1bda091934ee915f3685f673bf0a4084950b6622ad980b8a21f49"
+      "bytes": 62892,
+      "sha256": "a8bf4095fcfc3b5ebcf95f1a09bfa7170d9c87ee0002b708a2ada6e275c037a5"
     },
     {
       "file": "assets/airlock-bg.webp",
@@ -250,8 +250,8 @@
     },
     {
       "file": "engine.js",
-      "bytes": 48010,
-      "sha256": "8305a85495429e4024e28a9937062747133b41c41eb7ca2ab58303884783acbe"
+      "bytes": 50442,
+      "sha256": "8983c1d7b925e8031381aa51554df9e5686555890f9ef932ef8c05a84d3596c9"
     },
     {
       "file": "export.js",
@@ -270,13 +270,13 @@
     },
     {
       "file": "index.html",
-      "bytes": 24093,
-      "sha256": "e54c8ab8e51354b03170321ef9e6962ebacb474d22b1916af8f65a4fcf3ee322"
+      "bytes": 24604,
+      "sha256": "300e9048b68a6e63b6d2362a452619f0dba204b8357d6ab0dd1e16cfb8c23aa2"
     },
     {
       "file": "input.js",
-      "bytes": 7433,
-      "sha256": "5a390c7844613b703c1f0cb1aa2290f12764034ed5a4d79302436676956eb4a9"
+      "bytes": 10827,
+      "sha256": "45f3f6ae45803acb2aaafaecea5ef98625649e0b48c80f3fa844e24e30da4785"
     },
     {
       "file": "manifest.webmanifest",
@@ -286,17 +286,17 @@
     {
       "file": "release.js",
       "bytes": 9450,
-      "sha256": "fde4972eaf2f5a8cfde8384a55944bc720c2eb40250081de383e94c8f4286eba"
+      "sha256": "d9c9fb3ae00f2d3b9bc95bf97889a99ed917e9c8b1f6f2ea613b5e12261793d2"
     },
     {
       "file": "renderer.js",
-      "bytes": 47365,
-      "sha256": "61eef8333f2fa1f08cc658fc8f8deaae8f09a5b213f2f073b2067869b65631ec"
+      "bytes": 48326,
+      "sha256": "6ce5a86417f662c625caf9d7243dc707224d28c8c2098f7890358d82deee4078"
     },
     {
       "file": "responsive.css",
-      "bytes": 45619,
-      "sha256": "96509cee04801440bd994500f45164d5cc85c9701ab3b9c550ed893313353e7b"
+      "bytes": 46262,
+      "sha256": "3839a2d449fd94d6c0316538e15c101ba27d72969416e0a104088ca1811dbe3a"
     },
     {
       "file": "share.js",
@@ -311,12 +311,12 @@
     {
       "file": "sw.js",
       "bytes": 2416,
-      "sha256": "79abbbe44cce34a510023b3b0d9aeadf3912e4e3015c92d01a07c2a117d16d51"
+      "sha256": "8f626c92e9ec2ad802a6dd9bdd6454a52a62fa70cce7f59171ad478d7193c603"
     },
     {
       "file": "viewport.js",
-      "bytes": 5468,
-      "sha256": "2eb09cd095afb565c907f59ff84638b8a1551eb0bd13466ff66f09821aef8685"
+      "bytes": 5558,
+      "sha256": "3d8e77f006b0ab44af31da8d98d1fd03336effd13cd85ad576976641e4e96f18"
     },
     {
       "file": "voice-lines.json",

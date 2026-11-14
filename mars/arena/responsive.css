@@ -184,6 +184,11 @@ html.arena-playing, .arena-playing body { overflow: hidden; overscroll-behavior:
 #game .touch-buttons button span { font-size: 25px; }
 #game .touch-buttons button.active { background: #739d9b; transform: scale(.96); }
 #game .touch-buttons #touch-shoot.active { background: #ef734e; }
+#game .touch-buttons #touch-shoot { position: relative; overflow: visible; touch-action: none; }
+#game #touch-shoot #aim-knob { display: grid; place-items: center; position: absolute; width: 58%; height: 58%; top: 12%; left: 21%; border-radius: 50%; background: #f8d5b429; border: 1px solid #ffe5c766; pointer-events: none; will-change: transform; }
+#game #touch-shoot small { position: absolute; bottom: 8px; left: 0; right: 0; font: inherit; pointer-events: none; }
+#game #touch-shoot.aiming { box-shadow: 0 0 0 5px #ffd9b31a, 0 0 0 12px #ffd9b30a; }
+:root[data-input="mouse"] #game:not(.is-paused) #arena-canvas { cursor: crosshair; }
 :root[data-left-handed="true"] #game .touch-controls { flex-direction: row-reverse; }
 :root[data-left-handed="true"] #game .touch-buttons { direction: rtl; }
 .rotate-tip { display: none; }
