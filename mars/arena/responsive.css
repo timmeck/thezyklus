@@ -522,13 +522,14 @@ dialog { max-height: calc(var(--app-height) - var(--safe-top) - var(--safe-botto
   .fleet-screen .fleet-poster { min-height: 0; padding: 12px; }
   .fleet-screen .fleet-poster h2 { font-size: 26px; margin: 8px 0; max-width: 72%; }
   .fleet-screen .fleet-poster > p { font-size: 10px; }
-  .fleet-screen .fleet-handbook { padding: 9px 14px; border-left: 2px solid var(--ink); border-top: 0; display: block; }
+  .fleet-screen .fleet-handbook { padding: 7px 14px; border-left: 2px solid var(--ink); border-top: 0; display: block; }
   .fleet-screen #fleet-pictogram { width: 48px; height: 46px; }
   .fleet-screen .fleet-handbook h3 { font-size: 23px; margin: 4px 0; }
   .fleet-screen .fleet-handbook > p { font-size: 10px; line-height: 1.25; }
   .fleet-screen .fleet-handbook blockquote { font-size: 9px; line-height: 1.2; margin: 5px 0; }
   .fleet-screen .fleet-handbook blockquote:before { font-size: 8px; margin-bottom: 3px; }
   .fleet-screen .fleet-handbook .fleet-safety, .fleet-screen .fleet-poll, .fleet-screen #fleet-original { font-size: 7px !important; margin-top: 4px; padding-top: 4px; }
+  .fleet-screen #fleet-original { margin-top: 4px !important; }
   .fleet-screen #fleet-count { font-size: 7px; margin-top: 4px; }
   .fleet-screen .fleet-seal { display: none; }
 }

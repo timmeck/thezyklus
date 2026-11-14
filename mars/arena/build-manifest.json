@@ -4,19 +4,19 @@
     2
   ],
   "asOf": "2026-11-14T16:34:13.368324+01:00",
-  "gameVersion": "3.2.0",
-  "version": "75f66a055be5",
-  "bytes": 4077697,
+  "gameVersion": "3.3.0",
+  "version": "e4d07e496c0c",
+  "bytes": 5135897,
   "files": [
     {
       "file": "academy.js",
-      "bytes": 10058,
-      "sha256": "5cffa79c26d8124bc87e4254fe6f8fad05e94bb700c0d8d42dda65cafe06e7e8"
+      "bytes": 10667,
+      "sha256": "711373eaa87e0901f7bee014d0d5ed3f26a14eca4158f66c0c09891f43d9c598"
     },
     {
       "file": "app.js",
-      "bytes": 62892,
-      "sha256": "a8bf4095fcfc3b5ebcf95f1a09bfa7170d9c87ee0002b708a2ada6e275c037a5"
+      "bytes": 63438,
+      "sha256": "dd83359f0924b5fb4e18d7577d439fc09859515c4af867f6f7005b1430696aa0"
     },
     {
       "file": "assets/airlock-bg.webp",
@@ -229,14 +229,39 @@
       "sha256": "8d2d5e46d249b00f6d67b363fc9a4da6694595ce501ef084c8c2eea58ed5bf34"
     },
     {
+      "file": "assets/world-airlock.webp",
+      "bytes": 204228,
+      "sha256": "9139cbbc1ae1f344cbdb458a1b39b5dcd5f61ba7324e5193c98d9f303896181f"
+    },
+    {
+      "file": "assets/world-deck.webp",
+      "bytes": 202492,
+      "sha256": "2a0865ba8d8b152dcb03220aa3431253aa575c5f5d9aeebb8a6aefb7bbe1ea26"
+    },
+    {
+      "file": "assets/world-gravity.webp",
+      "bytes": 224862,
+      "sha256": "d7e87340ff278ea8265257f8949b386fbb96604b0da8865a94d92959ee73b04b"
+    },
+    {
+      "file": "assets/world-studio.webp",
+      "bytes": 234134,
+      "sha256": "8fb36a26f3e2cc369da6c6cc82f1f636c07d93e2308b9a77b80968414db2f4ab"
+    },
+    {
+      "file": "assets/world-yard.webp",
+      "bytes": 179828,
+      "sha256": "84c41c575aa8df17c5d0e2eb412b36b7172b826e5cbe5908ebd56c2f0d90e65d"
+    },
+    {
       "file": "assets/yard-bg.webp",
       "bytes": 130682,
       "sha256": "c04f6edce737e634f6d146b22d86f1ca8f6f1bb30587b1dd7b04040c45a010bb"
     },
     {
       "file": "audio.js",
-      "bytes": 12419,
-      "sha256": "518fa65a686cec30024d782ed9a277878fddc6283a27aab93153d9bae4d752f5"
+      "bytes": 12838,
+      "sha256": "50bc3a5083277081d0789b1dd8cfbff38b9e90ec000fb2c43bb50b167b3a43e1"
     },
     {
       "file": "certificate.js",
@@ -250,8 +275,8 @@
     },
     {
       "file": "engine.js",
-      "bytes": 50442,
-      "sha256": "8983c1d7b925e8031381aa51554df9e5686555890f9ef932ef8c05a84d3596c9"
+      "bytes": 56399,
+      "sha256": "c54b9758e942b489c2ddda7759f0c3949d2a71053f8d2d32a083880feba040b5"
     },
     {
       "file": "export.js",
@@ -270,8 +295,8 @@
     },
     {
       "file": "index.html",
-      "bytes": 24604,
-      "sha256": "300e9048b68a6e63b6d2362a452619f0dba204b8357d6ab0dd1e16cfb8c23aa2"
+      "bytes": 25001,
+      "sha256": "a31c6a55943541203ee204ac015ee4453637f49d703a17e971bfdf67363bf233"
     },
     {
       "file": "input.js",
@@ -286,17 +311,17 @@
     {
       "file": "release.js",
       "bytes": 9450,
-      "sha256": "d9c9fb3ae00f2d3b9bc95bf97889a99ed917e9c8b1f6f2ea613b5e12261793d2"
+      "sha256": "4529339012491141093fd4262c4e3b9e0e9a05bcf318d601683618b68c91e9df"
     },
     {
       "file": "renderer.js",
-      "bytes": 48326,
-      "sha256": "6ce5a86417f662c625caf9d7243dc707224d28c8c2098f7890358d82deee4078"
+      "bytes": 52974,
+      "sha256": "60623636b08c159dc87ae8c8214eb8df2c8b152aca34a9d09ece58543286bfbf"
     },
     {
       "file": "responsive.css",
-      "bytes": 46262,
-      "sha256": "3839a2d449fd94d6c0316538e15c101ba27d72969416e0a104088ca1811dbe3a"
+      "bytes": 46327,
+      "sha256": "f0f05796261eea6d198fcb119c12f3c4821a48c31b75c1fa7b926461d9eb736c"
     },
     {
       "file": "share.js",
@@ -310,8 +335,8 @@
     },
     {
       "file": "sw.js",
-      "bytes": 2416,
-      "sha256": "8f626c92e9ec2ad802a6dd9bdd6454a52a62fa70cce7f59171ad478d7193c603"
+      "bytes": 2431,
+      "sha256": "d9cf6e8ab7fa5de7ad53e4191f111865780388a16e1bc51f3274faa4f43ac751"
     },
     {
       "file": "viewport.js",

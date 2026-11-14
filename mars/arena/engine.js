@@ -4,10 +4,10 @@
 
 export const STEP = 1 / 60;
 export const BOUNDS = Object.freeze({
-  left: -920,
-  right: 920,
-  top: -680,
-  bottom: 750,
+  left: -1220,
+  right: 1220,
+  top: -2800,
+  bottom: 1020,
 });
 
 export const CHARACTERS = Object.freeze([
@@ -17,7 +17,7 @@ export const CHARACTERS = Object.freeze([
     role: "RECOVERY CADET",
     color: "#ef664c",
     speed: 370,
-    weight: 0.88,
+    weight: 0.92,
     fireRate: 0.30,
     specialName: "The Return Route",
     description:
@@ -99,10 +99,11 @@ export const ARENAS = Object.freeze([
     description:
       "A steady deck. Two high lanes. An excellent place to leave the ship.",
     platforms: [
-      platform("deck", -510, 230, 1020),
-      platform("port", -470, 15, 300),
-      platform("starboard", 170, 15, 300),
-      platform("gantry", -130, -175, 260),
+      platform("deck", -650, 270, 1300),
+      platform("port", -555, 110, 380),
+      platform("starboard", 175, 110, 380),
+      platform("gantry", -210, -50, 420),
+      platform("crown", -150, -210, 300, "pad"),
     ],
   },
   {
@@ -112,10 +113,11 @@ export const ARENAS = Object.freeze([
     description:
       "Watch the warning lights. The next gravity cycle changes every jump.",
     platforms: [
-      platform("floor", -485, 250, 970),
-      platform("left", -500, 25, 280),
-      platform("right", 220, 25, 280),
-      platform("centre", -145, -155, 290),
+      platform("floor", -630, 270, 1260),
+      platform("left", -550, 110, 370),
+      platform("right", 180, 110, 370),
+      platform("centre", -220, -50, 440),
+      platform("crown", -145, -210, 290),
     ],
   },
   {
@@ -125,10 +127,11 @@ export const ARENAS = Object.freeze([
     description:
       "Drifting salvage. Moving footholds. Keep a recovery jump in reserve.",
     platforms: [
-      platform("moth", -275, 250, 550),
-      platform("left", -590, 40, 270, "drift"),
-      platform("right", 320, 40, 270, "drift"),
-      platform("upper", -135, -165, 270, "drift"),
+      platform("moth", -660, 270, 1320),
+      platform("left", -550, 110, 390, "drift"),
+      platform("right", 160, 110, 390, "drift"),
+      platform("upper", -220, -50, 440, "drift"),
+      platform("crown", -145, -210, 290),
     ],
   },
   {
@@ -138,10 +141,11 @@ export const ARENAS = Object.freeze([
     description:
       "The scenery is almost structurally sound. Flashing platforms are about to drop.",
     platforms: [
-      platform("stage", -490, 250, 980),
-      platform("set-left", -500, 20, 270, "scenery"),
-      platform("set-right", 230, 20, 270, "scenery"),
-      platform("rig", -150, -170, 300),
+      platform("stage", -650, 270, 1300),
+      platform("set-left", -550, 110, 380, "scenery"),
+      platform("set-right", 170, 110, 380, "scenery"),
+      platform("rig", -210, -50, 420),
+      platform("crown", -145, -210, 290),
     ],
   },
   {
@@ -151,10 +155,11 @@ export const ARENAS = Object.freeze([
     description:
       "A warning. A pressure pull. The doors are part of the exercise.",
     platforms: [
-      platform("hangar", -480, 240, 960),
-      platform("left", -450, 10, 270),
-      platform("right", 180, 10, 270),
-      platform("bridge", -130, -180, 260),
+      platform("hangar", -650, 270, 1300),
+      platform("left", -555, 110, 380),
+      platform("right", 175, 110, 380),
+      platform("bridge", -210, -50, 420),
+      platform("crown", -150, -210, 300),
     ],
   },
 ]);
@@ -254,6 +259,11 @@ function fighterFor(id, index, controller, stocks, seed) {
     lastAttacker: -1,
     lastHitTick: -1000,
     assisted: false,
+    recoveryUsed: false,
+    recoveryTime: 0,
+    ledge: null,
+    ledgeCooldown: 0,
+    edgeWarningTick: -600,
     previousInput: inputFrame(),
     input: inputFrame(),
     ai: {
@@ -290,7 +300,7 @@ export function createMatch(options = {}) {
     lesson: options.lesson || null,
     compact: Boolean(options.compact),
     victoryLap: Boolean(options.victoryLap),
-    bounds: options.compact ? {left:-470,right:470,top:-680,bottom:680} : BOUNDS,
+    bounds: options.compact ? {left:-720,right:720,top:-2800,bottom:1000} : BOUNDS,
     cameraFeed: {x:0,width:370},
     scrap: [],
     training: {travel:0,jumps:0,specials:0,points:0,deliveries:0,carrying:false,heavyTime:0,medalTime:0,steadyTime:0,steadyBest:0,capsule:{x:-260,y:12},bayX:170},
@@ -337,8 +347,18 @@ export function createMatch(options = {}) {
     stats: { shots: 0, hits: 0, ringouts: 0, items: 0, elapsed: 0 },
   };
   if(state.compact) for(const p of state.platforms) {
-    p.x*=0.46;p.baseX=p.x;p.previousX=p.x;p.w*=0.46;
-    p.y*=0.78;p.baseY=p.y;p.previousY=p.y;
+    // A vertical fighting space, with full-depth single-jump steps.
+    p.x*=0.48;p.baseX=p.x;p.previousX=p.x;p.w*=0.48;
+  }
+  // Low recovery shelves catch a missed return beneath each end of the hull.
+  // Both sit within one ordinary jump of the main deck and remain active.
+  const hull = state.platforms[0], shelfWidth = state.compact ? 125 : 210;
+  for (const side of [-1, 1]) {
+    const edge = side < 0 ? hull.x : hull.x + hull.w;
+    const x = side < 0 ? edge - shelfWidth + 35 : edge - 35;
+    const y = hull.y + 130;
+    state.platforms.push({...platform(side < 0 ? 'catch-port' : 'catch-starboard', x, y, shelfWidth, 'recovery'),
+      baseX:x,baseY:y,previousX:x,previousY:y,active:true,warning:false});
   }
   if(state.lesson==='salvage') state.nextItem=1;
   const floor = state.platforms[0];
@@ -366,12 +386,12 @@ function spawnProjectile(state, fighter, options = {}) {
   const aimY = fighter.aimY;
   const speed = options.speed || (fighter.id === "sera" ? 1080 : 860);
   const normalDamage = {
-    iona: 7,
-    rook: 9.3,
-    sera: 12.5,
-    tavi: 8,
-    beam: 11,
-    pip: 9.3,
+    iona: 9.75,
+    rook: 10.6,
+    sera: 13.05,
+    tavi: 7.7,
+    beam: 10.3,
+    pip: 10.05,
   };
   const bullet = {
     id: state.nextId++,
@@ -439,7 +459,7 @@ function hit(
         state,
         attacker,
         target.index,
-        16,
+        14,
         1.5,
         sign(attacker.x - target.x),
         0.55,
@@ -459,7 +479,7 @@ function hit(
   const assistance = state.assist && target.controller !== "bot" ? 0.8 : 1;
   target.damage = Math.min(300, target.damage + damage);
   const force =
-    (((170 + target.damage * 3.3) * power) / Math.pow(character.weight, 0.85)) *
+    (((95 + target.damage * 1.6 + target.damage * target.damage * 0.012) * power) / Math.pow(character.weight, 0.85)) *
     assistance;
   target.vx = (trajectory?.aimX ?? direction) * force;
   target.vy = trajectory
@@ -471,6 +491,8 @@ function hit(
   target.invulnerable = 0.16;
   target.lastAttacker = ownerIndex;
   target.lastHitTick = state.tick;
+  target.ledge = null;
+  target.ledgeCooldown = 0.3;
   target.stats.taken += damage;
   if (attacker) {
     attacker.stats.hits += 1;
@@ -590,14 +612,14 @@ function useSpecial(state, fighter) {
       armed: 0.3,
       radius: 45,
     });
-    fighter.damage = Math.max(0, fighter.damage - 6);
-    fighter.specialCooldown = 6;
+    fighter.damage = Math.max(0, fighter.damage - 3.5);
+    fighter.specialCooldown = 7;
     event(state, "item", {
       player: fighter.index,
       x: fighter.x,
       y: fighter.y - 50,
       kind: "repair",
-      amount: 6,
+      amount: 3.5,
     });
   } else if (fighter.id === "beam") {
     fighter.counter = 0.65;
@@ -679,13 +701,13 @@ function updateArena(state) {
         nextIn: 9 - cycle,
       };
     else if (cycle >= 9 && cycle < 14) {
-      gravity = 470;
+      gravity = 570;
       const direction = Math.floor(t / 17) % 2 ? -1 : 1;
       hazard = {
         phase: "active",
         label: "GRAVITY IS DRIFTING",
         direction,
-        strength: 135,
+        strength: 55,
         nextIn: 14 - cycle,
       };
     }
@@ -694,8 +716,8 @@ function updateArena(state) {
       if (p.kind !== "drift") continue;
       const offset =
         p.id === "left" ? 0 : p.id === "right" ? Math.PI : Math.PI / 2;
-      p.x = p.baseX + Math.sin(t * 0.48 + offset) * 66;
-      p.y = p.baseY + Math.sin(t * 0.66 + offset) * 40;
+      p.x = p.baseX + Math.sin(t * 0.48 + offset) * (state.compact ? 15 : 30);
+      p.y = p.baseY + Math.sin(t * 0.66 + offset) * 12;
     }
     hazard = {
       phase: "quiet",
@@ -718,7 +740,8 @@ function updateArena(state) {
         nextIn: 9 - cycle,
       };
     } else if (cycle >= 9 && cycle < 12.5) {
-      p.y = p.baseY + Math.min(500, (cycle - 9) * 180);
+      // The lower deck catches every cadet when the upper set folds away.
+      p.y = p.baseY + Math.min(110, (cycle - 9) * 75);
       p.active = cycle < 10.5;
       hazard = {
         phase: "active",
@@ -750,9 +773,20 @@ function updateArena(state) {
         phase: "active",
         label: "AIRLOCK PULL",
         direction,
-        strength: 270,
+        strength: 110,
         nextIn: 15 - cycle,
       };
+  }
+  const pad = state.platforms.find(p => p.kind === 'pad');
+  if (state.arena === 'deck' && pad) {
+    const cycle = t % 16;
+    if (cycle >= 8 && cycle < 10) {
+      pad.warning = true;
+      hazard = {phase:'warning',label:'PRACTICE PADDING DEPLOYING',direction:0,strength:0,nextIn:10-cycle};
+    } else if (cycle >= 10 && cycle < 14) {
+      pad.y = pad.baseY - 24;
+      hazard = {phase:'active',label:'SOFT LANDING / PAD EXTENDED',direction:0,strength:0,nextIn:14-cycle};
+    } else pad.y = pad.baseY;
   }
   if(state.lesson==='lowg') gravity*=0.8;
   if(state.lesson==='centrifuge') {
@@ -801,6 +835,8 @@ function landOnPlatform(state, fighter, oldY) {
   fighter.jumps = 0;
   fighter.coyote = 0.1;
   fighter.assisted = false;
+  fighter.recoveryUsed = false;
+  fighter.ledge = null;
   if (fighter.stun <= 0 && fighter.action === "tumble")
     setAction(fighter, "idle", 0);
 }
@@ -823,6 +859,8 @@ function ringout(state, fighter) {
     x: clamp(fighter.x, BOUNDS.left, BOUNDS.right),
     y: clamp(fighter.y, BOUNDS.top, BOUNDS.bottom),
     damage: fighter.damage,
+    selfFall: fighter.lastAttacker < 0,
+    ticksSinceHit: state.tick - fighter.lastHitTick,
     stocks: fighter.stocks,
   });
   fighter.vx = 0;
@@ -856,6 +894,10 @@ function recoverFighter(state, fighter) {
   fighter.grounded = false;
   fighter.platformId = null;
   fighter.jumps = 0;
+  fighter.recoveryUsed = false;
+  fighter.recoveryTime = 0;
+  fighter.ledge = null;
+  fighter.ledgeCooldown = 0;
   fighter.specialCooldown = Math.min(fighter.specialCooldown, 1);
   fighter.previousInput = inputFrame();
   fighter.lastAttacker = -1;
@@ -872,6 +914,67 @@ function applyRecoil(fighter, force) {
   fighter.vx -= fighter.aimX * force;
   // Keep grounded footing. The existing airborne kick follows the shot vector.
   if (!fighter.grounded) fighter.vy -= fighter.aimY * force;
+}
+
+function useRecovery(state, fighter) {
+  const floor = state.platforms[0];
+  const homeX = floor ? clamp(fighter.x, floor.x + 65, floor.x + floor.w - 65) : 0;
+  fighter.recoveryUsed = true;
+  fighter.recoveryTime = 0.55;
+  fighter.recoveryTargetX = homeX;
+  fighter.vy = -670;
+  fighter.vx = clamp((homeX - fighter.x) * 3, -340, 340);
+  fighter.ledge = null;
+  fighter.ledgeCooldown = 0.12;
+  fighter.jumpBuffer = 0;
+  if (fighter.index === 0) state.training.recoveryMove = true;
+  if (fighter.id === 'iona') fighter.grapple = {x:homeX,y:(floor?.y ?? fighter.y)-15,life:0.45};
+  setAction(fighter, 'jump', 0.3);
+  event(state, 'recovery', {player:fighter.index,kind:fighter.id,x:fighter.x,y:fighter.y});
+}
+
+function grabLedge(state, fighter) {
+  if (fighter.ledgeCooldown > 0 || fighter.stun > 0 || fighter.vy < -120 || Math.abs(fighter.vx) > 520) return;
+  for (const p of state.platforms) {
+    if (!p.active || p.warning || fighter.y < p.y - 8 || fighter.y > p.y + 150) continue;
+    const side = fighter.x < p.x + p.w / 2 ? -1 : 1;
+    const edge = side < 0 ? p.x : p.x + p.w;
+    if (Math.abs(fighter.x - edge) > 125) continue;
+    fighter.ledge = {id:p.id,side,time:0};
+    fighter.grounded = false;
+    fighter.platformId = null;
+    fighter.x = edge + side * 18;
+    fighter.y = p.y + 70;
+    fighter.vx = 0;
+    fighter.vy = 0;
+    fighter.facing = -side;
+    if (fighter.index === 0) state.training.ledgeGrab = true;
+    event(state, 'ledge', {player:fighter.index,x:edge,y:p.y});
+    return;
+  }
+}
+
+function holdLedge(state, fighter, input, jumpPressed) {
+  const ledge = fighter.ledge;
+  const p = state.platforms.find(p => p.id === ledge.id && p.active);
+  if (!p) {fighter.ledge = null;return false;}
+  ledge.time += STEP;
+  fighter.x = (ledge.side < 0 ? p.x : p.x + p.w) + ledge.side * 18;
+  fighter.y = p.y + 70;
+  fighter.vx = 0;fighter.vy = 0;
+  setAction(fighter, 'jump', 0.1);
+  if (jumpPressed || input.move * ledge.side < -0.2 || (Math.abs(input.move) < .1 && ledge.time > .6)) {
+    fighter.x = clamp(fighter.x - ledge.side * 56, p.x + 30, p.x + p.w - 30);
+    fighter.y = p.y;
+    fighter.grounded = true;
+    fighter.platformId = p.id;
+    fighter.jumps = 0;fighter.recoveryUsed = false;
+    fighter.coyote = .1;fighter.ledgeCooldown = .35;fighter.ledge = null;
+    fighter.jumpBuffer = 0;
+    if (fighter.index === 0) state.training.ledgeClimb = true;
+    event(state, 'climb', {player:fighter.index,x:fighter.x,y:fighter.y});
+  }
+  return true;
 }
 
 function updateFighter(state, fighter, suppliedInput) {
@@ -912,12 +1015,15 @@ function updateFighter(state, fighter, suppliedInput) {
     "counter",
     "invulnerable",
     "actionTime",
+    "recoveryTime",
+    "ledgeCooldown",
   ])
     fighter[timer] = Math.max(0, (fighter[timer] || 0) - STEP);
   if (fighter.grapple) {
     fighter.grapple.life -= STEP;
     if (fighter.grapple.life <= 0) fighter.grapple = null;
   }
+  if (fighter.ledge && holdLedge(state, fighter, input, jumpPressed)) return;
   if (fighter.grounded) {
     const support = state.platforms.find(
       (p) => p.id === fighter.platformId && p.active,
@@ -982,6 +1088,7 @@ function updateFighter(state, fighter, suppliedInput) {
         fighter.vy/=1+(fighter.medalMass||0)*0.1;
         fighter.jumps += 1;
         if(fighter.index===0) state.training.jumps++;
+        if (fighter.index === 0 && fighter.jumps > 1) state.training.airJump = true;
         fighter.grounded = false;
         fighter.platformId = null;
         fighter.coyote = 0;
@@ -995,6 +1102,10 @@ function updateFighter(state, fighter, suppliedInput) {
         });
       }
     }
+    // A fresh press after the last air jump spends the universal recovery move.
+    // It has its own once-per-flight resource, independent of each signature.
+    if (jumpPressed && !canJump && !fighter.recoveryUsed && fighter.charge <= 0)
+      useRecovery(state, fighter);
     if (specialPressed && fighter.specialCooldown <= 0 && fighter.charge <= 0)
       useSpecial(state, fighter);
     if (input.shoot && fighter.cooldown <= 0 && fighter.charge <= 0) {
@@ -1020,6 +1131,8 @@ function updateFighter(state, fighter, suppliedInput) {
       applyRecoil(fighter, 160);
     }
   }
+  if (fighter.recoveryTime > 0 && fighter.stun <= 0)
+    fighter.vx = clamp((fighter.recoveryTargetX - fighter.x) * 5, -480, 480);
   if (!fighter.grounded) fighter.vy += state.gravity * STEP;
   fighter.vx += state.hazard.direction * state.hazard.strength * STEP;
   fighter.vx = clamp(fighter.vx, -1550, 1550);
@@ -1027,7 +1140,21 @@ function updateFighter(state, fighter, suppliedInput) {
   const oldY = fighter.y;
   fighter.x += fighter.vx * STEP;
   fighter.y += fighter.vy * STEP;
+  if (fighter.grounded) {
+    const support = state.platforms.find(p => p.id === fighter.platformId && p.active);
+    if (!support || fighter.x < support.x - 10 || fighter.x > support.x + support.w + 10) {
+      fighter.grounded = false;fighter.platformId = null;
+    }
+  }
   if (!fighter.grounded) landOnPlatform(state, fighter, oldY);
+  if (!fighter.grounded) grabLedge(state, fighter);
+  const bounds = state.bounds;
+  const nearBoundary = fighter.x < bounds.left + 190 || fighter.x > bounds.right - 190 ||
+    fighter.y > bounds.bottom - 260 || fighter.y < bounds.top + 170;
+  if (nearBoundary && state.tick - fighter.edgeWarningTick > 180) {
+    fighter.edgeWarningTick = state.tick;
+    event(state, 'edge-warning', {player:fighter.index,x:fighter.x,y:fighter.y});
+  }
   // Human assistance supplies one modest safety nudge per airborne excursion.
   if (
     state.assist &&
@@ -1492,7 +1619,7 @@ export function botInput(state, index) {
       descending &&
       fighter.y > -360 &&
       state.tick - ai.lastJump > 24 &&
-      fighter.jumps < fighter.maxJumps;
+      (fighter.jumps < fighter.maxJumps || !fighter.recoveryUsed);
     special =
       descending &&
       fighter.y > -360 &&
@@ -1556,6 +1683,7 @@ export function botInput(state, index) {
     )
       special = true;
   }
+  if (fighter.ledge) {move = -fighter.ledge.side;jump = true;}
   // A visible, armed floor trap is a jumpable obstacle for every cadet. The
   // same reaction interval still applies; no unpublished input is inspected.
   const approachingTrap = state.traps.find(trap =>

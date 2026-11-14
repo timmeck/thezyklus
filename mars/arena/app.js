@@ -7,7 +7,7 @@ import {
   snapshot,
   finishMatch,
 } from "./engine.js";
-import { Renderer, PLAYER_COLORS, preloadArt } from "./renderer.js";
+import { Renderer, PLAYER_COLORS, ARENA_BACKGROUNDS, preloadArt } from "./renderer.js";
 import { InputManager } from "./input.js";
 import { Sound } from "./audio.js";
 import RELEASE from "./release.js";
@@ -662,10 +662,10 @@ function renderHud(force = false) {
   $("#lesson-objective").hidden=!['academy','daily','volume'].includes(mode);
   if(['academy','daily'].includes(mode))$("#lesson-objective").innerHTML="<b>"+(mode==='daily'?'DAILY / ':'')+COURSE[mode==='daily'?dailyDrill.lessonIndex:lessonIndex].title.toUpperCase()+"</b>"+(mode==='daily'?dailyProgressText(match,dailyDrill):progressText(match));
   if(mode==='volume')$('#lesson-objective').textContent=volumeDrill.title+' / '+Math.min(volumeDrill.goal,match.training.steadyTime||0).toFixed(1)+' / '+volumeDrill.goal+' s';
-  $("#lesson-coach").hidden=mode!=="academy"||match.tick>1200;
-  if(mode==="academy"&&match.tick<=1200){
+  $("#lesson-coach").hidden=mode!=="academy"||(lessonIndex!==0&&match.tick>1200);
+  if(mode==="academy"&&(lessonIndex===0||match.tick<=1200)){
     const t=match.training;
-    $("#lesson-coach").textContent=lessonIndex===0? t.travel<110?"MOVE / A D · left stick":t.jumps<2?"JUMP / SPACE · A on controller · JUMP touch":!t.aimUp?"AIM UP / drag FIRE ↑ · right stick ↑ · W + F":!t.aimDown?"AIM DOWN / drag FIRE ↓ · right stick ↓ · S + F":match.fighters[0].stats.hits<3?"LAND 3 HITS / aim at a cadet, then fire":t.specials<1?"SPECIAL / G · B on controller · SPECIAL touch":"OBJECTIVES MET / Practise until the bell.":COURSE[lessonIndex].order;
+    $("#lesson-coach").textContent=lessonIndex===0? t.travel<110?"MOVE / A D · left stick":!t.airJump?"AIR JUMP / Release JUMP, then press it again in the air":!t.recoveryMove?"RECOVER / Use every air jump, then press JUMP once more":!t.ledgeClimb?"CLIMB / Walk off the deck edge, catch it, then steer back in":!t.aimUp?"AIM UP / drag FIRE ↑ · right stick ↑ · W + F":!t.aimDown?"AIM DOWN / drag FIRE ↓ · right stick ↓ · S + F":match.fighters[0].stats.hits<3?"LAND 3 HITS / aim at a cadet, then fire":t.specials<1?"SPECIAL / G · B on controller · SPECIAL touch":"OBJECTIVES MET / Practise until the bell.":COURSE[lessonIndex].order;
   }
   const seconds = Math.ceil(match.time);
   $("#clock").textContent =
@@ -1072,8 +1072,8 @@ function frame(now) {
     dt = Math.min(rawDelta, 0.08);
   lastFrame = now;
   if(playing&&!paused&&!document.hidden&&rawDelta>.025&&rawDelta<.15){renderer.slowFrames=(renderer.slowFrames||0)+1;}
-  else renderer.slowFrames=Math.max(0,(renderer.slowFrames||0)-.5);
-  if(renderer.slowFrames>90&&renderer.ratio>1){renderer.ratioCap=1;renderer.reduced=true;renderer.resize();}
+  else renderer.slowFrames=Math.max(0,(renderer.slowFrames||0)-.03);
+  if(renderer.slowFrames>12&&renderer.ratio>1){renderer.ratioCap=1;renderer.reduced=true;renderer.resize();}
   input.pollGamepads();
   if (!document.hidden) {
     if (playing) {
@@ -1340,6 +1340,11 @@ if ("requestIdleCallback" in window)
   requestIdleCallback(preloadArt, { timeout: 1000 });
 else setTimeout(preloadArt, 100);
 if ("serviceWorker" in navigator) {
+  // During an update the outgoing worker can receive the first painting request.
+  // Prime the newly controlling worker with the arena already on screen.
+  navigator.serviceWorker.addEventListener('controllerchange', () => {
+    fetch(ARENA_BACKGROUNDS[match?.arena || 'deck'], {cache:'reload'}).catch(() => {});
+  });
   navigator.serviceWorker
     .register("sw.js", { scope: "./" })
     .then(async (registration) => {

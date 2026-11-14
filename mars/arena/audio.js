@@ -214,6 +214,13 @@ export class Sound {
         const motif={iona:[320,960,640],rook:[220,660,150],sera:[100,100,800],tavi:[720,440,880],beam:[523,659,784],pip:[440,660,1046]}[event.kind]||[250,500,700];
         motif.forEach((f,i)=>this.tone(f,f*(event.kind==='rook'?0.7:1.1),event.kind==='sera'?0.2:0.12,0.08,event.kind==='rook'?'sawtooth':'triangle',i*0.09));
         if(event.kind==='sera')this.burst(0.14,0.12,1000);
+      } else if (event.type === 'edge-warning') {
+        this.tone(880, 660, 0.12, 0.11, 'triangle');
+        this.tone(880, 660, 0.12, 0.09, 'triangle', 0.2);
+      } else if (event.type === 'ledge' || event.type === 'climb') {
+        this.tone(event.type === 'ledge' ? 280 : 420, 680, 0.12, 0.07, 'triangle');
+      } else if (event.type === 'recovery') {
+        this.tone(230, 920, 0.3, 0.10, 'triangle');
       } else if (event.type === "ringout") {
         this.tone(680, 65, 0.38, 0.18);
         this.tone(350, 110, 0.32, 0.12, "sine", 0.04);
