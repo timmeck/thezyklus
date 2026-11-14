@@ -2,9 +2,9 @@
   "available": [
     1
   ],
-  "asOf": "2026-11-14T12:09:18.458729+01:00",
-  "version": "12c719ddcf80",
-  "bytes": 3575015,
+  "asOf": "2026-11-14T13:58:30.778898+01:00",
+  "version": "b496aee1c63a",
+  "bytes": 3859544,
   "files": [
     {
       "file": "academy.js",
@@ -110,6 +110,11 @@
       "file": "assets/iona.webp",
       "bytes": 40146,
       "sha256": "8eb9d28721b27db0080dc07f0df86229301c3e0e2b3e5ca6c343533686d396e6"
+    },
+    {
+      "file": "assets/out-of-orbit-og-1200x630.webp",
+      "bytes": 283708,
+      "sha256": "a65c9ed4f4f7a78b30e48f382cac65057c275a0e5e95c3bd731b7ba2a2a19f3c"
     },
     {
       "file": "assets/pip-atlas.webp",
@@ -233,8 +238,8 @@
     },
     {
       "file": "index.html",
-      "bytes": 19614,
-      "sha256": "2a67d6c940bfc3c2018fc390588eb198b7d62695a1bcc5b224dc2174cb505443"
+      "bytes": 20395,
+      "sha256": "6b4fa61ee44393ae70302ab0b22154a81e2c5912feb3eb20cad1bf58bcf06fce"
     },
     {
       "file": "input.js",
@@ -249,7 +254,7 @@
     {
       "file": "release.js",
       "bytes": 527,
-      "sha256": "8115231550ba74b290a87c7d27e66a3fdf22af10bed1b0065c4439640e4bb7f7"
+      "sha256": "08da6f040a75acac90fbebf8cd480217fad6b8652e21d3bde1a9fc7c624ad87b"
     },
     {
       "file": "renderer.js",
@@ -263,8 +268,8 @@
     },
     {
       "file": "sw.js",
-      "bytes": 2144,
-      "sha256": "e050cbe12fc58767b2f1a358ab05b04c4c7ec20c4e4e2e71090b19cbc59181b3"
+      "bytes": 2184,
+      "sha256": "6d38344c9ae48f740afbb670f9b3e20aa1508c1e647346bd9d3856bea538f370"
     }
   ]
 }

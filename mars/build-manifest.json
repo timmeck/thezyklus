@@ -1,11 +1,11 @@
 {
-  "asOf": "2026-11-09T18:06:25.566437+01:00",
+  "asOf": "2026-11-14T14:02:59.694958+01:00",
   "review": false,
   "available": [
     1,
     2
   ],
-  "totalBytes": 17644790,
+  "totalBytes": 18799538,
   "files": [
     {
       "file": "app.js",
@@ -20,7 +20,7 @@
     {
       "file": "data.js",
       "bytes": 18046,
-      "sha256": "ba7b311e93a86e5f715f9f9a0d138c280347c6d39f92ea936854bb7365b23ede"
+      "sha256": "174f855da1ea2acb3d7e0374af2d4bd959269e11533fe591912a6f0d9465d4f4"
     },
     {
       "file": "game.js",
@@ -29,8 +29,8 @@
     },
     {
       "file": "index.html",
-      "bytes": 15340,
-      "sha256": "8f61b1e9c96bb81fe336514ae20edf409ccdcb3f56c8351432feb895d94dcd1e"
+      "bytes": 16515,
+      "sha256": "304f4b176428d1a5e87b5b4e0f240329d9aa6859eb644ae7ebdb600af843698e"
     },
     {
       "file": "manga.js",
@@ -49,13 +49,13 @@
     },
     {
       "file": "style.css",
-      "bytes": 54356,
-      "sha256": "cf22573792c0a76e6bed2154c4df6ae58d5e0c197815198b555ec619d8b1ee9b"
+      "bytes": 55735,
+      "sha256": "157f0fc1d3df52d0c35dee99113bc1c715429fe00e9c2525284ea203b772891b"
     },
     {
       "file": "sw.js",
       "bytes": 1201,
-      "sha256": "663e058f914749b6dfd6a5fbb595cf716d5ac0fa003d66b3931c7adfb57689fc"
+      "sha256": "fb591430ae549203d592193aa4d3690096c62dc1d7a66d2b971868ffd944b7ff"
     },
     {
       "file": "assets/Barlow-400-latin.woff2",
@@ -111,6 +111,31 @@
       "file": "assets/iona.webp",
       "bytes": 117864,
       "sha256": "969a7e21800e1a9a8d2a3cef464dc1edc2cd118ee4674624c28eb1c6416b5d23"
+    },
+    {
+      "file": "assets/out-of-orbit-1000.webp",
+      "bytes": 163164,
+      "sha256": "9089b518eb1de65f279713fc3ed5eb6173eb503021b668903a9a0a9bc1af3d68"
+    },
+    {
+      "file": "assets/out-of-orbit-1600.webp",
+      "bytes": 346302,
+      "sha256": "c14e242bb199070e575d0e8b8867916fec7e265b1dbb6257104fbf020584f907"
+    },
+    {
+      "file": "assets/out-of-orbit-640.webp",
+      "bytes": 76776,
+      "sha256": "1e9f5c47b68f268220b4ed1ab065934eafb3e51a33fdd7655fe4e04c372371ed"
+    },
+    {
+      "file": "assets/out-of-orbit-portrait-1000.webp",
+      "bytes": 367762,
+      "sha256": "7db584186f5725c063fe28989632776dfa4954bb3356ce2423aafe93d18a2b43"
+    },
+    {
+      "file": "assets/out-of-orbit-portrait-640.webp",
+      "bytes": 198190,
+      "sha256": "96a4146db46ea26be9c3be16133c61fab750d4387e04f73d16d77e3b17ad4730"
     },
     {
       "file": "assets/pip.webp",
