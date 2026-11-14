@@ -96,12 +96,18 @@ export class Renderer {
     if (box.width < 1 || box.height < 1) return;
     this.width = box.width;
     this.height = box.height;
+    const css=getComputedStyle(document.documentElement),safe=name=>parseFloat(css.getPropertyValue(name))||0;
+    const touch=document.documentElement.dataset.input==='touch',portrait=this.width<this.height;
+    this.safeTop=safe('--safe-top')+(portrait?112:74);
+    this.safeLeft=safe('--safe-left');this.safeRight=safe('--safe-right');
+    this.safeBottom=safe('--safe-bottom')+(touch?(portrait?128:104):28);
     this.ratio = Math.min(
       devicePixelRatio || 1,
       this.preview ? 1 : matchMedia("(pointer:coarse)").matches ? 1.25 : 1.5,
+      this.ratioCap||2,
     );
-    this.canvas.width = Math.round(this.width * this.ratio);
-    this.canvas.height = Math.round(this.height * this.ratio);
+    const width=Math.round(this.width*this.ratio),height=Math.round(this.height*this.ratio);
+    if(this.canvas.width!==width||this.canvas.height!==height){this.canvas.width=width;this.canvas.height=height;this.cameraInitialized=false;}
   }
 
   reset() {
@@ -227,11 +233,11 @@ export class Renderer {
       maximumX = Math.max(this.preview ? 510 : 300, ...xs) + 90;
     const minimumY = Math.min(-175, ...ys) - 70,
       maximumY = Math.max(250, ...ys) + 45;
-    const portrait = (!this.preview && matchMedia("(max-width:600px) and (orientation:portrait)").matches) || this.width / this.height < 0.8;
+    const portrait = this.width / this.height < 1;
     const worldWidth = maximumX - minimumX;
     const worldHeight = maximumY - minimumY;
-    const insetTop = !this.preview && this.height < 430 ? 58 : 20;
-    const insetBottom = !this.preview && this.height < 430 ? 15 : 10;
+    const insetTop = this.preview?20:this.safeTop;
+    const insetBottom = this.preview?10:this.safeBottom;
     let targetScale = Math.min(
       this.width / (worldWidth + (portrait ? 0 : 40)),
       (this.height - insetTop - insetBottom) / worldHeight,
@@ -240,7 +246,7 @@ export class Renderer {
     const player=state.fighters.find(f=>f.controller!=="bot"&&f.alive&&f.respawn<=0)||visible[0];
     if(portrait && !this.preview && player){
       // Reserve a readable silhouette even at the widest emergency framing.
-      const minScale=Math.max(innerHeight/8/86,this.height/600);
+      const minScale=this.height/8/86;
       const incoming=state.projectiles.some(p=>this.incoming(p,player));
       const bounds=state.bounds||BOUNDS;
       const edge=visible.some(f=>f.x>bounds.right-150||f.x<bounds.left+150||f.y>bounds.bottom-240||f.y<bounds.top+170);
@@ -254,7 +260,7 @@ export class Renderer {
       this.camera.minimumScale=minScale;
       this.camera.danger=danger;
     }
-    if(!portrait&&!this.preview&&this.height<430)targetScale=Math.max(targetScale,0.52);
+    if(!this.preview)targetScale=Math.max(targetScale,this.height/8/86);
     let targetY =
       (minimumY + maximumY) / 2 -
       (insetTop - insetBottom) / 2 / Math.max(targetScale, 0.1);
@@ -266,12 +272,12 @@ export class Renderer {
     this.camera.x = lerp(this.camera.x, targetX, smoothing);
     this.camera.y = lerp(this.camera.y, targetY, smoothing);
     this.camera.scale = lerp(this.camera.scale, targetScale, smoothing);
-    if(portrait&&!this.preview&&player){
+    if(!this.preview&&player){
       // Safety bounds outrank smoothing: never lose the local cadet on a fast hit.
-      this.camera.scale=Math.max(this.camera.minimumScale,this.camera.scale);
-      const s=this.camera.scale,margin=38/s;
-      this.camera.x=clamp(this.camera.x,player.x-this.width/(2*s)+margin,player.x+this.width/(2*s)-margin);
-      const safeTop=state.lesson?86:28,safeBottom=state.lesson?50:22;
+      this.camera.scale=Math.max(this.height/8/86,this.camera.scale);
+      const s=this.camera.scale,margin=Math.max(38,60*s);
+      this.camera.x=clamp(this.camera.x,player.x-this.width/(2*s)+(margin+this.safeRight)/s,player.x+this.width/(2*s)-(margin+this.safeLeft)/s);
+      const safeTop=this.safeTop,safeBottom=this.safeBottom;
       this.camera.y=clamp(this.camera.y,player.y-this.height/(2*s)+safeBottom/s,player.y-116+this.height/(2*s)-safeTop/s);
     }
   }

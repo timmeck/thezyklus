@@ -57,10 +57,10 @@ function editable(target) {
   );
 }
 
-function dialogOpen() {
+function dialogOpen(allowPause = false) {
   return Boolean(
     globalThis.document?.querySelector(
-      'dialog[open], [role="dialog"][aria-modal="true"]',
+      'dialog[open], [role="dialog"][aria-modal="true"]' + (allowPause ? ':not(#pause-overlay)' : ''),
     ),
   );
 }
@@ -77,9 +77,10 @@ function stick(value, deadzone = 0.18) {
 }
 
 export class InputManager {
-  constructor({ onPause = () => {}, onGamepadChange = () => {} } = {}) {
+  constructor({ onPause = () => {}, onGamepadChange = () => {}, onInputMethod = () => {} } = {}) {
     this.onPause = onPause;
     this.onGamepadChange = onGamepadChange;
+    this.onInputMethod = onInputMethod;
     this.active = false;
     this.suspended = Boolean(globalThis.document?.hidden);
     this.keys = new Set();
@@ -94,7 +95,7 @@ export class InputManager {
         !this.active ||
         this.suspended ||
         editable(event.target) ||
-        dialogOpen()
+        dialogOpen(event.code === "Escape" || event.code === "KeyP")
       )
         return;
       if (event.code === "Escape" || event.code === "KeyP") {
@@ -103,6 +104,7 @@ export class InputManager {
         return;
       }
       if (!GAMEPLAY_KEYS.has(event.code)) return;
+      this.onInputMethod('keyboard');
       event.preventDefault();
       this.keys.add(event.code);
     });
@@ -167,6 +169,7 @@ export class InputManager {
     }
     this.gamepads = new Map(pads.map((pad) => [pad.index, pad]));
     for (const pad of pads) {
+      if(this.active&&(pad.buttons?.some(b=>b.pressed)||pad.axes?.some(v=>Math.abs(v)>.25)))this.onInputMethod('gamepad',pad.index);
       const menu = buttonDown(pad, 9);
       const previous = this.menuDown.get(pad.index) || false;
       this.menuDown.set(pad.index, menu);
@@ -175,7 +178,7 @@ export class InputManager {
         !previous &&
         this.active &&
         !this.suspended &&
-        !dialogOpen() &&
+        !dialogOpen(true) &&
         !editable(globalThis.document?.activeElement)
       )
         this.onPause();

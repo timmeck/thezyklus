@@ -16,6 +16,7 @@ import {FleetScreen,renderCourse} from './fleet.js';
 import {VoiceDirector} from './voice.js';
 import {getDailyDrill,readDailyBest,saveDailyResult,dailyShareText,dailyPNG,assessDailyDrill,dailyProgressText} from './daily.js';
 import {sharePrepared,PLAY_URL} from './share.js';
+import {ArenaViewport} from './viewport.js';
 
 applyVolumeContent(RELEASE);
 
@@ -110,6 +111,13 @@ sound.set(record.sound);
 const fleet=new FleetScreen(sound,RELEASE.voices);
 const director=new VoiceDirector(sound,RELEASE.voiceLines,{subtitle:line=>{ $('#combat-comms').classList.toggle('voice-active',line.audioAvailable===true);broadcast(line.text,{source:line.speaker.toUpperCase(),duration:line.durationMs||Math.max(3000,line.text.split(/\s+/).length*350)}); }});
 const input = new InputManager({
+  onInputMethod: (method,padIndex) => {
+    viewport.setMethod(method);
+    if(playing&&mode!=='local'&&matchBindings.length){
+      if(method==='gamepad'&&Number.isInteger(padIndex))matchBindings[0]='gamepad'+padIndex;
+      else if(method==='keyboard')matchBindings[0]='keyboard1';
+    }
+  },
   onPause: () => {
     if (playing) paused ? resumeMatch() : pauseMatch();
   },
@@ -127,6 +135,40 @@ const previewRenderer = new Renderer($("#preview"), {
   reduced: record.reduced,
 });
 const renderer = new Renderer($("#arena-canvas"), { reduced: record.reduced });
+let powerSaving=false;
+const viewport=new ArenaViewport({
+  onResize:()=>{renderer.resize();previewRenderer.resize();},
+  onRotate:()=>{resetTouchControls();pauseMatch('The arena turned with you. Ready when you are.');renderer.cameraInitialized=false;},
+  onMethod:method=>{resetTouchControls();if(playing&&mode!=='local'&&method==='touch')matchBindings[0]='keyboard1';},
+  onReduced:enabled=>setReduced(enabled),
+});
+$('#effects-setting').checked=record.reduced;
+function showLobbyPanel(panel){
+  $('#lobby').dataset.panel=panel;
+  for(const button of all('.deck-nav [data-panel]'))button.setAttribute('aria-pressed',String(button.dataset.panel===panel));
+  previewRenderer.resize();
+}
+for(const button of all('.deck-nav [data-panel]'))button.addEventListener('click',()=>showLobbyPanel(button.dataset.panel));
+for(const button of all('.setup-tabs [data-setup]'))button.addEventListener('click',()=>{
+  $('#lobby').dataset.setup=button.dataset.setup;
+  for(const choice of all('.setup-tabs [data-setup]'))choice.setAttribute('aria-pressed',String(choice===button));
+});
+$('.cover-jump').addEventListener('click',e=>{e.preventDefault();showLobbyPanel('setup');});
+$('.skip-link').addEventListener('click',()=>showLobbyPanel('setup'));
+$('#settings-open').addEventListener('click',()=>$('#settings').showModal());
+$('#settings-game').addEventListener('click',()=>$('#settings').showModal());
+// Use the browser's exposed power signals; no unsupported battery mode is guessed.
+const connection=navigator.connection;
+function applyPowerSaving(enabled){
+  powerSaving=enabled;renderer.reduced=record.reduced||enabled;previewRenderer.reduced=record.reduced||enabled;
+  renderer.ratioCap=enabled?1:undefined;renderer.resize();
+}
+if(connection?.saveData)applyPowerSaving(true);
+navigator.getBattery?.().then(battery=>{
+  const update=()=>applyPowerSaving(Boolean(connection?.saveData||(!battery.charging&&battery.level<=.2)));
+  battery.addEventListener('levelchange',update);battery.addEventListener('chargingchange',update);update();
+}).catch(()=>{});
+matchMedia('(prefers-reduced-motion: reduce)').addEventListener('change',e=>{if(e.matches)setReduced(true);});
 const performanceSamples = [];
 const runLog = [];
 
@@ -459,7 +501,11 @@ async function startMatch({ rematch = false, advance = false } = {}) {
   runLog.length = 0;
   $("#lobby").hidden = true;
   $("#game").hidden = false;
+  $('#game').classList.remove('is-paused');
+  document.documentElement.classList.add('arena-playing');
+  viewport.schedule();$('#home-screen-tip').hidden=true;
   $("#pause-overlay").hidden = true;
+  $("#pause-overlay").removeAttribute("aria-modal");
   document.body.style.overflow = "hidden";
   $("#match-label").textContent = ARENAS.find(
     (arena) => arena.id === match.arena,
@@ -502,6 +548,7 @@ function pauseMatch(
 ) {
   if (!playing || paused || resultShown) return;
   paused = true;
+  $('#home-screen-tip').hidden=true;
   accumulator = 0;
   input.clear();
   resetTouchControls();
@@ -509,6 +556,8 @@ function pauseMatch(
   director.stop();
   $("#pause-reason").textContent = reason;
   $("#pause-overlay").hidden = false;
+  $('#pause-overlay').setAttribute('role','dialog');$('#pause-overlay').setAttribute('aria-modal','true');$('#pause-overlay').setAttribute('aria-label','Training paused');
+  $('#game').classList.add('is-paused');
   $("#resume").focus({ preventScroll: true });
 }
 
@@ -518,6 +567,8 @@ function resumeMatch() {
   accumulator = 0;
   lastFrame = performance.now();
   $("#pause-overlay").hidden = true;
+  $("#pause-overlay").removeAttribute("aria-modal");
+  $('#game').classList.remove('is-paused');
   input.clear();
   input.setActive(true);
   sound.resume();
@@ -525,6 +576,7 @@ function resumeMatch() {
 }
 
 function returnToLobby() {
+  const destination=resultShown&&mode==='quick'?'course':'setup';
   clearTimeout(finishTimer);
   clearTimeout(broadcastTimer);
   playing = false;
@@ -533,7 +585,10 @@ function returnToLobby() {
   $("#result").close();
   $("#game").hidden = true;
   $("#lobby").hidden = false;
+  document.documentElement.classList.remove('arena-playing');
+  $('#game').classList.remove('is-paused');$('#home-screen-tip').hidden=true;
   $("#pause-overlay").hidden = true;
+  $("#pause-overlay").removeAttribute("aria-modal");
   $("#broadcast").classList.remove("visible");
   input.clear();
   resetTouchControls();
@@ -549,7 +604,7 @@ function returnToLobby() {
   refreshCourse();
   refreshDaily();
   previewRenderer.resize();
-  $("#start").focus({ preventScroll: true });
+  showLobbyPanel(destination);$(destination==='course'?'#course-map button:not(:disabled)':'#start').focus({ preventScroll: true });
 }
 
 function renderHud(force = false) {
@@ -658,6 +713,7 @@ function processEvents(events) {
 function finishRound() {
   if (resultShown) return;
   resultShown = true;
+  setTimeout(()=>viewport.showHomeTip(),1200);
   input.setActive(false);
   input.clear();
   record.rounds++;
@@ -883,8 +939,9 @@ function setSound(enabled) {
 
 function setReduced(enabled) {
   record.reduced = enabled;
-  renderer.reduced = enabled;
-  previewRenderer.reduced = enabled;
+  renderer.reduced = enabled||powerSaving;
+  previewRenderer.reduced = enabled||powerSaving;
+  $('#effects-setting').checked=enabled;
   $("#reduced-motion").checked = enabled;
   saveRecord();
 }
@@ -922,6 +979,7 @@ function bindTouch() {
     if (pointer !== null) return;
     pointer = event.pointerId;
     stick.setPointerCapture(pointer);
+    viewport.pulse(8);
     update(event);
   });
   stick.addEventListener("pointermove", (event) => {
@@ -945,6 +1003,7 @@ function bindTouch() {
       button.setPointerCapture(event.pointerId);
       button.classList.add("active");
       input.setTouch(action, true);
+      viewport.pulse();
     });
     for (const name of ["pointerup", "pointercancel", "lostpointercapture"])
       button.addEventListener(name, (event) => {
@@ -968,6 +1027,9 @@ function frame(now) {
   const rawDelta = (now - lastFrame) / 1000,
     dt = Math.min(rawDelta, 0.08);
   lastFrame = now;
+  if(playing&&!paused&&!document.hidden&&rawDelta>.025&&rawDelta<.15){renderer.slowFrames=(renderer.slowFrames||0)+1;}
+  else renderer.slowFrames=Math.max(0,(renderer.slowFrames||0)-.5);
+  if(renderer.slowFrames>90&&renderer.ratio>1){renderer.ratioCap=1;renderer.reduced=true;renderer.resize();}
   input.pollGamepads();
   if (!document.hidden) {
     if (playing) {
@@ -1079,7 +1141,7 @@ function refreshCourse(){
   bonus.hidden=record.lessons.filter(l=>l?.passed).length!==7;
   renderCourse(record,lessonIndex,index=>{
     lessonIndex=index;chooseMode('academy');refreshCourse();
-    $('#setup').scrollIntoView({behavior:record.reduced?'instant':'smooth',block:'start'});
+    showLobbyPanel('setup');$('#start').focus({preventScroll:true});
   });
 }
 $('#quick-start').addEventListener('click',()=>{
@@ -1180,9 +1242,7 @@ for (const button of all("[data-close]"))
   );
 $("#fullscreen").addEventListener("click", async () => {
   try {
-    if (document.fullscreenElement) await document.exitFullscreen();
-    else if($('#game').requestFullscreen)await $('#game').requestFullscreen();
-    else{document.body.classList.toggle('focus-view');$('#game').classList.toggle('focus-view');notify('For a full-screen iPhone view, add MARS to your Home Screen. Rotate any time.');}
+    await viewport.fullscreen();
   } catch {
     notify("Fullscreen is unavailable in this browser.");
   }
@@ -1209,9 +1269,11 @@ document.addEventListener("visibilitychange", () => {
   if (document.hidden) pauseMatch("The broadcast paused while you were away.");
   lastFrame = performance.now();
 });
-addEventListener("resize", () => {
-  renderer.resize();
-  previewRenderer.resize();
+$('#pause-overlay').addEventListener('keydown',event=>{
+  if(event.key!=='Tab')return;
+  const buttons=all('#pause-overlay button'),first=buttons[0],last=buttons.at(-1);
+  if(event.shiftKey&&document.activeElement===first){event.preventDefault();last.focus();}
+  if(!event.shiftKey&&document.activeElement===last){event.preventDefault();first.focus();}
 });
 new IntersectionObserver(
   (entries) => {
@@ -1256,6 +1318,7 @@ if ("serviceWorker" in navigator) {
 // Local-only instrumentation for reproducible browser QA and input recordings.
 if (qaEnabled) {
   window.MARS_ARENA = {
+    get viewport(){return {method:viewport.method,preferences:{...viewport.preferences},ratio:renderer.ratio,powerSaving,input:{active:input.active,suspended:input.suspended}};},
     botExhibition(){if(!match)return;matchBindings=match.fighters.map(()=>"bot");match.fighters.forEach(f=>f.controller="bot");renderHud(true);},
     get academy(){return {lessonIndex,assessment,record:JSON.parse(JSON.stringify(record)),mode,feedOpen:fleet.open,camera:{...renderer.camera},canvas:{width:renderer.width,height:renderer.height},spriteHeight:98*renderer.camera.scale};},
     get audio(){return {initialized:Boolean(sound.context),state:sound.context?.state,voice:Boolean(sound.voice),enabled:sound.enabled};},
