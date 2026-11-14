@@ -315,8 +315,8 @@
     },
     {
       "file": "renderer.js",
-      "bytes": 52974,
-      "sha256": "60623636b08c159dc87ae8c8214eb8df2c8b152aca34a9d09ece58543286bfbf"
+      "bytes": 55503,
+      "sha256": "fdcb04fee5504e766d2396a97b0683e5cde12bd1b937073ff0064a05023b45b9"
     },
     {
       "file": "responsive.css",
@@ -335,8 +335,8 @@
     },
     {
       "file": "sw.js",
-      "bytes": 2431,
-      "sha256": "d9cf6e8ab7fa5de7ad53e4191f111865780388a16e1bc51f3274faa4f43ac751"
+      "bytes": 2432,
+      "sha256": "02e0e6fc375367bfe234c04779719992a111ff3c1a46b60d04be2abcc83f0751"
     },
     {
       "file": "viewport.js",

@@ -734,6 +734,7 @@ export class Renderer {
       return;
     }
     const color = PLAYER_COLORS[f.index];
+    if(!this.preview&&f.controller!=='bot'&&f.alive&&!(f.respawn>0)) this.heroAura(f,state,color);
     if (f.ledge) {
       const p=state.platforms.find(p=>p.id===f.ledge.id);
       if(p) {
@@ -937,6 +938,50 @@ export class Renderer {
       c.strokeText(characters[f.id].name.toUpperCase(), 0, -8);
       c.fillStyle = "#f5ead4";
       c.fillText(characters[f.id].name.toUpperCase(), 0, -8);
+    }
+    if(!this.preview&&f.controller!=='bot'){
+      // Own fighter marker: "YOU" (or P1/P2 with several humans) with a bobbing arrow.
+      const humans=state.fighters.filter(x=>x.controller!=='bot').length;
+      const label=humans>1?'P'+(f.index+1):'YOU';
+      const bob=Math.sin(state.tick*.14)*3;
+      c.font='700 20px Condensed,sans-serif';c.textAlign='center';c.lineWidth=5;c.strokeStyle='#102735';
+      c.strokeText(label,0,-30+bob);c.fillStyle=color;c.fillText(label,0,-30+bob);
+      polygon(c,[[-8,-24+bob],[8,-24+bob],[0,-16+bob]],color,'#102735',1.5);
+    }
+    c.restore();
+  }
+
+  // Own fighter "broadcast aura" (player feedback 14.11.: hard to see which one is me).
+  // Victory Window keeps its spotlight on the human cadet: a soft cone from above,
+  // a pulsing glow in the player colour, rising sparks and a light pool on the floor.
+  heroAura(f,state,color){
+    const c=this.context,tk=state.tick,reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const pulse=reduce?.6:.55+.25*Math.sin(tk*.11);
+    const cx=f.x,cy=f.y-58;
+    c.save();
+    c.globalCompositeOperation='lighter';
+    // spotlight cone from above
+    const cone=c.createLinearGradient(cx,cy-420,cx,f.y);
+    cone.addColorStop(0,color+'00');cone.addColorStop(.75,color+'22');cone.addColorStop(1,color+'40');
+    c.fillStyle=cone;c.beginPath();c.moveTo(cx-14,cy-420);c.lineTo(cx+14,cy-420);c.lineTo(cx+58,f.y+4);c.lineTo(cx-58,f.y+4);c.closePath();c.fill();
+    // body glow
+    const g=c.createRadialGradient(cx,cy,8,cx,cy,95);
+    const a=Math.round(pulse*150).toString(16).padStart(2,'0');
+    g.addColorStop(0,color+a);g.addColorStop(.45,color+'33');g.addColorStop(1,color+'00');
+    c.fillStyle=g;c.beginPath();c.ellipse(cx,cy,62,98,0,0,Math.PI*2);c.fill();
+    // floor light pool
+    const fl=c.createRadialGradient(f.x,f.y+3,2,f.x,f.y+3,60);
+    fl.addColorStop(0,color+'aa');fl.addColorStop(1,color+'00');
+    c.fillStyle=fl;c.beginPath();c.ellipse(f.x,f.y+3,60,13,0,0,Math.PI*2);c.fill();
+    // rising sparks (deterministic from tick, no state)
+    if(!reduce){
+      for(let i=0;i<9;i++){
+        const life=((tk*1.3+i*37)%90)/90;
+        const sx=cx+Math.sin(i*2.3+tk*.03)*(26+i*3);
+        const sy=f.y-life*150;
+        c.globalAlpha=(1-life)*.95;c.fillStyle=i%3?color:'#fff3cf';
+        c.beginPath();c.arc(sx,sy,2.6*(1-life)+.8,0,Math.PI*2);c.fill();
+      }
     }
     c.restore();
   }
