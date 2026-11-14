@@ -5,13 +5,19 @@ import {
   stepMatch,
   botInput,
   snapshot,
+  finishMatch,
 } from "./engine.js";
 import { Renderer, PLAYER_COLORS, preloadArt } from "./renderer.js";
 import { InputManager } from "./input.js";
 import { Sound } from "./audio.js";
 import RELEASE from "./release.js";
-import {COURSE,RANKS,SIGNATURES,COMMS,CHECK_LABELS,assess,progressText} from './academy.js';
+import {COURSE,RANKS,SIGNATURES,COMMS,CHECK_LABELS,assess,progressText,applyVolumeContent} from './academy.js';
 import {FleetScreen,renderCourse} from './fleet.js';
+import {VoiceDirector} from './voice.js';
+import {getDailyDrill,readDailyBest,saveDailyResult,dailyShareText,dailyPNG,assessDailyDrill,dailyProgressText} from './daily.js';
+import {sharePrepared,PLAY_URL} from './share.js';
+
+applyVolumeContent(RELEASE);
 
 const $ = (selector) => document.querySelector(selector);
 const all = (selector) => [...document.querySelectorAll(selector)];
@@ -97,10 +103,12 @@ let finishTimer = 0,
   broadcastTimer = 0,
   toastTimer = 0,
   lastCommentTick = 0;
+let dailyDrill=null,dailyResult=null,volumeDrill=null,preparedShare=null,shareGeneration=0;
 let resetTouchControls = () => {};
 const sound = new Sound();
 sound.set(record.sound);
 const fleet=new FleetScreen(sound,RELEASE.voices);
+const director=new VoiceDirector(sound,RELEASE.voiceLines,{subtitle:line=>{ $('#combat-comms').classList.toggle('voice-active',line.audioAvailable===true);broadcast(line.text,{source:line.speaker.toUpperCase(),duration:line.durationMs||Math.max(3000,line.text.split(/\s+/).length*350)}); }});
 const input = new InputManager({
   onPause: () => {
     if (playing) paused ? resumeMatch() : pauseMatch();
@@ -339,6 +347,8 @@ function chooseMode(next) {
 }
 
 function currentOptions(gauntletRound = gauntlet.round) {
+  if(mode==='daily')return {characters:[dailyDrill.character,...dailyDrill.bots],controllers:['human','bot','bot'],bindings:['keyboard1','bot','bot'],...dailyDrill};
+  if(mode==='volume')return {characters:[volumeDrill.character,...volumeDrill.bots],controllers:['human',...volumeDrill.bots.map(()=>'bot')],bindings:['keyboard1',...volumeDrill.bots.map(()=>'bot')],arena:volumeDrill.arena,lesson:volumeDrill.lesson,difficulty:volumeDrill.difficulty};
   if(mode==="academy"){
     const opponents=lessonIndex===0?["rook"]:lessonIndex<4?["rook","tavi"]:["rook","sera","beam"];
     return {characters:[seats[0].character,...opponents],controllers:["human",...opponents.map(()=>"bot")],bindings:[seats[0].binding,...opponents.map(()=>"bot")],arena:COURSE[lessonIndex].arena,difficulty:lessonIndex<2?0:1,lesson:COURSE[lessonIndex].id};
@@ -377,6 +387,7 @@ function currentOptions(gauntletRound = gauntlet.round) {
 
 async function startMatch({ rematch = false, advance = false } = {}) {
   if(launchPending || fleet.open)return;
+  sound.resume();const audioReady=sound.unlock();
   const priorLesson=lessonIndex,priorAssessment=assessment;
   if(mode==="academy" && advance && assessment?.passed)lessonIndex=lessonIndex===6?0:lessonIndex+1;
   const nextGauntletRound =
@@ -420,25 +431,26 @@ async function startMatch({ rematch = false, advance = false } = {}) {
   if (mode === "gauntlet")
     gauntlet = { round: nextGauntletRound, complete: false, won: false };
   assessment=null;
+  preparedShare=null;shareGeneration++;dailyResult=null;
   clearTimeout(finishTimer);
   clearTimeout(broadcastTimer);
   $("#result").close();
   $("#broadcast").classList.remove("visible");
   match = createMatch({
     ...options,
-    rule: mode==="academy"?"timed":roundRule,
-    duration: mode==="academy"?COURSE[lessonIndex].duration:150,
-    compact: matchMedia("(max-width:600px) and (orientation:portrait)").matches,
+    rule: ['academy','daily','volume','quick'].includes(mode)?"timed":roundRule,
+    duration: mode==="academy"?COURSE[lessonIndex].duration:mode==='daily'?dailyDrill.duration:mode==='volume'?volumeDrill.duration:150,
+    compact: mode==='daily'?dailyDrill.compact:matchMedia("(max-width:600px) and (orientation:portrait)").matches,
     victoryLap:mode==="victory"&&record.lessons.filter(l=>l?.passed).length===7,
     stocks: 3,
-    seed: ++seedCounter,
-    assist: record.assist,
+    seed: mode==='daily'?dailyDrill.seed:++seedCounter,
+    assist: mode==='daily'?false:record.assist,
   });
   matchBindings = options.bindings;
   playing = true;
   paused = false;
   resultShown = false;
-  countdown = rematch ? 1.1 : 2.1;
+  countdown = mode==='quick'?0:mode==='daily'?.65:rematch ? 1.1 : 2.1;
   countdownWord = "";
   accumulator = 0;
   hudTick = -1;
@@ -453,11 +465,11 @@ async function startMatch({ rematch = false, advance = false } = {}) {
     (arena) => arena.id === match.arena,
   ).name.toUpperCase();
   $("#round-label").textContent =
-    (mode === "academy" ? 'CADET '+(lessonIndex+1)+' / 7' : mode === "gauntlet"
+    (mode==='daily'?'DAILY DRILL / '+dailyDrill.label:mode==='quick'?'QUICK FIGHT':mode==='volume'?'VOLUME '+volumeDrill.volume+' / FIELD DRILL':mode === "academy" ? 'CADET '+(lessonIndex+1)+' / 7' : mode === "gauntlet"
       ? `GAUNTLET ${gauntlet.round + 1} / 6`
       : match.rule === "timed"
         ? "TIMED TRAINING"
-        : "THREE RECOVERIES") + (record.assist ? " / ASSIST" : "");
+        : "THREE RECOVERIES") + (record.assist&&mode!=='daily' ? " / ASSIST" : "");
   $("#keyboard-hint").textContent =
     mode === "local"
       ? "P1 A D / W / F G   ·   P2 ← → / ↑ / K L   ·   P3 N M / H / Y-Z U   ·   P4 NUMPAD   ·   ESC PAUSE"
@@ -470,14 +482,17 @@ async function startMatch({ rematch = false, advance = false } = {}) {
   renderer.reset();
   renderHud(true);
   $("#arena-canvas").focus({ preventScroll: true });
-  await sound.unlock();
+  await audioReady;
   sound.resume();
-  launchPending=true;
-  input.setActive(false);
-  await fleet.show({lesson:mode==="academy"?COURSE[lessonIndex]:COURSE[mode==="gauntlet"?gauntlet.round:Math.max(0,ARENAS.findIndex(a=>a.id===match.arena))]});
-  launchPending=false;
+  if(!['quick','daily','volume'].includes(mode)){
+    launchPending=true;
+    input.setActive(false);
+    await fleet.show({lesson:mode==="academy"?COURSE[lessonIndex]:COURSE[mode==="gauntlet"?gauntlet.round:Math.max(0,ARENAS.findIndex(a=>a.id===match.arena))]});
+    launchPending=false;
+  }
   if(!playing)return;
   sound.music(match.arena);
+  director.trigger(mode==='quick'?'quick':mode==='daily'?'daily':mode==='academy'?'lesson:'+COURSE[lessonIndex].id:'start');
   input.clear();input.setActive(true);lastFrame=performance.now();
   $("#arena-canvas").focus({preventScroll:true});
 }
@@ -491,6 +506,7 @@ function pauseMatch(
   input.clear();
   resetTouchControls();
   sound.pause();
+  director.stop();
   $("#pause-reason").textContent = reason;
   $("#pause-overlay").hidden = false;
   $("#resume").focus({ preventScroll: true });
@@ -523,11 +539,15 @@ function returnToLobby() {
   resetTouchControls();
   input.setActive(false);
   sound.pause();
+  director.stop();
+  clearTimeout(signatureTimer);$('#signature-flash').hidden=true;
   document.body.style.overflow = "";
+  if(['quick','daily','volume'].includes(mode))chooseMode('academy');
   renderCrew();
   renderSlots();
   renderCharacter();
   refreshCourse();
+  refreshDaily();
   previewRenderer.resize();
   $("#start").focus({ preventScroll: true });
 }
@@ -575,8 +595,9 @@ function renderHud(force = false) {
         ? `SPECIAL ${f.specialCooldown.toFixed(1)}s`
         : "SPECIAL READY";
   }
-  $("#lesson-objective").hidden=mode!=="academy";
-  if(mode==="academy")$("#lesson-objective").innerHTML="<b>"+COURSE[lessonIndex].title.toUpperCase()+"</b>"+progressText(match);
+  $("#lesson-objective").hidden=!['academy','daily','volume'].includes(mode);
+  if(['academy','daily'].includes(mode))$("#lesson-objective").innerHTML="<b>"+(mode==='daily'?'DAILY / ':'')+COURSE[mode==='daily'?dailyDrill.lessonIndex:lessonIndex].title.toUpperCase()+"</b>"+(mode==='daily'?dailyProgressText(match,dailyDrill):progressText(match));
+  if(mode==='volume')$('#lesson-objective').textContent=volumeDrill.title+' / '+Math.min(volumeDrill.goal,match.training.steadyTime||0).toFixed(1)+' / '+volumeDrill.goal+' s';
   $("#lesson-coach").hidden=mode!=="academy"||match.tick>1200;
   if(mode==="academy"&&match.tick<=1200){
     const t=match.training;
@@ -600,12 +621,12 @@ function broadcast(
 ) {
   clearTimeout(broadcastTimer);
   const container = $("#broadcast");
-  container.querySelector("span").textContent = `BEAM / ${source}`;
+  container.querySelector("span").textContent = /BEAM|DECK INSTRUCTOR/.test(source)?source:`BEAM / ${source}`;
   container.querySelector("p").textContent = text;
   container.classList.add("visible");
   if (audio) sound.say({ text, audio, source });
   broadcastTimer = setTimeout(
-    () => container.classList.remove("visible"),
+    () => {container.classList.remove("visible");$('#combat-comms').classList.remove('voice-active');},
     duration,
   );
 }
@@ -615,24 +636,21 @@ function processEvents(events) {
   for (const event of events) {
     sound.event(event);
     if (event.type === "ringout" && match.tick - lastCommentTick > 160) {
-      const comments = event.target<0?COMMS.own:COMMS.ringout;
-      const quote = RELEASE.voices.find((voice) => voice.id === "recovery");
-      if (match.stats.ringouts % 3 === 0 && quote)
-        broadcast(quote.text, { ...quote, duration: 6000 });
-      else broadcast(comments[(match.stats.ringouts - 1) % comments.length]);
+      director.trigger(event.target<0?'own':'ringout');
       lastCommentTick = match.tick;
     }
     if(event.type==='special' && characterById[match.fighters[event.player]?.id] && !['assist','counter'].includes(event.kind) && (matchBindings[event.player]!=='bot'||performance.now()>signaturePriorityUntil)){
       const f=match.fighters[event.player],c=characterById[f.id],flash=$("#signature-flash");
       clearTimeout(signatureTimer);signaturePriorityUntil=performance.now()+1100;flash.hidden=false;flash.querySelector('img').src='assets/'+f.id+'.webp';
       flash.querySelector('strong').textContent=c.specialName;flash.querySelector('span').textContent=c.name+' / '+SIGNATURES[f.id].passive;
-      signatureTimer=setTimeout(()=>flash.hidden=true,1100);
+      signatureTimer=setTimeout(()=>flash.hidden=true,1000);
     }
     if(event.type==='hit' && event.power>600){
       if(!record.reduced)slowMoment=0.22;
-      if(match.tick-lastCommentTick>260){broadcast(COMMS.heavy[event.tick%2],{source:'DECK INSTRUCTOR'});lastCommentTick=match.tick;}
+      if(match.tick-lastCommentTick>260){director.trigger('heavy');lastCommentTick=match.tick;}
     }
     if(event.type==='ringout' && !record.reduced)slowMoment=0.3;
+    if(event.type==='item'&&event.player===0)director.trigger('item');
     if (event.type === "finish") finishRound();
   }
 }
@@ -643,6 +661,7 @@ function finishRound() {
   input.setActive(false);
   input.clear();
   record.rounds++;
+  const oldRank=record.lessons.filter(l=>l?.passed).length;
   if(mode==="academy"){
     assessment=assess(match,lessonIndex);
     if(assessment.passed){
@@ -651,6 +670,12 @@ function finishRound() {
     }
   }
   if(mode==="academy"&&assessment)assessment.rank=RANKS[record.lessons.filter(l=>l?.passed).length];
+  if(mode==='daily'){
+    assessment=assessDailyDrill(match,dailyDrill);
+    dailyResult={seconds:match.tick/60,grade:assessment.grade,passed:assessment.passed};
+    dailyResult.saved=saveDailyResult(dailyDrill,dailyResult);
+  }
+  if(mode==='volume')assessment={passed:(match.training.steadyBest||0)>=volumeDrill.goal,grade:(match.training.steadyBest||0)>=volumeDrill.goal?'A':'RETAKE'};
   saveRecord();
   if (mode === "gauntlet") {
     gauntlet.won = match.winner === 0;
@@ -662,16 +687,23 @@ function finishRound() {
   }
   $("#countdown").textContent = "RECOVERED!";
   sound.stopVoice();
+  if(['quick','daily','volume'].includes(mode)){
+    finishTimer=setTimeout(()=>{showResult();director.trigger((mode==='daily'||mode==='volume'?assessment?.passed:match.winner===0)?'win':'loss');},650);
+    return;
+  }
   finishTimer = setTimeout(async()=>{
     await fleet.show({lesson:mode==="academy"?COURSE[lessonIndex]:COURSE[Math.max(0,ARENAS.findIndex(a=>a.id===match.arena))],after:true});
     showResult();
     if(mode==="academy"&&assessment?.passed)sound.fanfare();
+    director.trigger(mode==='academy'&&!assessment?.passed?'retake':mode==='academy'&&lessonIndex===6?'graduate':record.lessons.filter(l=>l?.passed).length>oldRank?'rank':match.winner===0?'win':'loss');
   },950);
 }
 
 function medalName() {
   if(mode==="victory")return "THE GOLDEN ORDER OF OPTIONAL ENTHUSIASM";
   if(mode==="academy")return COURSE[lessonIndex].medal;
+  if(mode==='daily')return 'DAILY DRILL / '+dailyDrill.label;
+  if(mode==='volume')return volumeDrill.title.toUpperCase();
   if (mode === "gauntlet" && gauntlet.complete)
     return "THE SIXFOLD ORDER OF REMARKABLY VERTICAL CONDUCT";
   const names = [
@@ -686,6 +718,7 @@ function medalName() {
 
 function showResult() {
   if (!playing || !match) return;
+  $('#result-voice').textContent='';
   $("#countdown").textContent = "";
   const winner = match.fighters[match.winner];
   $("#result-eyebrow").textContent =
@@ -763,16 +796,53 @@ function showResult() {
     $("#result-note").textContent=progressText(match)+(assessment.passed&&lessonIndex===2?' / PIP RECRUITED':assessment.passed&&lessonIndex===6?' / VICTORY LAP UNLOCKED':'');
     $("#rematch").textContent=assessment.passed?(lessonIndex===6?'Begin a new course ↗':'Next lesson ↗'):'Retry this lesson ↗';
   }
+  if(mode==='quick'){
+    $('#result-eyebrow').textContent='QUICK FIGHT / '+characterById[match.fighters[0].id].name.toUpperCase();
+    $('#result-note').textContent=note+' Ready for your next posting? The cadet course starts with the controls.';
+    $('#rematch').textContent='Fight again ↗';
+    $('#back-lobby').textContent='Explore the cadet course';
+  }else $('#back-lobby').textContent='Change crew';
+  if(mode==='daily'){
+    $('#result-eyebrow').textContent='DAILY DRILL / '+dailyDrill.label+' / EUROPE · BERLIN';
+    $('#result-title').innerHTML='TODAY’S DRILL.<br><em>'+(assessment.passed?Math.ceil(dailyResult.seconds)+' SECONDS.':'RETAKE.')+'</em>';
+    $('#academy-assessment').hidden=false;
+    $('#academy-assessment').textContent='RANK '+assessment.grade+' / '+COURSE[dailyDrill.lessonIndex].title;
+    $('#result-note').textContent=(dailyResult.saved.improved?'PERSONAL BEST / ':assessment.passed?'DRILL COMPLETE / ':'TRY AGAIN / ')+dailyProgressText(match,dailyDrill);
+    $('#result-voice').textContent='Same crew. Same arena. Same sequence. A new drill at midnight in Berlin.';
+    $('#save-result').textContent='Save daily card PNG ↓';$('#rematch').textContent='Retry today’s drill ↗';
+  }
+  if(mode==='volume'){
+    $('#result-eyebrow').textContent='VOLUME '+volumeDrill.volume+' / FIELD DRILL';
+    $('#result-title').textContent=volumeDrill.title.toUpperCase()+'. '+(assessment.passed?'PASSED.':'RETAKE.');
+    $('#result-note').textContent=volumeDrill.rule;$('#rematch').textContent='Repeat the drill ↗';
+  }
   $("#result").showModal();
   const voice = RELEASE.voices.find((voice) => voice.id === "finish");
-  if (voice) {
+  if (voice&&!['daily','volume','quick'].includes(mode)) {
     $("#result-voice").textContent = `“${voice.text}” — BEAM / ${voice.source}`;
     // The unchanged recording already played in the post-fight broadcast.
   }
+  prepareShareImage();
 }
 
 function nextRound() {
   startMatch({ rematch: true, advance: true });
+}
+
+async function resultImage() {
+  const {resultPNG}=await import('./export.js');
+  return mode==='daily'?dailyPNG(dailyDrill,dailyResult):mode==='academy'?(await import('./certificate.js')).certificatePNG(match,{lesson:COURSE[lessonIndex],assessment,service:record.service,index:lessonIndex,lessons:record.lessons,assist:record.assist}):resultPNG(match,{medal:medalName(),mode,assist:record.assist,gauntlet:gauntlet.complete});
+}
+
+async function prepareShareImage(){
+  const generation=++shareGeneration;
+  $('#share-result').disabled=true;$('#post-on-x').hidden=true;
+  try{
+    const blob=await resultImage();if(generation!==shareGeneration)return;
+    const text=mode==='daily'?dailyShareText(dailyDrill,dailyResult):mode==='academy'?'MARS cadet course · '+COURSE[lessonIndex].title+' · '+assessment.grade+' · '+assessment.rank+' · '+PLAY_URL:(mode==='quick'?'MARS Quick Fight':'MARS Out of Orbit')+' · '+characterById[match.fighters[0].id].name+' · '+(match.winner===0?'victory':'everyone recovered')+' · '+PLAY_URL;
+    preparedShare={blob,text,filename:mode==='daily'?'MARS-daily-'+dailyDrill.dateKey+'.png':mode==='academy'?'MARS-cadet-certificate-'+(lessonIndex+1)+'.png':'MARS-out-of-orbit-result.png',title:'MARS · Out of Orbit'};
+    $('#share-result').disabled=false;
+  }catch{$('#export-status').textContent='Image preparation failed. Try Save PNG again.';}
 }
 
 async function saveResult() {
@@ -781,17 +851,11 @@ async function saveResult() {
   button.disabled = true;
   $("#export-status").textContent = "Preparing your local result image…";
   try {
-    const { resultPNG } = await import("./export.js");
-    const blob = mode==="academy" ? await (await import('./certificate.js')).certificatePNG(match,{lesson:COURSE[lessonIndex],assessment,service:record.service,index:lessonIndex,lessons:record.lessons,assist:record.assist}) : await resultPNG(match, {
-      medal: medalName(),
-      mode,
-      assist: record.assist,
-      gauntlet: gauntlet.complete,
-    });
+    const blob=preparedShare?.blob||await resultImage();
     const url = URL.createObjectURL(blob),
       anchor = document.createElement("a");
     anchor.href = url;
-    anchor.download = mode==="academy"?"MARS-cadet-certificate-"+(lessonIndex+1)+".png":"MARS-out-of-orbit-result.png";
+    anchor.download = preparedShare?.filename||(mode==="academy"?"MARS-cadet-certificate-"+(lessonIndex+1)+".png":"MARS-out-of-orbit-result.png");
     anchor.click();
     setTimeout(() => URL.revokeObjectURL(url), 10000);
     $("#export-status").textContent = "PNG saved. © Tim Mecklenburg.";
@@ -938,6 +1002,7 @@ function frame(now) {
                 : input.read(matchBindings[index]),
             );
             stepMatch(match, inputs);
+            completeDrill();
             processEvents(match.events);
             accumulator -= 1 / 60;
             if (qaEnabled && runLog.length < 12000)
@@ -976,6 +1041,35 @@ function frame(now) {
   requestAnimationFrame(frame);
 }
 
+function completeDrill(){
+  if(match.phase!=='playing')return;
+  if(mode==='daily'&&assessDailyDrill(match,dailyDrill).passed)finishMatch(match);
+  if(mode==='volume'&&(match.training.steadyBest||0)>=volumeDrill.goal)finishMatch(match);
+}
+
+function refreshDaily(){
+  const today=getDailyDrill(),best=readDailyBest(today);
+  $('#daily-date').textContent=today.label;
+  $('#daily-description').textContent=COURSE[today.lessonIndex].title+' / '+characterById[today.character].name+' / '+today.target;
+  $('#daily-best').textContent=best?'YOUR BEST / '+best.seconds.toFixed(2)+' s · Rank '+best.grade:'YOUR BEST / Your first flight is still ahead.';
+}
+
+function startQuickFight(){
+  if(playing||launchPending||fleet.open)return;
+  chooseMode('solo');mode='quick';roundRule='timed';
+  const cast=CHARACTERS.filter(c=>c.id!=='pip'||isPipUnlocked()),pick=values=>values[Math.floor(Math.random()*values.length)];
+  seats[0]={character:pick(cast).id,binding:'keyboard1'};
+  const opponents=cast.filter(c=>c.id!==seats[0].character).sort(()=>Math.random()-.5);
+  seats[1]={character:opponents[0].id,binding:'bot'};seats[2]={character:opponents[1].id,binding:'bot'};seats[3].binding='empty';
+  arenaId=pick(ARENAS).id;$('#difficulty').value='1';
+  startMatch();
+}
+
+function startDaily(){
+  if(playing||launchPending||fleet.open)return;
+  dailyDrill=getDailyDrill();mode='daily';startMatch();
+}
+
 function refreshCourse(){
   let bonus=$("#mode-victory");
   if(!bonus){
@@ -991,6 +1085,12 @@ function refreshCourse(){
 $('#quick-start').addEventListener('click',()=>{
   chooseMode('academy');startMatch();
 });
+$('#quick-fight').addEventListener('click',startQuickFight);
+$('#daily-start').addEventListener('click',startDaily);
+for(const drill of RELEASE.volumeDrills||[]){
+  const b=document.createElement('button');b.type='button';b.className='volume-drill';b.textContent='VOL. '+drill.volume+' / '+drill.title+' ↗';
+  b.addEventListener('click',()=>{if(playing||fleet.open||launchPending)return;volumeDrill=drill;mode='volume';startMatch();});$('#volume-drills').append(b);
+}
 $('#watch-feed').addEventListener('click',async()=>{
   await sound.unlock();sound.resume();await fleet.show({lesson:COURSE[lessonIndex]});sound.pause();
 });
@@ -1044,6 +1144,13 @@ $("#game-menu").addEventListener("click", (event) => {
 $("#rematch").addEventListener("click", nextRound);
 $("#back-lobby").addEventListener("click", returnToLobby);
 $("#save-result").addEventListener("click", saveResult);
+$('#share-result').addEventListener('click',()=>{
+  if(!preparedShare)return;
+  sharePrepared(preparedShare,{onFallback:result=>{
+    $('#post-on-x').href=result.intent;$('#post-on-x').hidden=false;
+    $('#export-status').textContent='PNG downloaded. Add it to your post with the prepared text.';
+  }}).then(result=>{if(result.method==='native'&&!result.cancelled)$('#export-status').textContent='Shared. Everyone accounted for.';});
+});
 $("#result").addEventListener("cancel", (event) => {
   event.preventDefault();
   returnToLobby();
@@ -1074,7 +1181,8 @@ for (const button of all("[data-close]"))
 $("#fullscreen").addEventListener("click", async () => {
   try {
     if (document.fullscreenElement) await document.exitFullscreen();
-    else await $("#game").requestFullscreen();
+    else if($('#game').requestFullscreen)await $('#game').requestFullscreen();
+    else{document.body.classList.toggle('focus-view');$('#game').classList.toggle('focus-view');notify('For a full-screen iPhone view, add MARS to your Home Screen. Rotate any time.');}
   } catch {
     notify("Fullscreen is unavailable in this browser.");
   }
@@ -1115,6 +1223,7 @@ new IntersectionObserver(
 bindTouch();
 chooseMode("academy");
 refreshCourse();
+refreshDaily();setInterval(()=>{if(!playing)refreshDaily();},60000);
 renderCrew();
 renderSlots();
 renderCharacter();
@@ -1149,6 +1258,33 @@ if (qaEnabled) {
   window.MARS_ARENA = {
     botExhibition(){if(!match)return;matchBindings=match.fighters.map(()=>"bot");match.fighters.forEach(f=>f.controller="bot");renderHud(true);},
     get academy(){return {lessonIndex,assessment,record:JSON.parse(JSON.stringify(record)),mode,feedOpen:fleet.open,camera:{...renderer.camera},canvas:{width:renderer.width,height:renderer.height},spriteHeight:98*renderer.camera.scale};},
+    get audio(){return {initialized:Boolean(sound.context),state:sound.context?.state,voice:Boolean(sound.voice),enabled:sound.enabled};},
+    voiceTest(trigger){return director.trigger(trigger);},
+    get daily(){return {drill:dailyDrill,result:dailyResult};},
+    get visibility(){
+      const canvas=$('#arena-canvas').getBoundingClientRect();
+      return {camera:{...renderer.camera},viewport:{width:innerWidth,height:innerHeight},signature:$('#signature-flash').getBoundingClientRect().toJSON(),canvas:canvas.toJSON(),fighters:match?.fighters.map(f=>({index:f.index,id:f.id,controller:f.controller,alive:f.alive,respawn:f.respawn,x:canvas.left+renderer.width/2+(f.x-renderer.camera.x)*renderer.camera.scale,y:canvas.top+renderer.height/2+(f.y-renderer.camera.y)*renderer.camera.scale,height:86*renderer.camera.scale,width:65*renderer.camera.scale})),effects:renderer.effects.map(e=>({type:e.type,life:e.life}))};
+    },
+    visibilityFixture(kind){
+      if(!match)return;
+      match=createMatch({characters:['iona','rook','beam'],controllers:['human','bot','bot'],arena:'deck',seed:333,compact:match.compact,lesson:'lowg'});
+      matchBindings=['keyboard1','bot','bot'];renderHud(true);
+      countdown=0;$('#countdown').textContent='';slowMoment=0;
+      match.fighters.forEach((f,i)=>{f.x=(i-1)*130;f.y=match.platforms[0].y;f.vx=0;f.vy=0;f.grounded=true;f.respawn=0;f.invulnerable=2;f.alive=true;});
+      const f=match.fighters[0];f.x=0;renderer.reset();renderer.updateCamera(match,1);
+      if(kind==='impact'){
+        renderer.events([{type:'hit',x:0,y:f.y-50,power:840,target:0,tick:match.tick},{type:'special',player:0,kind:f.id,x:0,y:f.y},{type:'special',player:1,kind:match.fighters[1].id,x:130,y:f.y}]);
+        f.action='hit';f.actionTime=.4;f.damage=150;
+      }
+      if(kind==='threat'){
+        match.fighters[1].x=360;match.fighters[1].charge=.5;
+        match.projectiles.push({owner:1,x:430,y:f.y-50,vx:-400,vy:0,gravity:0,radius:10,life:2,kind:'foam',damage:10,power:200});
+      }
+      if(kind==='items'){
+        f.itemEffects=[{kind:'medal',duration:3,remaining:2.5},{kind:'gravity',duration:5,remaining:4}];match.gravityBoost=4;f.invulnerable=2.5;
+        renderer.events([{type:'item',player:0,kind:'medal',x:f.x,y:f.y}]);
+      }
+    },
     get state() {
       return match ? snapshot(match) : null;
     },
@@ -1190,6 +1326,7 @@ if (qaEnabled) {
           match,
           typeof inputs==="function"?inputs(match):inputs || match.fighters.map((f, index) => botInput(match, index)),
         );
+        completeDrill();
         processEvents(match.events);
       }
       renderHud();

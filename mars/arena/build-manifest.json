@@ -1,25 +1,32 @@
 {
   "available": [
-    1
+    1,
+    2
   ],
-  "asOf": "2026-11-14T13:58:30.778898+01:00",
-  "version": "b496aee1c63a",
-  "bytes": 3859544,
+  "asOf": "2026-11-14T14:30:49.129894+01:00",
+  "gameVersion": "3.0.0",
+  "version": "f67e70d6a631",
+  "bytes": 3988598,
   "files": [
     {
       "file": "academy.js",
-      "bytes": 9428,
-      "sha256": "7578d89795d8003998e8dadfa81fb7cbd8a4c0aca642c1db70fd216d2f223bfe"
+      "bytes": 9917,
+      "sha256": "115f8638197c9bfedec3057edd509fcd44d97974c19bb57f69e291359d451291"
     },
     {
       "file": "app.js",
-      "bytes": 45862,
-      "sha256": "09925706a452adacc4ea5a7bc99b549b3ef1e8c5601870cedff2871f0af1e1e6"
+      "bytes": 56792,
+      "sha256": "db4b540d02684d462b01a49d18cd02c684b28522bb4808bfa4dd18f3acd79c01"
     },
     {
       "file": "assets/airlock-bg.webp",
       "bytes": 129268,
       "sha256": "5685e7707218ec8d7eb6508944145fd511e3ead93f9c8a7b9f8ce86c6ecbd4e6"
+    },
+    {
+      "file": "assets/audio/B02L31a.m4a",
+      "bytes": 63550,
+      "sha256": "5fe1d1b0e9c5781a5a007863917e2178e26a437c12277f3b15649d40b971b124"
     },
     {
       "file": "assets/audio/V3L01a.m4a",
@@ -208,18 +215,23 @@
     },
     {
       "file": "audio.js",
-      "bytes": 11757,
-      "sha256": "5bef64f8a3bdf3b3d023e62489a4e70b5555c341167162382fb713519bf88781"
+      "bytes": 12419,
+      "sha256": "518fa65a686cec30024d782ed9a277878fddc6283a27aab93153d9bae4d752f5"
     },
     {
       "file": "certificate.js",
-      "bytes": 3813,
-      "sha256": "b081c6d02355e5cbb07e430e5ad73a99ffbf51c0791436c65cac795365c72a11"
+      "bytes": 3955,
+      "sha256": "6c317d273e78b9367b179fb86dc784c8f4b1dc9560c465b7003cea946b2b6345"
+    },
+    {
+      "file": "daily.js",
+      "bytes": 8922,
+      "sha256": "cea3919aa4612f4c111ae4edd666e9696f554691eab5da1ac1845d97630a49dd"
     },
     {
       "file": "engine.js",
-      "bytes": 45817,
-      "sha256": "a4850935e20533fb6577eb385b25b49bc7134fd1f90439bdccaf7aa2c854dce7"
+      "bytes": 48010,
+      "sha256": "8305a85495429e4024e28a9937062747133b41c41eb7ca2ab58303884783acbe"
     },
     {
       "file": "export.js",
@@ -228,8 +240,8 @@
     },
     {
       "file": "fleet.js",
-      "bytes": 4948,
-      "sha256": "480cda104cc7d8b9634ee54a3c7a8e6d3821aadf33e5dd269e9f7cc4e508fd7d"
+      "bytes": 5041,
+      "sha256": "b132ba0cff557ae8ccf06d1114a4f9104124e29393f96ee394b4b88a7c9f29f4"
     },
     {
       "file": "icon.svg",
@@ -238,13 +250,13 @@
     },
     {
       "file": "index.html",
-      "bytes": 20395,
-      "sha256": "6b4fa61ee44393ae70302ab0b22154a81e2c5912feb3eb20cad1bf58bcf06fce"
+      "bytes": 21362,
+      "sha256": "b12acad753fb2e44426cb1298d12f4c4d1c87f521ef969a63dcc9ad6e59fa838"
     },
     {
       "file": "input.js",
-      "bytes": 6713,
-      "sha256": "7075a7c7c36e25e0eb3d937e102e4d231be2db2fa9fe1169cb43f45e1cc2f807"
+      "bytes": 7081,
+      "sha256": "12572441ea585ab25f509317781deb18530b5da6ae01fa8eff1ab2b84008d0ee"
     },
     {
       "file": "manifest.webmanifest",
@@ -253,23 +265,38 @@
     },
     {
       "file": "release.js",
-      "bytes": 527,
-      "sha256": "08da6f040a75acac90fbebf8cd480217fad6b8652e21d3bde1a9fc7c624ad87b"
+      "bytes": 9450,
+      "sha256": "8c04e3cc0ece146d84d99caa8a37a80059d6ff11a1cd8ffc857181908ab7ea47"
     },
     {
       "file": "renderer.js",
-      "bytes": 39180,
-      "sha256": "8b2e4cdb718bdc6b8a27f0a8fa9abcc85790803b94c4d2341e10d2337816243b"
+      "bytes": 46949,
+      "sha256": "2151721589b7da00bae3a60e29909a5a29e83d352d7c5db3bd350565eb406a80"
+    },
+    {
+      "file": "share.js",
+      "bytes": 1708,
+      "sha256": "6b02f2a37563fc112d0bf1da1d01e399ef5db31dda7d78ffc51f973def745130"
     },
     {
       "file": "style.css",
-      "bytes": 54382,
-      "sha256": "12d13cdb0115d4dd77f7d70b501db6d8ad4f5baeb745e8c47231e0ad17d206d7"
+      "bytes": 64339,
+      "sha256": "08a595bc651f990e85f24e26ff22838fe3c8d4e6c6c37aebeb5ffb31fde7ae54"
     },
     {
       "file": "sw.js",
-      "bytes": 2184,
-      "sha256": "6d38344c9ae48f740afbb670f9b3e20aa1508c1e647346bd9d3856bea538f370"
+      "bytes": 2274,
+      "sha256": "71045f142d771bd7927ba2bda7f6b2ed015781cc18483a29a1142946ef56fd75"
+    },
+    {
+      "file": "voice-lines.json",
+      "bytes": 10495,
+      "sha256": "c631d78446483efd28617ee09cb0b102d5a21d5791aba0d3ef0427bbe7a9187d"
+    },
+    {
+      "file": "voice.js",
+      "bytes": 1796,
+      "sha256": "ea0448fb69e881fd79cbe830aec216fce08eb31c84a022a512848a492cd03a30"
     }
   ]
 }

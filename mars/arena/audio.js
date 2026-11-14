@@ -15,6 +15,9 @@ export class Sound {
     this.voiceAbort = null;
     this.voiceToken = 0;
     this.voiceCache = new Map();
+    this.missingVoices = new Set();
+    this.voiceLoading = false;
+    this.lastVoiceAt = -Infinity;
     this.lastCue = new Map();
   }
 
@@ -265,6 +268,7 @@ export class Sound {
     this.voiceToken += 1;
     this.voiceAbort?.abort();
     this.voiceAbort = null;
+    this.voiceLoading = false;
     if (this.voice) {
       try {
         this.voice.node.stop();
@@ -277,10 +281,13 @@ export class Sound {
       this.effects.gain.setTargetAtTime(0.65, this.context.currentTime, 0.05);
   }
 
-  async say({ text = "", audio, source = "" } = {}) {
-    this.stopVoice();
+  async say({ text = "", audio, source = "", interrupt = false } = {}) {
     if (!audio || !this.enabled || this.paused) return false;
+    if (!interrupt && (this.voice || this.voiceLoading ||
+      performance.now() - this.lastVoiceAt < 4500)) return false;
+    this.stopVoice();
     const token = this.voiceToken;
+    this.voiceLoading = true;
     try {
       const url = new URL(
         audio,
@@ -291,6 +298,7 @@ export class Sound {
         !["http:", "https:"].includes(url.protocol)
       )
         return false;
+      if (this.missingVoices.has(url.href)) return false;
       if (
         !(await this.unlock()) ||
         token !== this.voiceToken ||
@@ -307,7 +315,10 @@ export class Sound {
           cache: "force-cache",
           signal: controller.signal,
         });
-        if (!response.ok) return false;
+        if (!response.ok) {
+          if ([404, 410].includes(response.status)) this.missingVoices.add(url.href);
+          return false;
+        }
         const encoded = await response.arrayBuffer();
         if (token !== this.voiceToken) return false;
         buffer = await this.context.decodeAudioData(encoded);
@@ -327,6 +338,7 @@ export class Sound {
       gain.connect(this.master);
       const voice = { node, gain, text, source, audio: url.href };
       this.voice = voice;
+      this.lastVoiceAt = performance.now();
       this.effects.gain.setTargetAtTime(0.22, this.context.currentTime, 0.025);
       node.onended = () => {
         node.disconnect();
@@ -344,6 +356,11 @@ export class Sound {
       return true;
     } catch {
       return false;
+    } finally {
+      if (token === this.voiceToken) {
+        this.voiceLoading = false;
+        this.voiceAbort = null;
+      }
     }
   }
 }

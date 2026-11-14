@@ -25,8 +25,8 @@ export class FleetScreen{
   $('#fleet-safety').textContent=COMMS.safety[(Math.max(0,n)+(after?1:0))%COMMS.safety.length];
   $('#fleet-poll').textContent=lesson.poll;
   $('#fleet-ticker').textContent=COMMS.tickers[(Math.max(0,n)+(after?1:0))%COMMS.tickers.length]+'    /    '+COMMS.tickers[(Math.max(0,n)+1)%COMMS.tickers.length];
-  $('#fleet-serial').textContent=c?'FLEET PERSONNEL / '+c.role:after?'VICTORY WINDOW / AFTER ACTION':'FLEET HANDBOOK / 2705';
-  const voice=!c&&this.voices.find(v=>v.id===(after?'finish':'open'));
+  $('#fleet-serial').textContent=c?'FLEET PERSONNEL / '+c.role:lesson.examiner?'EXAMINER / '+lesson.examiner.toUpperCase():after?'VICTORY WINDOW / AFTER ACTION':'FLEET HANDBOOK / 2705';
+  const voice=!c&&this.voices.find(v=>v.id===(lesson.examiner&&after?'volume2':after?'finish':'open'));
   let original=$('#fleet-original');
   if(!original){original=document.createElement('p');original.id='fleet-original';original.style.cssText='font-size:10px;margin-top:10px;color:#586963';$('#fleet-count').before(original);}
   original.textContent=voice?voice.text+' — BEAM / '+voice.source:'New game text / no new spoken performance.';

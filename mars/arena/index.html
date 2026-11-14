@@ -62,7 +62,7 @@
               <span><b>0.38</b> g</span><span>1–4 PLAYERS<br />ONE DEVICE</span
               ><span>150 SECONDS<br />TIMED OR THREE RECOVERIES</span>
             </div>
-            <button id="quick-start" class="academy-start">ENLIST IN THE CADET COURSE <span aria-hidden="true">↗</span></button><p class="enlist-fine">7 field lessons. Zero sensible publicity.</p><a class="cover-jump" href="#setup"
+            <div class="cover-actions"><button id="quick-fight" class="quick-fight"><span>QUICK FIGHT<small>Random crew · two bots · straight into orbit</small></span><b aria-hidden="true">↗</b></button><button id="quick-start" class="academy-start">ENLIST IN THE CADET COURSE <span aria-hidden="true">↗</span></button></div><p class="enlist-fine">Stay for seven field lessons. Earn your rank.</p><a class="cover-jump" href="#setup"
               >Explore the training deck. <span aria-hidden="true">↓</span></a
             >
           </div>
@@ -85,10 +85,11 @@
             </div>
           </div>
         </section>
+        <section class="daily-panel" aria-labelledby="daily-title"><div class="daily-date"><span>BERLIN / DAILY DRILL</span><strong id="daily-date"></strong></div><div class="daily-copy"><h2 id="daily-title">TODAY’S <em>FLIGHT PLAN.</em></h2><p id="daily-description"></p><p id="daily-best" class="daily-best"></p></div><button id="daily-start" class="daily-start">Take today’s drill <span aria-hidden="true">↗</span></button></section>
         <section class="academy-panel" aria-labelledby="academy-title">
  <div class="academy-heading"><div><p class="eyebrow">RECOVERY SERVICE / TRAINING DIRECTIVE 2705</p><h2 id="academy-title">EARN YOUR <em>UPRIGHT.</em></h2></div><div class="service-record"><span id="cadet-rank">APPLICANT</span><strong id="course-count">00 / 07</strong><small>LOCAL SERVICE RECORD</small></div></div>
  <div id="course-map" class="course-map" aria-label="Cadet training syllabus"></div>
- <div class="academy-foot"><p id="course-note">Your first duty is getting everyone home.</p><button id="watch-feed" class="text-button">Watch the recruitment spot ↗</button></div>
+ <div class="academy-foot"><div><p id="course-note">Your first duty is getting everyone home.</p><a class="volume-unlock" href="../">New drill unlocks with every MARS volume ↗</a><div id="volume-drills"></div></div><button id="watch-feed" class="text-button">Watch the recruitment spot ↗</button></div>
  </section><section id="setup" class="setup" aria-labelledby="setup-title">
           <div class="section-line">
             <h2 id="setup-title">ASSEMBLE THE PROBLEM.</h2>
@@ -227,20 +228,14 @@
           ><button id="pause" aria-label="Pause match">Ⅱ</button>
         </div>
       </header>
+      <div id="combat-comms" class="combat-comms"><span class="comms-idle">RECOVERY SERVICE <b>EVERYONE COMES BACK.</b></span><div id="signature-flash" class="signature-flash" hidden><img alt=""><div><small>SIGNATURE</small><strong></strong><span></span></div></div><div id="broadcast" class="beam-broadcast" aria-live="polite"><div><span>BEAM / VICTORY WINDOW</span><p></p></div></div></div>
       <div class="battlefield" id="battlefield">
         <canvas
           id="arena-canvas"
           tabindex="0"
           aria-label="Platform arena. Move with A and D, jump with W or Space, shoot with F and use your special with G. Pause with Escape."
         ></canvas>
-        <div id="broadcast" class="beam-broadcast" aria-live="polite">
-          <img src="assets/beam.webp" alt="" />
-          <div>
-            <span>BEAM / VICTORY WINDOW</span>
-            <p></p>
-          </div>
-        </div>
-        <div id="lesson-objective" class="lesson-objective" hidden></div><div id="lesson-coach" class="lesson-coach" hidden></div><div id="signature-flash" class="signature-flash" hidden><img alt=""><div><small>SIGNATURE MANOEUVRE</small><strong></strong><span></span></div></div><div id="countdown" class="countdown" aria-live="assertive"></div>
+        <div id="lesson-objective" class="lesson-objective" hidden></div><div id="lesson-coach" class="lesson-coach" hidden></div><div id="countdown" class="countdown" aria-live="assertive"></div>
         <div class="hazard-banner" id="hazard-banner" aria-live="polite"></div>
         <div id="pause-overlay" class="pause-overlay" hidden>
           <div>
@@ -298,8 +293,9 @@
         <div class="result-actions">
           <button id="save-result" class="secondary-button">
             Save result PNG ↓</button
-          ><button id="back-lobby" class="text-button">Change crew</button>
+          ><button id="share-result" class="secondary-button" disabled>Share ↗</button><button id="back-lobby" class="text-button">Change crew</button>
         </div>
+        <a id="post-on-x" class="post-on-x" target="_blank" rel="noopener noreferrer" hidden>Post on X ↗</a>
         <p id="export-status" class="fine" role="status">
           © Tim Mecklenburg · Saved on this device.
         </p>

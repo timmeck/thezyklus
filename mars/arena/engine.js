@@ -253,6 +253,7 @@ function fighterFor(id, index, controller, stocks, seed) {
       recoveries: 0,
       pickups: 0,
     },
+    itemEffects: [],
   };
 }
 
@@ -272,7 +273,7 @@ export function createMatch(options = {}) {
     bounds: options.compact ? {left:-470,right:470,top:-680,bottom:680} : BOUNDS,
     cameraFeed: {x:0,width:370},
     scrap: [],
-    training: {travel:0,jumps:0,specials:0,points:0,deliveries:0,carrying:false,heavyTime:0,medalTime:0,capsule:{x:-260,y:12},bayX:170},
+    training: {travel:0,jumps:0,specials:0,points:0,deliveries:0,carrying:false,heavyTime:0,medalTime:0,steadyTime:0,steadyBest:0,capsule:{x:-260,y:12},bayX:170},
     tick: 0,
     time: duration,
     duration,
@@ -716,7 +717,13 @@ function updateArena(state) {
     if(cycle>=6 && cycle<8) hazard={phase:'warning',label:'HEAVY-g IN 2 SECONDS',direction:0,strength:0,nextIn:8-cycle};
     else if(cycle>=8 && cycle<14) {gravity=1450;hazard={phase:'active',label:'HEAVY-g / KEEP YOUR FOOTING',direction:0,strength:0,nextIn:14-cycle};}
   }
-  if (state.gravityBoost > 0) gravity *= 0.63;
+  // Generic one-g footing exercise. Its released name and briefing belong to
+  // the build-time volume package, never to this shared simulation module.
+  if(state.lesson==='steady') {
+    gravity=1450;
+    hazard={phase:'quiet',label:'',direction:0,strength:0,nextIn:0};
+  }
+  if (state.gravityBoost > 0 && state.lesson !== 'steady') gravity *= 0.63;
   if (hazard.phase !== state.hazard.phase && hazard.phase !== "quiet")
     event(state, "hazard", { ...hazard, x: 0, y: -260 });
   state.gravity = gravity;
@@ -788,6 +795,7 @@ function ringout(state, fighter) {
   fighter.stun = 0;
   fighter.slow = 0;
   fighter.blind = 0;
+  fighter.itemEffects = [];
   setAction(fighter, "tumble", 1.4);
 }
 
@@ -835,6 +843,9 @@ function updateFighter(state, fighter, suppliedInput) {
     return;
   }
   const character = CHARACTER_MAP[fighter.id];
+  fighter.itemEffects = (fighter.itemEffects || [])
+    .map(effect => ({...effect, remaining: Math.max(0, effect.remaining - STEP)}))
+    .filter(effect => effect.remaining > 0);
   for (const timer of [
     "cooldown",
     "signatureTime",
@@ -1139,19 +1150,33 @@ function collectItem(state, fighter, item) {
   state.stats.items += 1;
   if (item.kind === "biscuit")
     fighter.damage = Math.max(0, fighter.damage - 32);
-  if (item.kind === "medal") fighter.invulnerable = 3;
+  const showEffect = (recipient, kind, duration) => {
+    recipient.itemEffects = (recipient.itemEffects || []).filter(effect => effect.kind !== kind);
+    recipient.itemEffects.push({kind, duration, remaining: duration});
+  };
+  if (item.kind === "medal") {
+    fighter.invulnerable = 3;
+    showEffect(fighter, 'medal', 3);
+  }
   if (item.kind === "tape") {
     for (const other of state.fighters) {
       if (other.index !== fighter.index && other.alive && other.respawn <= 0)
-        other.slow = 2.5;
+        {
+          other.slow = 2.5;
+          showEffect(other, 'tape', 2.5);
+        }
     }
   }
-  if (item.kind === "gravity") state.gravityBoost = 5;
+  if (item.kind === "gravity") {
+    state.gravityBoost = 5;
+    for(const other of state.fighters)if(other.alive && other.respawn<=0) showEffect(other,'gravity',5);
+  }
   event(state, "item", {
     player: fighter.index,
     x: fighter.x,
     y: fighter.y - 65,
     kind: item.kind,
+    duration: {medal:3,tape:2.5,gravity:5}[item.kind] || 0,
   });
   item.life = 0;
 }
@@ -1218,7 +1243,7 @@ function updateItems(state) {
   state.items = state.items.filter((item) => item.life > 0 && item.y < 790);
 }
 
-function finishMatch(state) {
+export function finishMatch(state) {
   state.rankings = state.fighters
     .map((f) => f.index)
     .sort((a, b) => {
@@ -1312,6 +1337,16 @@ export function stepMatch(state, inputs = []) {
   updateProjectiles(state);
   updateTraps(state);
   updateItems(state);
+  if(state.lesson==='steady') {
+    const f=state.fighters[0], t=state.training;
+    // Evaluate after this tick's movement and contacts: a jump or impact on
+    // the deadline cannot be counted as another standing frame.
+    if(f.alive && f.respawn<=0 && f.grounded && f.stun<=0) {
+      t.steadyTicks=(t.steadyTicks||0)+1;
+    } else t.steadyTicks=0;
+    t.steadyTime=t.steadyTicks*STEP;
+    t.steadyBest=Math.max(t.steadyBest||0,t.steadyTime);
+  }
   if (
     state.time === 0 ||
     (state.rule !== "timed" &&
@@ -1457,11 +1492,20 @@ export function botInput(state, index) {
     )
       special = true;
   }
+  // A visible, armed floor trap is a jumpable obstacle for every cadet. The
+  // same reaction interval still applies; no unpublished input is inspected.
+  const approachingTrap = state.traps.find(trap =>
+    trap.owner !== fighter.index && trap.life > 0 && trap.armed < 0.45 &&
+    Math.abs(trap.y - fighter.y) < 85 &&
+    Math.abs(trap.x - fighter.x) < 100 &&
+    (Math.abs(trap.x - fighter.x) < 65 || sign(trap.x - fighter.x) === sign(move)));
+  if(approachingTrap && fighter.grounded && state.tick-ai.lastJump>30) jump=true;
   const horizontal = target.x - fighter.x;
   // Aiming is imperfect at lower levels. No access to uncommitted human input.
   const aimError = (botRandom(ai) - 0.5) * [0.24, 0.13, 0.06][state.difficulty];
   const aimY = clamp(
-    (target.y - fighter.y) / Math.max(220, Math.abs(horizontal)) + aimError,
+    (target.y - fighter.y) / Math.max(220, Math.abs(horizontal)) + aimError -
+      (fighter.id === 'beam' ? 0.5 * 230 * Math.abs(horizontal) / (860 * 860) : 0),
     -0.6,
     0.6,
   );

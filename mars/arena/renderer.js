@@ -84,6 +84,8 @@ export class Renderer {
     this.lastTick = -1;
     this.clock = 0;
     this.previousPositions = new Map();
+    this.motionStates = new Map();
+    this.dangerUntil = 0;
     this.resizeObserver = new ResizeObserver(() => this.resize());
     this.resizeObserver.observe(canvas);
     this.resize();
@@ -105,6 +107,9 @@ export class Renderer {
   reset() {
     this.effects = [];this.closeup=null;this.medalRain=0;
     this.previousPositions.clear();
+    this.motionStates.clear();
+    this.dangerUntil = 0;
+    this.cameraInitialized = false;
     this.lastTick = -1;
     this.camera = {
       x: 0,
@@ -119,6 +124,7 @@ export class Renderer {
     for (const event of events) {
       const position = { x: event.x || 0, y: event.y || 0 };
       if (event.type === "hit") {
+        this.dangerUntil = this.clock + 0.85;
         this.shake = Math.max(
           this.shake,
           Math.min(16, 5 + (event.power || 0) * 0.018),
@@ -175,6 +181,7 @@ export class Renderer {
           color: "#b3e8e2",
         });
       if (event.type === "special")
+        { this.dangerUntil = this.clock + 0.85;
         this.effects.push({
           ...position,
           type: "special",
@@ -182,20 +189,22 @@ export class Renderer {
           life: 0.8,
           total: 0.8,
           player: event.player,
-        });
+        }); }
       if(event.type==='passive')this.effects.push({...position,type:'pickup',word:event.kind==='salvage'?'SALVAGED!':'SECOND CHANCE',life:0.65,total:0.65});
       if (event.type === "item")
         this.effects.push({
           ...position,
           type: "pickup",
-          life: 0.8,
-          total: 0.8,
+          kind: event.kind,
+          player: event.player,
+          life: 1.05,
+          total: 1.05,
           word:
             {
-              biscuit: "BISCUIT!",
-              medal: "GLORIOUS!",
-              tape: "STUCK!",
-              gravity: "FLOAT!",
+              biscuit: "EMERGENCY BISCUIT",
+              medal: "HEROIC MEDAL",
+              tape: "SALVAGE TAPE",
+              gravity: "GRAVITY SWITCH",
               repair: "REPAIRED!",
               capsule:"CAPSULE SECURED",
               delivery:"DELIVERED!",
@@ -228,23 +237,66 @@ export class Renderer {
       (this.height - insetTop - insetBottom) / worldHeight,
     );
     let targetX = (minimumX + maximumX) / 2;
-    if(portrait && !this.preview){
-      targetScale=Math.max(targetScale,Math.max(innerHeight/8/86,this.height/600));
-      const player=state.fighters.find(f=>f.controller!=="bot"&&f.alive&&f.respawn<=0)||visible[0];
-      if(player)targetX=player.x*0.75+targetX*0.25;
+    const player=state.fighters.find(f=>f.controller!=="bot"&&f.alive&&f.respawn<=0)||visible[0];
+    if(portrait && !this.preview && player){
+      // Reserve a readable silhouette even at the widest emergency framing.
+      const minScale=Math.max(innerHeight/8/86,this.height/600);
+      const incoming=state.projectiles.some(p=>this.incoming(p,player));
+      const bounds=state.bounds||BOUNDS;
+      const edge=visible.some(f=>f.x>bounds.right-150||f.x<bounds.left+150||f.y>bounds.bottom-240||f.y<bounds.top+170);
+      if(incoming||edge||visible.some(f=>f.index!==player.index&&(f.charge>0||f.specialDuration>0)))this.dangerUntil=this.clock+0.65;
+      const danger=this.clock<this.dangerUntil;
+      targetScale=minScale*(danger?1:1.16);
+      const threats=visible.filter(f=>f.index!==player.index).sort((a,b)=>Math.abs(a.x-player.x)-Math.abs(b.x-player.x));
+      const threat=threats[0];
+      const look=threat?clamp((threat.x-player.x)*0.22,-this.width*.17/targetScale,this.width*.17/targetScale):0;
+      targetX=player.x+look+clamp(player.vx*.07,-24,24);
+      this.camera.minimumScale=minScale;
+      this.camera.danger=danger;
     }
     if(!portrait&&!this.preview&&this.height<430)targetScale=Math.max(targetScale,0.52);
     let targetY =
       (minimumY + maximumY) / 2 -
       (insetTop - insetBottom) / 2 / Math.max(targetScale, 0.1);
     if(portrait&&!this.preview){
-      const player=state.fighters.find(f=>f.controller!=="bot"&&f.alive&&f.respawn<=0)||visible[0];
       if(player)targetY=clamp(player.y-Math.min(135,this.height/(2*targetScale)-35),-300,230);
     }
-    const smoothing = 1 - Math.exp(-dt * (portrait?8:5));
+    if(!this.cameraInitialized){this.camera.x=targetX;this.camera.y=targetY;this.camera.scale=targetScale;this.cameraInitialized=true;}
+    const smoothing = 1 - Math.exp(-dt * (portrait?6:5));
     this.camera.x = lerp(this.camera.x, targetX, smoothing);
     this.camera.y = lerp(this.camera.y, targetY, smoothing);
     this.camera.scale = lerp(this.camera.scale, targetScale, smoothing);
+    if(portrait&&!this.preview&&player){
+      // Safety bounds outrank smoothing: never lose the local cadet on a fast hit.
+      this.camera.scale=Math.max(this.camera.minimumScale,this.camera.scale);
+      const s=this.camera.scale,margin=38/s;
+      this.camera.x=clamp(this.camera.x,player.x-this.width/(2*s)+margin,player.x+this.width/(2*s)-margin);
+      const safeTop=state.lesson?86:28,safeBottom=state.lesson?50:22;
+      this.camera.y=clamp(this.camera.y,player.y-this.height/(2*s)+safeBottom/s,player.y-116+this.height/(2*s)-safeTop/s);
+    }
+  }
+
+  incoming(p,player){
+    if(p.owner===player.index)return false;
+    const dx=player.x-p.x,dy=player.y-50-p.y,v2=p.vx*p.vx+(p.vy||0)**2;
+    const t=(dx*p.vx+dy*(p.vy||0))/Math.max(1,v2);
+    return t>0&&t<1.3&&Math.hypot(dx-p.vx*t,dy-(p.vy||0)*t)<120;
+  }
+
+  animateBodies(state,dt){
+    for(const f of state.fighters){
+      const old=this.motionStates.get(f.index)||{grounded:f.grounded,vx:f.vx,shape:0,sway:0,velocity:0,tick:state.tick};
+      if(old.tick!==state.tick&&dt>0){
+        if(f.grounded&&!old.grounded&&f.respawn<=0){
+          old.shape=-0.12;
+          for(let i=0;i<(this.reduced?3:7);i++)this.effects.push({type:'dust',x:f.x+(i-3)*7,y:f.y-3,vx:(i-3)*20,vy:-12-i%3*7,life:.36,total:.36});
+        }else if(!f.grounded&&old.grounded&&f.vy<0)old.shape=.085;
+        old.velocity+=(clamp(-f.vx*.018,-8,8)-old.sway)*dt*55;
+        old.velocity*=Math.exp(-dt*9);old.sway+=old.velocity*dt;
+        old.shape*=Math.exp(-dt*13);old.grounded=f.grounded;old.vx=f.vx;old.tick=state.tick;
+      }
+      this.motionStates.set(f.index,old);
+    }
   }
 
   draw(state, dt = 1 / 60) {
@@ -254,8 +306,13 @@ export class Renderer {
       h = this.height;
     this.clock += dt;
     this.updateCamera(state, dt);
+    this.animateBodies(state,dt);
     c.setTransform(this.ratio, 0, 0, this.ratio, 0, 0);
     this.background(state, w, h);
+    // Screen spectacle is also behind the playable silhouettes.
+    this.dramaticPanels(state,dt,w,h);
+    if(this.flash>0&&!this.reduced&&!this.preview){c.fillStyle=`rgba(249,236,192,${this.flash})`;c.fillRect(0,0,w,h);this.impactBorder(w,h);}
+    this.flash=Math.max(0,this.flash-dt);
     const shake = this.reduced || this.preview ? 0 : this.shake;
     const shakeX = Math.sin(this.clock * 149) * shake;
     const shakeY = Math.cos(this.clock * 173) * shake * 0.65;
@@ -272,23 +329,18 @@ export class Renderer {
     for (const fighter of state.fighters) this.trail(fighter, state);
     for (const projectile of state.projectiles)
       this.projectile(projectile, state);
-    for (const fighter of state.fighters) this.fighter(fighter, state);
     this.drawEffects(dt, state);
+    for (const fighter of [...state.fighters].sort((a,b)=>Number(a.controller!=='bot')-Number(b.controller!=='bot'))) this.fighter(fighter, state);
+    this.pickupLabels(state);
     c.restore();
-    if (this.flash > 0 && !this.reduced && !this.preview) {
-      c.fillStyle = `rgba(249,236,192,${this.flash * 1.1})`;
-      c.fillRect(0, 0, w, h);
-      this.impactBorder(w, h);
-    }
-    this.flash = Math.max(0, this.flash - dt);
     this.screenEdgeFighters(state);
+    this.screenEdgeShots(state);
     const vignette = c.createLinearGradient(0, 0, 0, h);
     vignette.addColorStop(0, "#071b2924");
     vignette.addColorStop(0.45, "#071b2900");
     vignette.addColorStop(1, "#071b2933");
     c.fillStyle = vignette;
     c.fillRect(0, 0, w, h);
-    this.dramaticPanels(state,dt,w,h);
     this.lastTick = state.tick;
   }
 
@@ -324,7 +376,7 @@ export class Renderer {
   signatureArt(effect,state,fraction){
     const c=this.context,f=state.fighters[effect.player],kind=effect.kind,d=f?.facing||1;
     const x=f?.x??effect.x,y=(f?.y??effect.y)-50,r=25+(1-fraction)*115;
-    c.save();c.translate(x,y);c.lineWidth=4;
+    c.save();c.translate(x,y);c.lineWidth=4;c.globalAlpha=.68;
     if(kind==='iona'){
       c.strokeStyle='#f5b393';c.beginPath();c.arc(0,0,r,-2.8,0.8);c.stroke();
       line(c,-d*85,70,d*85,-110,'#f4bd88',5);star(c,d*85,-110,22,'#fbdbc0');
@@ -356,7 +408,7 @@ export class Renderer {
       if(face?.ready){
         const pw=Math.min(220,w*.31),ph=Math.min(115,h*.22),x=w-pw-10,y=h*.13;
         c.save();polygon(c,[[x+18,y],[x+pw,y],[x+pw,y+ph],[x,y+ph]],'#f1d9a6','#112735',4);c.clip();
-        c.drawImage(face.image,0,20,face.image.width,face.image.height*.54,x,y,pw,ph);c.restore();
+        c.drawImage(face.image,0,face.image.height*.30,face.image.width,face.image.height*.60,x,y,pw,ph);c.restore();
         for(let i=0;i<12;i++){const a=i*Math.PI/6;line(c,w/2+Math.cos(a)*w*.38,h/2+Math.sin(a)*h*.38,w/2+Math.cos(a)*w*.7,h/2+Math.sin(a)*h*.7,'#f3e3b488',2);}
       }
     }
@@ -633,14 +685,22 @@ export class Renderer {
     if (!f.alive) return;
     if (f.respawn > 0) {
       const t = state.tick / 60;
+      const s=this.camera.scale,cam=this.camera;
+      const x=clamp(f.x,cam.x-this.width/(2*s)+47/s,cam.x+this.width/(2*s)-47/s);
+      const y=clamp(f.y,cam.y-this.height/(2*s)+175/s,cam.y+this.height/(2*s)-30/s);
       this.drone(
-        f.x,
-        Math.max(-350, f.y - 155) + Math.sin(t * 4) * 5,
+        x,
+        y - 142 + (this.reduced?0:Math.sin(t * 4) * 3),
         PLAYER_COLORS[f.index],
       );
       c.save();
       c.setLineDash([4, 6]);
-      line(c, f.x, f.y - 145, f.x, f.y - 60, "#a1d3d6", 2);
+      line(c, x, y - 125, x, y - 102, "#a1d3d6", 2);
+      c.setLineDash([]);
+      const atlas=loadImage('assets/'+f.id+'-atlas.webp');
+      if(atlas.ready){c.shadowColor=PLAYER_COLORS[f.index];c.shadowBlur=9;c.drawImage(atlas.image,0,0,256,256,x-57,y-110,114,114);c.shadowBlur=0;}
+      c.font='600 12px Condensed';c.textAlign='center';c.strokeStyle='#102735';c.lineWidth=3;c.fillStyle=PLAYER_COLORS[f.index];
+      const label='P'+(f.index+1)+' / RECOVERING '+f.respawn.toFixed(1)+'s';c.strokeText(label,x,y+18);c.fillText(label,x,y+18);
       c.restore();
       return;
     }
@@ -708,7 +768,8 @@ export class Renderer {
       );
     }
     if (f.grapple) {
-      line(c, f.x, f.y - 58, f.grapple.x, f.grapple.y, "#b8eeeb", 2);
+      const sway=this.reduced?0:(this.motionStates.get(f.index)?.sway||0)*2;
+      c.strokeStyle='#b8eeeb';c.lineWidth=2;c.beginPath();c.moveTo(f.x,f.y-58);c.quadraticCurveTo((f.x+f.grapple.x)/2+sway,(f.y-58+f.grapple.y)/2+14,f.grapple.x,f.grapple.y);c.stroke();
       star(c, f.grapple.x, f.grapple.y, 12, "#dbe4c7");
     }
     if (f.charge > 0) {
@@ -751,26 +812,32 @@ export class Renderer {
     c.save();
     c.translate(f.x, f.y + bob);
     c.scale(f.facing || 1, 1);
+    const body=this.motionStates.get(f.index),shape=(body?.shape||0)*(this.reduced?.2:1);
+    c.scale(1-shape*.65,1+shape);
     if (atlas.ready) {
       if (f.invulnerable > 0 && Math.floor(state.tick / 5) % 2)
-        c.globalAlpha = 0.64;
-      c.drawImage(
-        atlas.image,
-        (frame % 4) * 256,
-        Math.floor(frame / 4) * 256,
-        256,
-        256,
-        -57,
-        -110,
-        114,
-        114,
-      );
+        c.globalAlpha = 0.84;
+      const sx=(frame%4)*256,sy=Math.floor(frame/4)*256;
+      c.shadowColor=color;c.shadowBlur=f.controller==='bot'?6:9;
+      c.drawImage(atlas.image,sx,sy,256,256,-57,-110,114,114);
+      c.shadowBlur=0;
+      // Small overlapping regions bend after the torso, preserving each drawing.
+      const sway=(body?.sway||0)*(this.reduced?.15:1)*f.facing;
+      if(Math.abs(sway)>.3&&f.action!=='tumble'){
+        if(['iona','rook','sera'].includes(f.id)){
+          c.save();c.translate(0,-89);c.rotate(sway*.004);c.drawImage(atlas.image,sx+78,sy+10,100,40,-22,-16,45,18);c.restore();
+        }
+        if(f.id==='beam'){
+          c.save();c.translate(-18,-76);c.rotate(-sway*.008);c.drawImage(atlas.image,sx+40,sy+86,44,111,-21,0,20,50);c.restore();
+        }
+      }
     } else this.fallbackFighter(f, color);
     if(f.action==='shoot' && f.id!=='beam' && !(f.signatureTime>0)){
       c.fillStyle='#e6ddc8';c.fillRect(18,-62,30,10);c.fillStyle='#112735';c.textAlign='center';c.font='600 3px Condensed';
       c.fillText('TRAINING ONLY',33,-58);c.fillText('PROBABLY',33,-54);
     }
     c.restore();
+    this.itemRings(f,state);
     if(f.medalMass>0){
       line(c,f.x-10,f.y-78,f.x,f.y-38,"#d75d45",5);line(c,f.x+10,f.y-78,f.x,f.y-38,"#d75d45",5);
       star(c,f.x,f.y-36,15+f.medalMass*8,"#e9bc55",0.15);
@@ -851,6 +918,12 @@ export class Renderer {
     const speed = Math.hypot(f.vx, f.vy);
     if (speed < 380) return;
     const c = this.context;
+    if(!this.reduced&&!this.preview&&speed>560){
+      const atlas=loadImage('assets/'+f.id+'-atlas.webp');
+      if(atlas.ready){
+        c.save();c.globalAlpha=.10;c.translate(f.x-f.vx*.035,f.y-f.vy*.035);c.scale(f.facing||1,1);c.drawImage(atlas.image,768,0,256,256,-57,-110,114,114);c.restore();
+      }
+    }
     const length = clamp(speed * 0.11, 25, 120);
     const dx = (-f.vx / speed) * length,
       dy = (-f.vy / speed) * length;
@@ -1102,17 +1175,11 @@ export class Renderer {
       }
       if(effect.type==="special")this.signatureArt(effect,state,fraction);
       if (effect.type === "pickup") {
-        c.font = "600 24px Condensed,sans-serif";
-        c.textAlign = "center";
-        c.strokeStyle = "#102735";
-        c.lineWidth = 4;
-        c.strokeText(
-          effect.word,
-          effect.x,
-          effect.y - 70 - (1 - fraction) * 40,
-        );
-        c.fillStyle = "#f6db89";
-        c.fillText(effect.word, effect.x, effect.y - 70 - (1 - fraction) * 40);
+        // Labels have their own pass above the silhouettes.
+      }
+      if(effect.type==='dust'){
+        effect.x+=effect.vx*dt;effect.y+=effect.vy*dt;
+        c.globalAlpha=fraction*.23;c.fillStyle='#e8e0c4';c.beginPath();c.ellipse(effect.x,effect.y,7+(1-fraction)*10,3+(1-fraction)*4,0,0,Math.PI*2);c.fill();
       }
       if (effect.type === "recovery") {
         this.drone(
@@ -1162,14 +1229,55 @@ export class Renderer {
         continue;
       const cx = clamp(x, 18, this.width - 18),
         cy = clamp(y, 18, this.height - 18);
-      c.fillStyle = PLAYER_COLORS[f.index];
-      c.beginPath();
-      c.arc(cx, cy, 12, 0, Math.PI * 2);
-      c.fill();
+      const a=Math.atan2(y-cy,x-cx),color=PLAYER_COLORS[f.index];
+      c.save();c.translate(cx,cy);c.rotate(a);polygon(c,[[13,0],[-7,-9],[-3,0],[-7,9]],color,'#102735',2);c.restore();
       c.fillStyle = "#102735";
       c.font = "600 11px Barlow,sans-serif";
       c.textAlign = "center";
-      c.fillText(f.index + 1, cx, cy + 4);
+      c.fillStyle=color;c.fillText('P'+(f.index+1),clamp(cx-24*Math.cos(a),18,this.width-18),clamp(cy-24*Math.sin(a),16,this.height-16)+4);
     }
+  }
+
+  screenEdgeShots(state){
+    if(this.preview)return;
+    const player=state.fighters.find(f=>f.controller!=='bot'&&f.alive&&f.respawn<=0)||state.fighters[0];
+    if(!player)return;
+    const c=this.context,used=[];
+    for(const p of state.projectiles){
+      if(!this.incoming(p,player))continue;
+      const x=(p.x-this.camera.x)*this.camera.scale+this.width/2,y=(p.y-this.camera.y)*this.camera.scale+this.height/2;
+      if(x>=12&&x<=this.width-12&&y>=12&&y<=this.height-12)continue;
+      const px=clamp(x,24,this.width-24),py=clamp(y,30,this.height-24);
+      if(used.some(q=>Math.hypot(px-q.x,py-q.y)<36))continue;
+      used.push({x:px,y:py});const a=Math.atan2(p.vy||0,p.vx||0);
+      c.save();c.translate(px,py);c.rotate(a);polygon(c,[[-12,-8],[0,0],[-12,8],[9,0]],'#fff1c6','#e96949',3);c.restore();
+      c.fillStyle='#fff1c6';c.strokeStyle='#102735';c.lineWidth=3;c.textAlign='center';c.font='600 10px Condensed';
+      c.strokeText('INCOMING',clamp(px,32,this.width-32),py+22);c.fillText('INCOMING',clamp(px,32,this.width-32),py+22);
+    }
+  }
+
+  pickupLabels(state){
+    const c=this.context;
+    for(const e of this.effects.filter(e=>e.type==='pickup')){
+      const f=state.fighters[e.player],x=f?.x??e.x,y=(f?.y??e.y)-153-(1-e.life/e.total)*15;
+      c.save();c.globalAlpha=Math.min(1,e.life*4);c.textAlign='center';c.font='600 15px Condensed';
+      const text=e.word,w=c.measureText(text).width+30;
+      c.fillStyle='#102735ee';c.fillRect(x-w/2,y-16,w,24);c.strokeStyle='#efce79';c.lineWidth=1;c.strokeRect(x-w/2,y-16,w,24);
+      if(e.kind){c.save();c.translate(x-w/2+12,y-4);c.scale(.36,.36);this.item({kind:e.kind,x:0,y:12,id:0},state);c.restore();}
+      c.fillStyle='#f8e3a8';c.fillText(text,x+(e.kind?7:0),y+1);c.restore();
+    }
+  }
+
+  itemRings(f,state){
+    const active=(f.itemEffects||[]).map(e=>({...e,remaining:Math.min(e.remaining,e.kind==='medal'?f.invulnerable:e.kind==='tape'?f.slow:state.gravityBoost)})).filter(e=>e.remaining>0);
+    if(!active.length)return;
+    const c=this.context;
+    active.slice(0,3).forEach((e,i)=>{
+      const x=f.x+31+i*16,y=f.y-106,r=7;
+      c.fillStyle='#102735';c.beginPath();c.arc(x,y,r+2,0,Math.PI*2);c.fill();
+      c.strokeStyle=e.kind==='tape'?'#e3dec4':e.kind==='gravity'?'#8ae0ed':'#efc969';c.lineWidth=2;
+      c.beginPath();c.arc(x,y,r,-Math.PI/2,-Math.PI/2+Math.PI*2*clamp(e.remaining/e.duration,0,1));c.stroke();
+      c.fillStyle='#f3e9ce';c.font='600 7px Condensed';c.textAlign='center';c.fillText(e.kind==='medal'?'M':e.kind==='tape'?'T':'G',x,y+2.5);
+    });
   }
 }

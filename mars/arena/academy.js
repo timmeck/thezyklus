@@ -1,4 +1,4 @@
-// Original MARS game adaptation. Confirmed Volume 1 only.
+// Original MARS game adaptation. Volume additions enter only through release.js.
 export const RANKS=['Applicant','Deck Candidate','Recovery Cadet','Camera-Ready Cadet','Gravity Specialist','Decorated Liability','Rescue Officer','Certified Airborne Hero (Provisional)'];
 export const COURSE=[
  {id:'lowg',title:'Low-g procedures',section:'01 / KNOW YOUR LEGS',arena:'deck',duration:50,icon:'jump',
@@ -37,6 +37,21 @@ export const COURSE=[
  medal:'THE SEVENFOLD ORDER OF EVENTUAL LANDING',commendation:'For exemplary flying, including the portions originally intended as walking.',
  headline:'YOUR FINEST HOUR. EDITED.',copy:'Graduate today. Receive a certificate light enough to survive.',poll:'Public confidence: 100%. Gravity has declined the survey.'}
 ];
+
+const BASE_FINAL = { ...COURSE[6] };
+export function applyVolumeContent(release = {}) {
+ Object.assign(COURSE[6], BASE_FINAL);
+ delete COURSE[6].examiner;
+ delete COURSE[6].examinerSource;
+ if (release.available?.includes(2) && release.finalExaminer) {
+  const data = release.finalExaminer;
+  COURSE[6].examiner = data.name;
+  COURSE[6].examinerSource = data.source;
+  COURSE[6].copy = data.copy;
+  COURSE[6].order = data.order;
+ }
+ return COURSE;
+}
 
 export const SIGNATURES={
  iona:{passive:'FIRST FOOTING',detail:'Air steering is 12% sharper. Long reach; short hesitation.',seal:'RETURN ROUTE / INCLUDED',pitch:'She finds a handhold before the briefing finds a point.'},

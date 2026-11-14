@@ -84,6 +84,7 @@ export class InputManager {
     this.suspended = Boolean(globalThis.document?.hidden);
     this.keys = new Set();
     this.touch = { ...EMPTY_INPUT };
+    this.touchPresses = new Set();
     this.gamepads = new Map();
     this.menuDown = new Map();
     this.gamepadSignature = "";
@@ -143,13 +144,16 @@ export class InputManager {
   clear() {
     this.keys.clear();
     this.touch = { ...EMPTY_INPUT };
+    this.touchPresses.clear();
   }
 
   setTouch(action, value) {
     if (action === "move") this.touch.move = clamp(value, -1, 1);
     else if (action === "aimY") this.touch.aimY = clamp(value, -0.65, 0.65);
-    else if (action === "jump" || action === "shoot" || action === "special")
+    else if (action === "jump" || action === "shoot" || action === "special"){
+      if(value&&!this.touch[action])this.touchPresses.add(action);
       this.touch[action] = Boolean(value);
+    }
   }
 
   pollGamepads() {
@@ -202,7 +206,11 @@ export class InputManager {
       editable(globalThis.document?.activeElement)
     )
       return { ...EMPTY_INPUT };
-    if (binding === "touch") return { ...this.touch };
+    if (binding === "touch") {
+      const frame={...this.touch};
+      for(const action of this.touchPresses)frame[action]=true;
+      this.touchPresses.clear();return frame;
+    }
     const keyboard = KEYBOARD_BINDINGS[binding];
     if (keyboard) {
       const frame = {
@@ -221,6 +229,8 @@ export class InputManager {
         frame.jump ||= this.touch.jump;
         frame.shoot ||= this.touch.shoot;
         frame.special ||= this.touch.special;
+        for(const action of this.touchPresses)frame[action]=true;
+        this.touchPresses.clear();
         frame.aimY = this.touch.aimY;
       }
       return frame;

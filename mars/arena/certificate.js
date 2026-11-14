@@ -28,5 +28,6 @@ export async function certificatePNG(match,{lesson,assessment,service,index,less
  for(let i=0;i<7;i++){c.fillStyle=i<count?orange:'#cecbbd';c.fillRect(86+i*119,905,102,36);c.fillStyle=i<count?paper:ink;c.font='600 20px Condensed';c.fillText(String(i+1).padStart(2,'0')+(i<count?' / PASS':''),96+i*119,930);}
  c.fillStyle=ink;c.font='500 17px Barlow';c.fillText('SERVICE No. MDF-2705-'+service+'-'+String(index+1).padStart(2,'0')+'  /  EXERCISE '+match.seed,86,989);
  c.font='500 14px Barlow';c.fillText('© Tim Mecklenburg · Original MARS game adaptation · AI-assisted artwork and software · Saved locally',86,1021);
+ if(lesson.examiner){c.font='500 14px Barlow';c.fillText('EXAMINER / '+lesson.examiner.toUpperCase()+' · '+lesson.examinerSource,86,1047);}
  return new Promise((resolve,reject)=>canvas.toBlob(blob=>blob?resolve(blob):reject(new Error('PNG export failed')),'image/png'));
 }
