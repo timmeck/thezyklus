@@ -209,7 +209,7 @@ export class Renderer {
   stats() {
     return {...this.context.stats?.(), backend:this.backend, quality:this.quality, effectiveQuality:this.effectiveQuality,
       interpolatedTick:this.interpolatedTick, ratio:this.ratio, reduced:this.reduced,
-      fighters:this.fighterMeasurements || [],heroAuras:this.heroAuras || 0,heroMarkers:this.heroMarkers || 0,
+      fighters:this.fighterMeasurements || [],heroAuras:this.heroAuras || 0,auraLevel:this.auraLevelShown ?? null,heroMarkers:this.heroMarkers || 0,
       protectedFighters:true,renderOrder:'world-postprocess-fighters'};
   }
 
@@ -217,6 +217,8 @@ export class Renderer {
     for (const event of events) {
       const position = { x: event.x || 0, y: event.y || 0 };
       if (event.type === 'shot') this.shotUntil.set(event.player,this.clock + .2);
+      if (event.type === 'hit' && (event.power || 0) > 450) this.auraBoost(event.target,.35,.55);
+      if (event.type === 'edge-warning') this.auraBoost(event.player,.6,.7);
       if (event.type === "hit") {
         this.dangerUntil = this.clock + 0.85;
         this.shake = Math.max(
@@ -453,6 +455,10 @@ export class Renderer {
     c.scale(this.camera.scale,this.camera.scale);
     c.translate(-this.camera.x,-this.camera.y);
     for (const fighter of state.fighters) {
+      // Heller Kegel nach dem Wiedereinstieg (15.11., Tim: „der helle lichtkegel war nicht schlecht“)
+      this.auraRespawning ||= new Set();
+      if (fighter.respawn > 0 || !fighter.alive) this.auraRespawning.add(fighter.index);
+      else if (this.auraRespawning.delete(fighter.index)) this.auraBoost(fighter.index,2.2,.9);
       if (!this.preview && fighter.controller !== 'bot' && fighter.alive && fighter.respawn <= 0)
         this.heroAura(fighter,state,PLAYER_COLORS[fighter.index]);
     }
@@ -1078,39 +1084,69 @@ export class Renderer {
       viewportHeight:this.height,minimumFraction:this.width<this.height?1/8:1/7});
   }
 
+  auraBoost(index,hold,fade) {
+    if (index == null) return;
+    this.auraBoosts ||= new Map();
+    const until = this.clock + hold, old = this.auraBoosts.get(index);
+    if (!old || old.until + old.fade < until + fade) this.auraBoosts.set(index,{until,fade});
+  }
+
+  // 0 = ruhige Aura (AAA1b), 1 = heller Scheinwerfer wie der Hotfix vom 14.11.
+  auraLevel(f,state) {
+    let level = 0;
+    const tick = state.tick || 0;
+    if (tick < 150) level = 1;
+    else if (tick < 204) level = 1 - (tick - 150) / 54;
+    const boost = this.auraBoosts?.get(f.index);
+    if (boost) {
+      const over = this.clock - boost.until;
+      const value = over <= 0 ? 1 : 1 - over / boost.fade;
+      if (value <= 0) this.auraBoosts.delete(f.index);
+      else level = Math.max(level,value);
+    }
+    level = Math.max(0,Math.min(1,level));
+    return level * level * (3 - 2 * level);
+  }
+
   heroAura(f,state,color) {
     const c = this.context;
-    const pulse = this.reduced ? .65 : .65 + Math.sin(this.clock * 3.4) * .12;
+    const k = this.auraLevel(f,state);
+    const hex = value => Math.round(Math.max(0,Math.min(255,value))).toString(16).padStart(2,'0');
+    const pulse = this.reduced ? .65 : .65 + Math.sin(this.clock * 3.4) * (.12 + k * .1);
+    const top = 340 + k * 80, base = 49 + k * 9;
     c.save();
-    const cone = c.createLinearGradient(f.x,f.y - 340,f.x,f.y + 4);
+    const cone = c.createLinearGradient(f.x,f.y - top,f.x,f.y + 4);
     cone.addColorStop(0,color + '00');
-    cone.addColorStop(.65,color + '0c');
-    cone.addColorStop(1,color + '24');
-    polygon(c,[[f.x - 9,f.y - 340],[f.x + 9,f.y - 340],[f.x + 49,f.y + 4],[f.x - 49,f.y + 4]],cone);
+    cone.addColorStop(.65,color + hex(12 + k * 26));
+    cone.addColorStop(1,color + hex(36 + k * 40));
+    polygon(c,[[f.x - 9 - k * 5,f.y - top],[f.x + 9 + k * 5,f.y - top],[f.x + base,f.y + 4],[f.x - base,f.y + 4]],cone);
     for (let radius = 5; radius > 0; radius--) {
-      c.globalAlpha = pulse * .035;
+      c.globalAlpha = pulse * (.035 + k * .05);
       c.fillStyle = color;
       c.beginPath();
       c.ellipse(f.x,f.y - 54,34 + radius * 7,60 + radius * 8,0,0,Math.PI * 2);
       c.fill();
     }
-    c.globalAlpha = .5;
-    c.fillStyle = color + '33';
-    c.beginPath();c.ellipse(f.x,f.y + 2,44,9,0,0,Math.PI * 2);c.fill();
-    c.strokeStyle = color;c.lineWidth = 2 / this.camera.scale;
+    c.globalAlpha = .5 + k * .35;
+    c.fillStyle = color + hex(51 + k * 60);
+    c.beginPath();c.ellipse(f.x,f.y + 2,44 + k * 14,9 + k * 3,0,0,Math.PI * 2);c.fill();
+    c.strokeStyle = color;c.lineWidth = (2 + k) / this.camera.scale;
     c.beginPath();c.ellipse(f.x,f.y + 2,32,6,0,0,Math.PI * 2);c.stroke();
     if (!this.reduced) {
-      for (let index = 0; index < 7; index++) {
-        const life = (this.clock * .4 + index / 7) % 1;
+      const sparks = 7 + Math.round(k * 3);
+      for (let index = 0; index < sparks; index++) {
+        const life = (this.clock * .4 + index / sparks) % 1;
         const x = f.x + Math.sin(index * 2.3 + this.clock * .8) * (31 + index * 2);
-        const y = f.y - life * 154;
-        c.globalAlpha = (1 - life) * .7;
+        const y = f.y - life * (154 + k * 40);
+        const size = 2 + k * 1.5;
+        c.globalAlpha = (1 - life) * (.7 + k * .25);
         c.fillStyle = index % 3 ? color : '#fff0cd';
-        c.fillRect(x - 1,y - 2,2,4);
+        c.fillRect(x - size / 2,y - size,size,size * 2);
       }
     }
     c.restore();
     this.heroAuras++;
+    this.auraLevelShown = k;
   }
 
   heroMarker(f,state) {

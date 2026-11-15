@@ -1,5 +1,5 @@
 {
-  "asOf": "2026-11-14T23:26:18.345401+01:00",
+  "asOf": "2026-11-15T09:30:51.855635+01:00",
   "review": false,
   "available": [
     1,
@@ -20,7 +20,7 @@
     {
       "file": "data.js",
       "bytes": 18046,
-      "sha256": "b89ab3defb2cdf0a4608ce366b10ba8ebdfd3ce549395ece63145dfc2eca0a43"
+      "sha256": "f856081c7ff21902b5816b12c4f5d2c7919310cec5c83dcc3ae0842c98089238"
     },
     {
       "file": "game.js",
@@ -55,7 +55,7 @@
     {
       "file": "sw.js",
       "bytes": 1201,
-      "sha256": "3a2c8e7ed56b0c4db31b85d6acaa8d491b39fa2196e0f8844c6fe63d28e3de45"
+      "sha256": "c5925aa8bcfed68cc7c5b5d11b383fea377ac3aef4c8e2309b7aaa82aeb238bf"
     },
     {
       "file": "assets/Barlow-400-latin.woff2",

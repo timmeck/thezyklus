@@ -3,10 +3,10 @@
     1,
     2
   ],
-  "asOf": "2026-11-14T23:26:17.855444+01:00",
+  "asOf": "2026-11-15T09:30:51.352357+01:00",
   "gameVersion": "3.4.1",
-  "version": "f447f0ce4bb2",
-  "bytes": 10671254,
+  "version": "394ebd635b7f",
+  "bytes": 10673170,
   "files": [
     {
       "file": "academy.js",
@@ -431,12 +431,12 @@
     {
       "file": "release.js",
       "bytes": 9450,
-      "sha256": "fd0e06d659603b813583bea67f3049afe5131ddad92aa0f5bcb1dfde7078ceb2"
+      "sha256": "864afb81a7353dd29fa9a2fac945b6cf9e54e7821a00fa911bd656d998139c48"
     },
     {
       "file": "renderer.js",
-      "bytes": 62211,
-      "sha256": "cc949782c54529da9cf865a8d616815550d85e849cc5c7fe353957b888448f1e"
+      "bytes": 64127,
+      "sha256": "2dbc2783861b99346be27da968a2602401f2cb0c39021116fafb1e0e0c3d7d44"
     },
     {
       "file": "responsive.css",
@@ -461,7 +461,7 @@
     {
       "file": "sw.js",
       "bytes": 2547,
-      "sha256": "d5e50daf2ea3761b86939f8d8965a1150148849cd9c769c237aec1ac3fd12bb1"
+      "sha256": "12e33544d6893e010e3408bc6490bb3ed152be1b12445e40278f33e066ab93d5"
     },
     {
       "file": "viewport.js",
