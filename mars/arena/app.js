@@ -40,7 +40,11 @@ const defaults = {
   service: String(Math.floor(100000+Math.random()*899999)),
   gauntlets: 0,
   sound: true,
-  assist: false,
+  // Am Handy ist die Hilfe von Anfang an an (15.11., Tim: „vielleicht ist das spiel zu schwer und schnell“)
+  assist: matchMedia("(pointer:coarse)").matches,
+  assistChosen: false,
+  quickLevel: 0,
+  quickStreak: 0,
   reduced: matchMedia("(prefers-reduced-motion: reduce)").matches,
 };
 let record = { ...defaults };
@@ -59,8 +63,13 @@ try {
     record.seen=Array.isArray(stored.seen)?stored.seen.filter(id=>characterById[id]):[];
     record.legacyPip=typeof stored.legacyPip==='boolean'?stored.legacyPip:!Array.isArray(stored.lessons)&&record.rounds>=3;
     if(/^\d{6}$/.test(stored.service))record.service=stored.service;
-    for (const key of ["sound", "assist", "reduced"])
+    for (const key of ["sound", "reduced"])
       if (typeof stored[key] === "boolean") record[key] = stored[key];
+    // Nur eine bewusst gesetzte Hilfe übernehmen; alte Stände trugen den früheren Standard „aus“.
+    record.assistChosen = stored.assistChosen === true;
+    if (record.assistChosen && typeof stored.assist === "boolean") record.assist = stored.assist;
+    record.quickLevel = [0,1,2].includes(stored.quickLevel) ? stored.quickLevel : 0;
+    record.quickStreak = Math.max(-2,Math.min(2,Math.trunc(Number(stored.quickStreak) || 0)));
   }
 } catch {}
 
@@ -855,6 +864,13 @@ function finishRound() {
     dailyResult.saved=saveDailyResult(dailyDrill,dailyResult);
   }
   if(mode==='volume')assessment={passed:(match.training.steadyBest||0)>=volumeDrill.goal,grade:(match.training.steadyBest||0)>=volumeDrill.goal?'A':'RETAKE'};
+  if (mode === "quick") {
+    // Mitwachsende Bots: zwei Niederlagen machen sie ruhiger, zwei Siege schärfer.
+    const won = match.winner === 0;
+    record.quickStreak = won ? Math.max(0,record.quickStreak) + 1 : Math.min(0,record.quickStreak) - 1;
+    if (record.quickStreak >= 2) { record.quickLevel = Math.min(2,record.quickLevel + 1); record.quickStreak = 0; }
+    if (record.quickStreak <= -2) { record.quickLevel = Math.max(0,record.quickLevel - 1); record.quickStreak = 0; }
+  }
   saveRecord();
   if (mode === "gauntlet") {
     gauntlet.won = match.winner === 0;
@@ -1351,7 +1367,7 @@ function startQuickFight(){
   seats[0]={character:pick(cast).id,binding:'keyboard1'};
   const opponents=cast.filter(c=>c.id!==seats[0].character).sort(()=>Math.random()-.5);
   seats[1]={character:opponents[0].id,binding:'bot'};seats[2]={character:opponents[1].id,binding:'bot'};seats[3].binding='empty';
-  arenaId=pick(ARENAS).id;$('#difficulty').value='1';
+  arenaId=pick(ARENAS).id;$('#difficulty').value=String(record.quickLevel);
   startMatch();
 }
 
@@ -1456,6 +1472,7 @@ $("#sound-game").addEventListener("click", () => {
 $("#assist").checked = record.assist;
 $("#assist").addEventListener("change", () => {
   record.assist = $("#assist").checked;
+  record.assistChosen = true;
   saveRecord();
 });
 $("#reduced-motion").checked = record.reduced;

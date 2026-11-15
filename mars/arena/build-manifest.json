@@ -3,10 +3,10 @@
     1,
     2
   ],
-  "asOf": "2026-11-15T09:30:51.352357+01:00",
+  "asOf": "2026-11-15T10:23:03.419405+01:00",
   "gameVersion": "3.4.1",
-  "version": "394ebd635b7f",
-  "bytes": 10673170,
+  "version": "4049de8e2331",
+  "bytes": 10674361,
   "files": [
     {
       "file": "academy.js",
@@ -30,8 +30,8 @@
     },
     {
       "file": "app.js",
-      "bytes": 73267,
-      "sha256": "ba9bf1a91e9c3efc2376cf2868611ff0da6bd954d5484ad546b848c6dc83d248"
+      "bytes": 74458,
+      "sha256": "15eadd030c80466f39b7d66a98c97d21f912c0804dd72e42e7cc52bca7d55578"
     },
     {
       "file": "assets/apple-touch-icon.png",
@@ -431,7 +431,7 @@
     {
       "file": "release.js",
       "bytes": 9450,
-      "sha256": "864afb81a7353dd29fa9a2fac945b6cf9e54e7821a00fa911bd656d998139c48"
+      "sha256": "28be6e7679d7428f109a058d49a04f6411f61b504f290a654671510c830b756a"
     },
     {
       "file": "renderer.js",
@@ -461,7 +461,7 @@
     {
       "file": "sw.js",
       "bytes": 2547,
-      "sha256": "12e33544d6893e010e3408bc6490bb3ed152be1b12445e40278f33e066ab93d5"
+      "sha256": "f7d8c88943cd6d7f8e79e01b7900ad783d41f7f388d0d885f07b145ca4939f60"
     },
     {
       "file": "viewport.js",
