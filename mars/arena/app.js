@@ -1,5 +1,6 @@
 import {
   CHARACTERS,
+  CALM_PACE,
   ARENAS,
   createMatch,
   stepMatch,
@@ -119,12 +120,14 @@ let dailyDrill=null,dailyResult=null,volumeDrill=null,preparedShare=null,shareGe
 let fullscreenEntry = Promise.resolve();
 let resetTouchControls = () => {};
 const PRESENTATION_STORAGE = 'mars-arena-presentation-v1';
-const presentation = { quality: 'auto', precision: false, autoFullscreen: true };
+const presentation = { quality: 'auto', precision: false, autoFullscreen: true,
+  calmPace: matchMedia('(pointer:coarse)').matches };
 try {
   const stored = JSON.parse(localStorage.getItem(PRESENTATION_STORAGE));
   if (['auto','high','medium','low'].includes(stored?.quality)) presentation.quality = stored.quality;
   if (typeof stored?.precision === 'boolean') presentation.precision = stored.precision;
   if (typeof stored?.autoFullscreen === 'boolean') presentation.autoFullscreen = stored.autoFullscreen;
+  if (typeof stored?.calmPace === 'boolean') presentation.calmPace = stored.calmPace;
 } catch {}
 function savePresentation() {
   try { localStorage.setItem(PRESENTATION_STORAGE, JSON.stringify(presentation)); } catch {}
@@ -164,6 +167,11 @@ renderer.setQuality(presentation.quality);
 previewRenderer.setQuality(presentation.quality);
 $('#precision-aim').checked = presentation.precision;
 $('#auto-fullscreen').checked = presentation.autoFullscreen;
+$('#calm-pace').checked = presentation.calmPace;
+$('#calm-pace').addEventListener('change', () => {
+  presentation.calmPace = $('#calm-pace').checked;
+  savePresentation();
+});
 $('#auto-fullscreen').addEventListener('change', () => {
   presentation.autoFullscreen = $('#auto-fullscreen').checked;
   savePresentation();
@@ -586,6 +594,7 @@ async function startMatch({ rematch = false, advance = false } = {}) {
     stocks: 3,
     seed: mode==='daily'?dailyDrill.seed:++seedCounter,
     assist: mode==='daily'?false:record.assist,
+    pace: mode !== 'daily' && presentation.calmPace ? CALM_PACE : 1,
   });
   matchBindings = options.bindings;
   playing = false;
@@ -1240,23 +1249,24 @@ function frame(now) {
         } else {
           accumulator += dt*(slowMoment>0?0.36:1);
           slowMoment=Math.max(0,slowMoment-dt);
-          while (accumulator >= 1 / 60 && !resultShown) {
+          const interval = 1 / (60 * match.pace);
+          while (accumulator >= interval && !resultShown) {
             const inputs = match.fighters.map((fighter, index) => {
               if (matchBindings[index] === 'bot') return botInput(match, index);
               const value = input.read(matchBindings[index], index === 0);
               return touchAimAssist(match, fighter, value, index === 0 && viewport.method === 'touch');
             });
             renderer.capture(match);
-            stepMatch(match, inputs);
+            stepMatch(match, inputs, interval);
             completeDrill();
             processEvents(match.events);
-            accumulator -= 1 / 60;
+            accumulator -= interval;
             if (qaEnabled && runLog.length < 12000)
               runLog.push(inputs.map((value) => ({ ...value })));
           }
         }
       }
-      renderer.draw(match, paused ? 0 : dt, paused || resultShown ? 1 : accumulator * 60);
+      renderer.draw(match, paused ? 0 : dt * match.pace, paused || resultShown ? 1 : accumulator * 60 * match.pace);
       sound.update(match, renderer.camera);
       if (match.tick !== hudTick && (match.tick % 5 === 0 || resultShown)) {
         renderHud();
@@ -1624,7 +1634,7 @@ if (qaEnabled) {
       match.fighters[winner].stocks = 9;
       match.tick = Math.round(match.duration * 60) - 1;
       renderer.capture(match);
-      stepMatch(match, []);
+      stepMatch(match, [], 1 / (60 * match.pace));
       processEvents(match.events);
       renderHud();
     },

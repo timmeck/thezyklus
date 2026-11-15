@@ -3,6 +3,7 @@
 // The caller supplies one input object per fighter, exactly once per 60 Hz tick.
 
 export const STEP = 1 / 60;
+export const CALM_PACE = 7 / 8;
 export const BOUNDS = Object.freeze({
   left: -1220,
   right: 1220,
@@ -305,6 +306,7 @@ export function createMatch(options = {}) {
     scrap: [],
     training: {travel:0,jumps:0,specials:0,points:0,deliveries:0,carrying:false,heavyTime:0,medalTime:0,steadyTime:0,steadyBest:0,capsule:{x:-260,y:12},bayX:170},
     tick: 0,
+    paceRemainder: 0,
     time: duration,
     duration,
     rule: options.rule === "timed" ? "timed" : "stocks",
@@ -346,6 +348,10 @@ export function createMatch(options = {}) {
     nextId: 1,
     stats: { shots: 0, hits: 0, ringouts: 0, items: 0, elapsed: 0 },
   };
+  // The round owns its clock. All mechanics retain the same 60 Hz game ticks,
+  // including recoil, cooldowns, hazards, recovery and AI reaction intervals.
+  Object.defineProperty(state, 'pace', {value:options.pace === CALM_PACE ? CALM_PACE : 1,
+    enumerable:true});
   if(state.compact) for(const p of state.platforms) {
     // A vertical fighting space, with full-depth single-jump steps.
     p.x*=0.48;p.baseX=p.x;p.previousX=p.x;p.w*=0.48;
@@ -1503,7 +1509,29 @@ function updateTraining(state) {
   state.scrap=state.scrap.filter(p=>p.life>0&&p.y<750);
 }
 
-export function stepMatch(state, inputs = []) {
+// Existing callers supply 60 wall-clock frames per second. The browser can
+// schedule each complete game tick at STEP / pace for smooth interpolation.
+// Short taps on a wall frame between game ticks use the hitstop input buffer.
+export function stepMatch(state, inputs = [], elapsed = STEP) {
+  state.events = [];
+  if (state.phase !== 'playing') return state;
+  const pace = state.pace ?? 1;
+  state.paceRemainder = (state.paceRemainder || 0) +
+    clamp(Number(elapsed) || 0, 0, STEP / pace) * pace / STEP;
+  if (state.paceRemainder < 1 - 1e-9) {
+    for (const fighter of state.fighters) {
+      const input = inputFrame(inputs[fighter.index]);
+      fighter.bufferedJump ||= input.jump && !fighter.previousInput.jump;
+      fighter.bufferedSpecial ||= input.special && !fighter.previousInput.special;
+      if (input.shoot) fighter.bufferedShot = {aimX:input.aimX, aimY:input.aimY};
+    }
+    return state;
+  }
+  state.paceRemainder = Math.max(0, state.paceRemainder - 1);
+  return advanceMatch(state, inputs);
+}
+
+function advanceMatch(state, inputs) {
   state.events = [];
   if (state.phase !== "playing") return state;
   state.tick += 1;
@@ -1562,7 +1590,7 @@ export function botInput(state, index) {
   )
     return inputFrame();
   const ai = fighter.ai;
-  const reaction = [23, 14, 8][state.difficulty] + (fighter.blind > 0 ? 10 : 0);
+  const reaction = [28, 14, 8][state.difficulty] + (fighter.blind > 0 ? 10 : 0);
   if (state.tick < ai.nextThink) {
     return { ...ai.decision, jump: false, special: false };
   }
@@ -1675,13 +1703,17 @@ export function botInput(state, index) {
     special =
       inSpecialRange &&
       fighter.specialCooldown <= 0 &&
-      botRandom(ai) < [0.22, 0.48, 0.7][state.difficulty];
+      botRandom(ai) < [state.tick < 720 ? 0.12 : 0.18, 0.48, 0.7][state.difficulty];
     if (
       fighter.id === "tavi" &&
       fighter.damage > 45 &&
       fighter.specialCooldown <= 0
     )
       special = true;
+    // Recruits take a breath between pursuits. Recovery and imminent jumps
+    // keep their existing safety decisions, on every controller and cadet.
+    if (state.difficulty === 0 && fighter.grounded && !jump && botRandom(ai) < 0.18)
+      move = 0;
   }
   if (fighter.ledge) {move = -fighter.ledge.side;jump = true;}
   // A visible, armed floor trap is a jumpable obstacle for every cadet. The
@@ -1696,13 +1728,13 @@ export function botInput(state, index) {
   const vertical = target.y - fighter.y;
   const range = Math.hypot(horizontal, vertical);
   // One held angular error per visible reaction, with a broad cone on Easy.
-  const aimError = (botRandom(ai) - 0.5) * [0.64, 0.32, 0.14][state.difficulty];
+  const aimError = (botRandom(ai) - 0.5) * [0.8, 0.32, 0.14][state.difficulty];
   const arc = fighter.id === 'beam' ? 0.5 * 230 * Math.pow(range / 860, 2) : 0;
   const angle = Math.atan2(vertical - arc, horizontal) + aimError;
   const aimX = Math.cos(angle), aimY = Math.sin(angle);
   const shoot =
     range < 780 &&
-    botRandom(ai) > [0.38, 0.17, 0.04][state.difficulty];
+    botRandom(ai) > [state.tick < 720 ? 0.74 : 0.44, 0.17, 0.04][state.difficulty];
   if (jump) ai.lastJump = state.tick;
   if (special) ai.lastSpecial = state.tick;
   ai.decision = inputFrame({ move, jump, shoot, special,
