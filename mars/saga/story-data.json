@@ -1,0 +1,540 @@
+{
+  "version": 1,
+  "title": "MARS",
+  "subtitle": "FLOOR IS THE ENEMY",
+  "chapter": 1,
+  "player": "Iona Vale",
+  "prolog": [
+    {
+      "id": "prolog-beam",
+      "image": "assets/panels/p01a.webp",
+      "speaker": "Captain Beam",
+      "text": "Citizens! Earth is heavy. Your courage need not be.",
+      "caption": "Mars, 2705. The fleet has a very confident television channel.",
+      "source": "Band 1, p01a, V3L01a",
+      "voice": "prolog-beam",
+      "adaptation": false,
+      "audio": "assets/voice/prolog-beam.m4a"
+    },
+    {
+      "id": "prolog-rook",
+      "image": "assets/panels/p02a.webp",
+      "speaker": "Rook",
+      "text": "Watch closely. I have been standing successfully for years.",
+      "caption": "You are Iona Vale, recovery cadet. Rook is your pilot. Both of you have met the heavy setting.",
+      "source": "Band 1, p02a, V3L02a",
+      "voice": "prolog-rook",
+      "adaptation": false,
+      "audio": "assets/voice/prolog-rook.m4a"
+    },
+    {
+      "id": "prolog-sera",
+      "image": "assets/panels/p04c.webp",
+      "speaker": "Sera",
+      "text": "Brace first. Then reach.",
+      "caption": "A good entrance needs a route home. Learn the recovery line and meet the crew at the launch.",
+      "source": "Band 1, p04c, V3L04c",
+      "voice": "prolog-sera",
+      "adaptation": false,
+      "audio": "assets/voice/prolog-sera.m4a"
+    },
+    {
+      "id": "prolog-mission",
+      "image": "assets/panels/p10a.webp",
+      "speaker": "Sera",
+      "text": "Recovery drill. Retrieve Arden's capsule.",
+      "caption": "Get the equipment ready. A cadet is waiting in the practice capsule.",
+      "source": "Band 1, p11a, V3L11a",
+      "voice": "prolog-mission",
+      "adaptation": false,
+      "audio": "assets/voice/prolog-mission.m4a"
+    }
+  ],
+  "interludes": {
+    "tether": [
+      {
+        "id": "tether-tools",
+        "image": "assets/panels/p04c.webp",
+        "speaker": "Tavi",
+        "text": "Cutter. Tether. Rescue foam. Nothing here requires a heroic speech.",
+        "caption": "Recovery line acquired. Hold at a marked anchor, swing across, then choose your landing.",
+        "source": "Band 1, p08a, V3L08a",
+        "voice": "tether-tools",
+        "adaptation": false,
+        "audio": "assets/voice/tether-tools.m4a"
+      },
+      {
+        "id": "tether-rule",
+        "image": "assets/panels/p04c.webp",
+        "speaker": "Sera",
+        "text": "Show me your exit.",
+        "caption": "The upper route is within reach. Look back for the new way home.",
+        "source": "Band 1, p29b, V3L29b",
+        "voice": "tether-rule",
+        "adaptation": false,
+        "audio": "assets/voice/tether-rule.m4a"
+      }
+    ],
+    "launch": [
+      {
+        "id": "launch-beacon-k1c",
+        "image": "assets/panels/p10a.webp",
+        "speaker": "Rook",
+        "text": "That's Pip Arden's capsule. His beacon is calling for help.",
+        "caption": "The equipment check has become a rescue. Pip is a cadet, not a practice target.",
+        "source": "Band 1, p12b, V3L12b",
+        "voice": "launch-beacon-k1c",
+        "adaptation": false,
+        "status": "neu-K1C",
+        "audio": "assets/audio/vo/k1c-launch-beacon.m4a"
+      },
+      {
+        "id": "launch-emergency",
+        "image": "assets/panels/p10a.webp",
+        "speaker": "Sera",
+        "text": "Exercise suspended. Rook, launch Moth. Iona, board.",
+        "caption": "The practice capsule has a real problem. Rook flies. Iona works the winch.",
+        "source": "Band 1, p12c, V3L12c",
+        "voice": "launch-emergency",
+        "adaptation": false,
+        "audio": "assets/voice/launch-emergency.m4a"
+      },
+      {
+        "id": "launch-promise-k1c",
+        "image": "assets/panels/p20a.webp",
+        "speaker": "Iona",
+        "text": "Hang on, Pip! I'm coming to get you!",
+        "caption": "Pip is in the sealed seat. The yellow inflatable practice dummy is a separate object.",
+        "source": "Band 1, p12d, V3L12d; caption distinction from p12e",
+        "voice": "launch-promise-k1c",
+        "adaptation": false,
+        "status": "neu-K1C",
+        "audio": "assets/audio/vo/k1c-launch-promise.m4a"
+      },
+      {
+        "id": "launch-pip",
+        "image": "assets/panels/p20a.webp",
+        "speaker": "Pip",
+        "text": "I'm pinned! Please hurry. I am failing independent study.",
+        "caption": "Pip's radio channel. The maintenance head is waking. Bring him home.",
+        "source": "Band 1, p12e, V3L12e",
+        "voice": "launch-pip",
+        "adaptation": false,
+        "requires": "launch",
+        "audio": "assets/voice/launch-pip.m4a"
+      },
+      {
+        "id": "launch-broadcast-k1c",
+        "image": "assets/panels/p01a.webp",
+        "speaker": "Captain Beam",
+        "text": "Training break! Join our proud fleet in the victory refrain!",
+        "caption": "A familiar fleet broadcast reaches the apparently dormant machinery.",
+        "source": "Band 1, p13a, V3L13a",
+        "voice": "launch-broadcast-k1c",
+        "adaptation": false,
+        "status": "neu-K1C",
+        "audio": "assets/audio/vo/k1c-launch-broadcast.m4a"
+      },
+      {
+        "id": "launch-response-k1c",
+        "image": "assets/panels/p19a.webp",
+        "speaker": "Tavi",
+        "text": "Those lights just answered the programme. Play that again.",
+        "caption": "Amber strokes light along the old rails. The broadcast has a physical effect.",
+        "source": "Band 1, p13c, V3L13c",
+        "voice": "launch-response-k1c",
+        "adaptation": false,
+        "status": "neu-K1C",
+        "audio": "assets/audio/vo/k1c-launch-response.m4a"
+      },
+      {
+        "id": "launch-priority-k1c",
+        "image": "assets/panels/p10a.webp",
+        "speaker": "Sera",
+        "text": "Mute it. Rescue first.",
+        "caption": "Pip is still waiting. Rook flies the Moth; Iona works the recovery winch.",
+        "source": "Band 1, p13d, V3L13d",
+        "voice": "launch-priority-k1c",
+        "adaptation": false,
+        "status": "neu-K1C",
+        "audio": "assets/audio/vo/k1c-launch-priority.m4a"
+      }
+    ],
+    "duel": [
+      {
+        "id": "duel-invitation",
+        "image": "assets/panels/p36a.webp",
+        "speaker": "Iona",
+        "text": "Ha! Finally found a floor worth fighting on. Rematch tomorrow?",
+        "caption": "Back aboard. One supervised recovery assessment remains.",
+        "source": "Band 1, p36b, V3L36b",
+        "voice": "duel-invitation",
+        "adaptation": false,
+        "audio": "assets/voice/duel-invitation.m4a"
+      },
+      {
+        "id": "duel-rook",
+        "image": "assets/panels/p36a.webp",
+        "speaker": "Rook",
+        "text": "Next time we compete, I am choosing a seated sport.",
+        "caption": "A supervised foam-and-paint rematch on the recovery bridge. Two ring-outs decide it. Every fall ends in a drone ride back. Rook has a very majestic emergency exit.",
+        "source": "Band 1, p27e, V3L27e",
+        "voice": "duel-rook",
+        "adaptation": false,
+        "audio": "assets/voice/duel-rook.m4a"
+      }
+    ],
+    "return": [
+      {
+        "id": "return-warmth-k1c",
+        "image": "assets/panels/p36a.webp",
+        "speaker": "Tavi",
+        "text": "Pip's still shaking. Keep him warm. I'll make this thing behave.",
+        "caption": "Pip is belted inside the Moth and breathing. The rescue has brought a person home.",
+        "source": "Band 1, p28a, V3L28a",
+        "voice": "return-warmth-k1c",
+        "adaptation": false,
+        "status": "neu-K1C",
+        "audio": "assets/audio/vo/k1c-return-warmth.m4a"
+      },
+      {
+        "id": "return-answer-k1c",
+        "image": "assets/panels/p36a.webp",
+        "speaker": "Pip",
+        "text": "Here, Captain. Belt tight.",
+        "caption": "A real voice answers the captain. Five people are back; the practice dummy was separate.",
+        "source": "Band 1, p25b, V3L25b; caption distinction from p12e",
+        "voice": "return-answer-k1c",
+        "adaptation": false,
+        "status": "neu-K1C",
+        "audio": "assets/voice/resident-pip.m4a"
+      },
+      {
+        "id": "return-pip",
+        "image": "assets/panels/p36a.webp",
+        "speaker": "Sera",
+        "text": "Five voices. Five people. All home.",
+        "caption": "Pip is aboard. Beyond the maintenance rails, an old mechanism has answered the ship. Find out what it heard.",
+        "source": "Band 1, p36d, V3L36d",
+        "adaptation": false,
+        "audio": "assets/voice/return-pip.m4a"
+      },
+      {
+        "id": "return-tavi",
+        "image": "assets/panels/p19a.webp",
+        "speaker": "Tavi",
+        "text": "Two short. One long. Answer low, then high. Leave the silence.",
+        "caption": "The World Clock. The quiet part is part of the message.",
+        "source": "Band 1, p19a, V3L19a",
+        "adaptation": false,
+        "audio": "assets/voice/return-tavi.m4a"
+      }
+    ]
+  },
+  "ending": [
+    {
+      "id": "end-home",
+      "image": "assets/panels/p36a.webp",
+      "speaker": "Sera",
+      "text": "Five voices. Five people. All home.",
+      "caption": "Iona. Rook. Tavi. Pip. Sera. The recovery is complete.",
+      "source": "Band 1, p36d, V3L36d",
+      "voice": "end-home",
+      "adaptation": false,
+      "audio": "assets/voice/end-home.m4a"
+    },
+    {
+      "id": "end-medal",
+      "image": "assets/panels/p37c.webp",
+      "speaker": "Rook",
+      "text": "That is heavier than the natural leadership qualities advertised.",
+      "caption": "Captain Beam has a reward. Rook has a new problem with standing.",
+      "source": "Band 1, p37c, V3L37c",
+      "voice": "end-medal",
+      "adaptation": false,
+      "audio": "assets/voice/end-medal.m4a"
+    },
+    {
+      "id": "end-signal",
+      "image": "assets/panels/p19a.webp",
+      "speaker": "Tavi",
+      "text": "We sent the handshake. Something is opening at the far end.",
+      "caption": "The bearing is Earth. No picture. No voice. Your answer has moved something at the far end.",
+      "source": "Band 1, p39c, V3L39c",
+      "voice": "end-signal",
+      "adaptation": false,
+      "audio": "assets/voice/end-signal.m4a"
+    },
+    {
+      "id": "end-question-k1c",
+      "image": "assets/panels/p36a.webp",
+      "speaker": "Iona",
+      "text": "We got everyone home. So what did we just wake?",
+      "caption": "Your answer reached Earth. No picture. No voice. What received it is still unknown.",
+      "source": "Game adaptation, K1C: Band 1 p38c, p38e and p39a-c; no knowledge beyond the Earth bearing and movement report.",
+      "voice": "end-question-k1c",
+      "adaptation": true,
+      "status": "neu-K1C"
+    }
+  ],
+  "residents": {
+    "iona": [
+      {
+        "id": "resident-iona",
+        "image": "assets/panels/p04c.webp",
+        "speaker": "Iona",
+        "text": "Give me a way back, hotshot! Autograph it later!",
+        "caption": "",
+        "source": "Band 1, p06d, V3L06d",
+        "voice": "resident-iona",
+        "adaptation": false,
+        "audio": "assets/voice/resident-iona.m4a"
+      },
+      {
+        "id": "resident-iona-lunch",
+        "image": "assets/panels/p02d.webp",
+        "speaker": "Iona",
+        "text": "Yes! Finally, a meal I can build a barricade with!",
+        "caption": "",
+        "source": "Band 1, p05e, V3L05e",
+        "voice": "resident-iona-lunch",
+        "adaptation": false,
+        "audio": "assets/voice/resident-iona-lunch.m4a"
+      }
+    ],
+    "rook": [
+      {
+        "id": "resident-rook",
+        "image": "assets/panels/p02a.webp",
+        "speaker": "Rook",
+        "text": "I fly in. You board. We return before dessert.",
+        "caption": "",
+        "source": "Band 1, p06a, V3L06a",
+        "voice": "resident-rook",
+        "adaptation": false,
+        "audio": "assets/voice/resident-rook.m4a"
+      },
+      {
+        "id": "resident-rook-ship",
+        "image": "assets/panels/p10a.webp",
+        "speaker": "Rook",
+        "text": "Exactly. A rescue ship with the silhouette of confidence.",
+        "caption": "",
+        "source": "Band 1, p09e, V3L09e",
+        "voice": "resident-rook-ship",
+        "adaptation": false,
+        "audio": "assets/voice/resident-rook-ship.m4a"
+      }
+    ],
+    "pip": [
+      {
+        "id": "resident-pip",
+        "image": "assets/panels/p36a.webp",
+        "speaker": "Pip",
+        "text": "Here, Captain. Belt tight.",
+        "caption": "",
+        "source": "Band 1, p25b, V3L25b",
+        "voice": "resident-pip",
+        "adaptation": false,
+        "requires": "flightComplete",
+        "audio": "assets/voice/resident-pip.m4a"
+      }
+    ],
+    "tavi": [
+      {
+        "id": "resident-tavi",
+        "image": "assets/panels/p19a.webp",
+        "speaker": "Tavi",
+        "text": "Please do not eat anything from the blue case.",
+        "caption": "",
+        "source": "Band 1, p05c, V3L05c",
+        "voice": "resident-tavi",
+        "adaptation": false,
+        "audio": "assets/voice/resident-tavi.m4a"
+      },
+      {
+        "id": "resident-tavi-washer",
+        "image": "assets/panels/p19a.webp",
+        "speaker": "Tavi",
+        "text": "That is a seal washer. Technically, it contains minerals.",
+        "caption": "",
+        "source": "Band 1, p05d, V3L05d",
+        "voice": "resident-tavi-washer",
+        "adaptation": false,
+        "audio": "assets/voice/resident-tavi-washer.m4a"
+      },
+      {
+        "id": "resident-tavi-beat",
+        "image": "assets/panels/p19a.webp",
+        "speaker": "Tavi",
+        "text": "Two short. One long. Answer low, then high. Leave the silence.",
+        "caption": "",
+        "source": "Band 1, p19a, V3L19a",
+        "voice": "resident-tavi-beat",
+        "adaptation": false,
+        "requires": "flightComplete",
+        "audio": "assets/voice/resident-tavi-beat.m4a"
+      }
+    ],
+    "sera": [
+      {
+        "id": "resident-sera",
+        "image": "assets/panels/p04c.webp",
+        "speaker": "Sera",
+        "text": "Only if you tell it where we keep the biscuits.",
+        "caption": "Context from the floor exercise: Rook asked whether surrendering to the floor was treason.",
+        "source": "Band 1, p03b, V3L03b",
+        "voice": "resident-sera",
+        "adaptation": false,
+        "audio": "assets/voice/resident-sera.m4a"
+      },
+      {
+        "id": "resident-sera-call",
+        "image": "assets/panels/p04c.webp",
+        "speaker": "Sera",
+        "text": "Answer when I call.",
+        "caption": "",
+        "source": "Band 1, p07d, V3L07d",
+        "voice": "resident-sera-call",
+        "adaptation": false,
+        "audio": "assets/voice/resident-sera-call.m4a"
+      },
+      {
+        "id": "resident-sera-ship",
+        "image": "assets/panels/p10a.webp",
+        "speaker": "Sera",
+        "text": "The statement is usually that we collect broken things.",
+        "caption": "",
+        "source": "Band 1, p09b, V3L09b",
+        "voice": "resident-sera-ship",
+        "adaptation": false,
+        "audio": "assets/voice/resident-sera-ship.m4a"
+      }
+    ]
+  },
+  "read": {
+    "volume1": "https://thezyklus.com/mars/band-01/",
+    "volume2": "https://thezyklus.com/mars/band-02/"
+  },
+  "nextChapter": {
+    "number": 2,
+    "state": "in-preparation",
+    "text": "Chapter 2 is in preparation. Continue the story in Volume 2.",
+    "volumeReleased": true
+  },
+  "adaptationNote": "Original Volume 1 game adaptation. Authored service rooms, machines and caretaker encounter, equipment seals, supervised foam-and-paint rematch, reactive Fleetvision announcements and Iona's closing question are game scenarios. No person is seriously hurt. The crew knows an Earth bearing, not the nature or inhabitants of the receiver.",
+  "voiceStatus": "All 29 K1B dialogue entries and files are unchanged. Fifteen added panels/cues reuse verified original dialogue: thirteen new CPU AAC encodes from exact selected V3.1 WAVs and two unchanged K1B m4a files. All added entries remain marked neu-K1C. New adaptation lines and Iona's closing question remain pending Claude's recording.",
+  "sourceBoundary": "Volume 1 only. Pip remains a living young adult cadet, distinct from the yellow practice dummy. The crew learns an Earth bearing without learning that people live underground.",
+  "roomScenes": {
+    "5": [
+      {
+        "id": "workshop-food",
+        "image": "assets/panels/p19a.webp",
+        "speaker": "Tavi",
+        "text": "Please do not eat anything from the blue case.",
+        "caption": "The recovery workshop. Bring the upper and lower tool latches into service. Then collect your line.",
+        "source": "Band 1, p05c, V3L05c",
+        "adaptation": false,
+        "audio": "assets/voice/workshop-food.m4a"
+      },
+      {
+        "id": "workshop-washer",
+        "image": "assets/panels/p19a.webp",
+        "speaker": "Tavi",
+        "text": "That is a seal washer. Technically, it contains minerals.",
+        "caption": "A practical engineer. An impractical lunch.",
+        "source": "Band 1, p05d, V3L05d",
+        "adaptation": false,
+        "audio": "assets/voice/workshop-washer.m4a"
+      }
+    ],
+    "16": [
+      {
+        "id": "caretaker-sera",
+        "image": "assets/panels/p04c.webp",
+        "speaker": "Sera",
+        "text": "Brace first. Then reach.",
+        "caption": "An overenthusiastic caretaker blocks the winch shaft. Jump its brush. When its amber service eye opens, hold LINE and pull. Three catches park it safely.",
+        "source": "Band 1, p04c, V3L04c; game encounter adaptation",
+        "adaptation": false,
+        "audio": "assets/voice/caretaker-sera.m4a"
+      }
+    ],
+    "13": [
+      {
+        "id": "crew-check-iona-k1c",
+        "image": "assets/panels/p04c.webp",
+        "speaker": "Iona",
+        "text": "You check every tether yourself? Even the new ones?",
+        "caption": "Needlewake. Before departure, Iona notices Sera testing a new safety line twice.",
+        "source": "Band 1, p07b, V3L07b",
+        "voice": "crew-check-iona-k1c",
+        "adaptation": false,
+        "status": "neu-K1C",
+        "audio": "assets/audio/vo/k1c-crew-check-iona.m4a"
+      },
+      {
+        "id": "crew-check-sera-k1c",
+        "image": "assets/panels/p04c.webp",
+        "speaker": "Sera",
+        "text": "Once, I trusted a green light more than a voice.",
+        "caption": "An old scorched hook lies in Sera's locker. She closes it and checks the live connection.",
+        "source": "Band 1, p07c, V3L07c",
+        "voice": "crew-check-sera-k1c",
+        "adaptation": false,
+        "status": "neu-K1C",
+        "audio": "assets/audio/vo/k1c-crew-check-sera.m4a"
+      },
+      {
+        "id": "crew-check-call-k1c",
+        "image": "assets/panels/p04c.webp",
+        "speaker": "Sera",
+        "text": "Answer when I call.",
+        "caption": "The captain wants a voice, not just an equipment light.",
+        "source": "Band 1, p07d, V3L07d",
+        "voice": "crew-check-call-k1c",
+        "adaptation": false,
+        "status": "neu-K1C",
+        "audio": "assets/voice/resident-sera-call.m4a"
+      },
+      {
+        "id": "crew-check-answer-k1c",
+        "image": "assets/panels/p04c.webp",
+        "speaker": "Iona",
+        "text": "Count on it! You will hear me all the way home.",
+        "caption": "Iona tests her own line before she leaves. A way back is a promise to the crew.",
+        "source": "Band 1, p07e, V3L07e",
+        "voice": "crew-check-answer-k1c",
+        "adaptation": false,
+        "status": "neu-K1C",
+        "audio": "assets/audio/vo/k1c-crew-check-answer.m4a"
+      }
+    ],
+    "23": [
+      {
+        "id": "contact-handles-k1c",
+        "image": "assets/panels/p19a.webp",
+        "speaker": "Tavi",
+        "text": "There are handles. Whatever built it expected someone to visit.",
+        "caption": "The Clock is machinery with working parts. Look at what its rails and contacts actually do.",
+        "source": "Band 1, p11e, V3L11e",
+        "voice": "contact-handles-k1c",
+        "adaptation": false,
+        "status": "neu-K1C",
+        "audio": "assets/audio/vo/k1c-contact-handles.m4a"
+      },
+      {
+        "id": "contact-interruption-k1c",
+        "image": "assets/panels/p19a.webp",
+        "speaker": "Tavi",
+        "text": "That jingle interrupts. Even machines hate interruptions.",
+        "caption": "The empty interval is deliberate. Listen before answering; this mechanism reacts to timing.",
+        "source": "Band 1, p19b, V3L19b",
+        "voice": "contact-interruption-k1c",
+        "adaptation": false,
+        "status": "neu-K1C",
+        "audio": "assets/audio/vo/k1c-contact-interruption.m4a"
+      }
+    ]
+  }
+}

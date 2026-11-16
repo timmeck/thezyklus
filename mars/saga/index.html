@@ -1,0 +1,225 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width,initial-scale=1,viewport-fit=cover"
+    />
+    <meta name="theme-color" content="#0b1d2b" />
+    <meta name="robots" content="noindex,nofollow" />
+    <title>Floor Is the Enemy · MARS Saga</title>
+    <meta
+      name="description"
+      content="A story of small rescues and extremely ambitious gravity. An original MARS story game."
+    />
+    <link rel="icon" href="assets/icon.svg" />
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <main id="landing">
+      <div class="hero-art" aria-hidden="true"></div>
+      <div class="hero-wash" aria-hidden="true"></div>
+      <header class="masthead">
+        <div class="wordmark">MARS<span>HEROICALLY UNQUALIFIED</span></div>
+        <span class="edition">OUT OF ORBIT · SAGA</span
+        ><button
+          class="text-button"
+          id="landing-settings"
+          aria-label="Open settings"
+        >
+          Settings <span aria-hidden="true">↗</span>
+        </button>
+      </header>
+      <section class="title-block">
+        <p class="eyebrow">VOLUME 01 <span>JANUARY 2705</span></p>
+        <h1>FLOOR IS<br />THE <em>ENEMY.</em></h1>
+        <p class="intro">
+          They trained for Earth.<br />The floor had other plans.
+        </p>
+        <div class="start-actions">
+          <button id="begin" class="primary">
+            Begin chapter <span aria-hidden="true">↗</span></button
+          ><button id="continue" class="text-button" hidden>
+            Continue <span aria-hidden="true">→</span>
+          </button>
+        </div>
+        <p class="chapter-size">
+          Explore the academy. Fly the Moth.<br />Bring everybody home.
+        </p>
+      </section>
+      <footer class="landing-footer">
+        <span>A STORY YOU PLAY</span>
+        <p>Touch · controller · keyboard</p>
+        <span class="local-label">LOCAL PREVIEW</span>
+      </footer>
+    </main>
+    <section id="game" hidden aria-label="MARS story game">
+      <canvas
+        id="world"
+        tabindex="0"
+        aria-label="Playable world. Move with arrows or W A S D, jump with Space, interact with E, use the line with X. Press M for map and Escape to pause."
+      ></canvas>
+      <header class="game-header">
+        <div class="room-heading">
+          <span id="zone-label">ACADEMY</span>
+          <h2 id="room-name">The Heavy Room</h2>
+        </div>
+        <div class="header-actions">
+          <button id="map-button" aria-label="Open room rule and area map">
+            Rule &amp; map <span aria-hidden="true">⌑</span></button
+          ><button id="pause-button" aria-label="Pause game">Ⅱ</button>
+        </div>
+      </header>
+      <div class="mission-hud">
+        <p id="objective"></p>
+        <span id="energy" aria-label="Safety reserve"></span>
+      </div>
+      <div class="notice-dock" aria-live="polite"><div id="context-hint"></div><div id="toast" role="status"></div><div id="radio"></div></div>
+      <div class="flight-orientation" aria-hidden="true"><span>↔</span> Turn for a wider flight deck</div>
+      <div class="touch-controls" id="touch-controls">
+        <div id="stick" role="group" aria-label="Movement pad. Drag to move.">
+          <span></span>
+        </div>
+        <div class="action-pad">
+          <button id="touch-line" aria-label="Hold recovery line">LINE</button
+          ><button id="touch-action" aria-label="Interact">USE</button
+          ><button id="touch-jump" aria-label="Jump">JUMP</button>
+        </div>
+      </div>
+      <div id="keyboard-hint">
+        MOVE <kbd>W A S D</kbd><span>JUMP <kbd>SPACE</kbd></span
+        ><span>USE <kbd>E</kbd></span
+        ><span>LINE <kbd>X</kbd></span>
+      </div>
+    </section>
+    <dialog id="story" class="story-dialog" aria-labelledby="story-caption">
+      <div class="story-art">
+        <img id="story-image" alt="" /><span class="story-volume"
+          >MARS · VOLUME ONE</span
+        >
+      </div>
+      <div class="story-copy">
+        <p id="story-caption" class="eyebrow"></p>
+        <p id="story-speaker"></p>
+        <blockquote id="story-line"></blockquote>
+        <button class="primary" id="story-next">
+          Continue <span aria-hidden="true">→</span>
+        </button>
+      </div>
+    </dialog>
+    <dialog id="pause" class="paper-dialog" aria-labelledby="pause-title">
+      <p class="eyebrow">TAKE A BREATH</p>
+      <h2 id="pause-title">Still here.</h2>
+      <p id="save-status">Your journey saves on this device.</p>
+      <button id="duel-help" hidden>How to fight ? foam & paint</button><button id="resume" class="primary">
+        Back to the crew <span aria-hidden="true">→</span></button
+      ><button id="open-settings">Settings</button
+      ><button id="return-title">Save & return to title</button
+      ><button id="rescue-reset">Return to room entrance</button>
+    </dialog>
+    <dialog id="settings" class="paper-dialog" aria-labelledby="settings-title">
+      <p class="eyebrow">YOUR PACE</p>
+      <h2 id="settings-title">Make yourself at home.</h2>
+      <label class="setting"
+        ><span
+          ><b>Assistance</b
+          ><small>Gentler hazards, generous recovery.</small></span
+        ><input id="assist" type="checkbox" checked /></label
+      ><label class="setting"
+        ><span
+          ><b>Calm pace</b
+          ><small>More time to read a moving world.</small></span
+        ><input id="calm" type="checkbox" /></label
+      ><label class="setting"
+        ><span
+          ><b>Reduced motion</b
+          ><small>Quiet scenery and steady effects.</small></span
+        ><input id="reduced" type="checkbox" /></label
+      ><label class="setting"
+        ><span
+          ><b>Sound</b
+          ><small>Original music, effects and voice cues.</small></span
+        ><input id="sound" type="checkbox" checked
+      /></label>
+      <p class="small-print">
+        Subtitles stay on. Speech recordings are in preparation.<br />Keyboard ·
+        arrows or WASD, Space, E, X. Controller · left stick, A, X, B. Start
+        pauses. View opens the map. Hold Down to crawl. Down + Jump drops through an open catwalk.
+      </p>
+      <button class="primary" id="close-settings">
+        Done <span aria-hidden="true">→</span>
+      </button>
+    </dialog>
+    <dialog id="map" class="map-dialog" aria-labelledby="map-title">
+      <div class="map-header">
+        <div>
+          <p class="eyebrow">YOUR RETURN ROUTE</p>
+          <h2 id="map-title">Everybody gets home.</h2>
+        </div>
+        <button id="close-map" aria-label="Close map">×</button>
+      </div>
+      <article class="room-rule-card" aria-labelledby="room-rule-title"><h3 id="room-rule-title">Room rule</h3><p id="room-rule-text"></p></article>
+      <div
+        class="map-viewport"
+        tabindex="0"
+        role="region"
+        aria-label="Area map. Scroll horizontally to inspect all rooms."
+      >
+        <div id="map-grid" class="map-grid"></div>
+      </div>
+      <div class="map-legend">
+        <span>● You are here</span><span>◇ Rest point</span
+        ><span>↕ Service return</span>
+      </div>
+      <p id="map-progress"></p>
+      <details id="field-journal"><summary id="journal-count">Field notebook</summary><div id="journal-entries"></div></details>
+    </dialog>
+    <dialog id="clock" class="paper-dialog" aria-labelledby="clock-title">
+      <p class="eyebrow">THE WORLD CLOCK</p>
+      <h2 id="clock-title">Leave the silence.</h2>
+      <p>Two short. One long.<br />Answer low, then high. Leave the silence.</p>
+      <div class="tone-lights" aria-hidden="true">
+        <i></i><i></i><i></i><span></span>
+      </div>
+      <p id="clock-feedback" role="status">The contact faces are listening.</p>
+      <div class="tone-buttons">
+        <button id="low-tone">Low</button><button id="high-tone">High</button>
+      </div>
+      <button id="close-clock" class="text-button">
+        Come back in a moment
+      </button>
+    </dialog>
+    <dialog id="ending" class="ending-dialog" aria-labelledby="ending-title">
+      <img
+        loading="lazy"
+        src="assets/ending.webp"
+        alt="The crew returns together"
+      />
+      <div>
+        <p class="eyebrow">VOLUME ONE COMPLETE</p>
+        <h2 id="ending-title">All five.<br />Still here.</h2>
+        <p id="ending-stats"></p>
+        <p>The rescue is over. What did your answer wake?</p>
+        <a
+          class="primary"
+          href="https://thezyklus.com/mars/band-01/"
+          target="_blank"
+          rel="noopener"
+          >Read Volume 1 <span aria-hidden="true">↗</span></a
+        >
+        <p class="next-chapter">
+          Chapter 2 · In development<br /><small
+            >Volume 2 is available to read.</small
+          >
+        </p>
+        <button id="end-explore" class="text-button">Return to explore</button>
+      </div>
+    </dialog>
+    <div id="loading" hidden role="status">
+      <span class="loading-mark"></span>
+      <p>Preparing the return route…</p>
+    </div>
+    <script type="module" src="app.js"></script>
+  </body>
+</html>

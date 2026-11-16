@@ -1,0 +1,1725 @@
+[
+  {
+    "id": "prolog-beam",
+    "speaker": "Captain Beam",
+    "text": "Citizens! Earth is heavy. Your courage need not be.",
+    "mood": "radiant, sincerely encouraging",
+    "source": "Band 1, p01a, V3L01a",
+    "scene": "prolog",
+    "adaptation": false,
+    "file": "assets/voice/prolog-beam.m4a"
+  },
+  {
+    "id": "prolog-rook",
+    "speaker": "Rook",
+    "text": "Watch closely. I have been standing successfully for years.",
+    "mood": "grand confidence before a small disaster",
+    "source": "Band 1, p02a, V3L02a",
+    "scene": "prolog",
+    "adaptation": false,
+    "file": "assets/voice/prolog-rook.m4a"
+  },
+  {
+    "id": "prolog-sera",
+    "speaker": "Sera",
+    "text": "Brace first. Then reach.",
+    "mood": "calm, precise, caring through action",
+    "source": "Band 1, p04c, V3L04c",
+    "scene": "prolog",
+    "adaptation": false,
+    "file": "assets/voice/prolog-sera.m4a"
+  },
+  {
+    "id": "prolog-mission",
+    "speaker": "Sera",
+    "text": "Recovery drill. Retrieve Arden's capsule.",
+    "mood": "matter-of-fact mission order",
+    "source": "Band 1, p11a, V3L11a",
+    "scene": "prolog",
+    "adaptation": false,
+    "file": "assets/voice/prolog-mission.m4a"
+  },
+  {
+    "id": "tether-tools",
+    "speaker": "Tavi",
+    "text": "Cutter. Tether. Rescue foam. Nothing here requires a heroic speech.",
+    "mood": "warm, interested, lightly practical",
+    "source": "Band 1, p08a, V3L08a",
+    "scene": "tether",
+    "adaptation": false,
+    "file": "assets/voice/tether-tools.m4a"
+  },
+  {
+    "id": "tether-rule",
+    "speaker": "Sera",
+    "text": "Show me your exit.",
+    "mood": "quiet insistence",
+    "source": "Band 1, p29b, V3L29b",
+    "scene": "tether",
+    "adaptation": false,
+    "file": "assets/voice/tether-rule.m4a"
+  },
+  {
+    "id": "launch-emergency",
+    "speaker": "Sera",
+    "text": "Exercise suspended. Rook, launch Moth. Iona, board.",
+    "mood": "controlled urgency",
+    "source": "Band 1, p12c, V3L12c",
+    "scene": "launch",
+    "adaptation": false,
+    "file": "assets/voice/launch-emergency.m4a"
+  },
+  {
+    "id": "launch-pip",
+    "speaker": "Pip",
+    "text": "I'm pinned! Please hurry. I am failing independent study.",
+    "mood": "afraid, trying one small joke",
+    "source": "Band 1, p12e, V3L12e",
+    "scene": "launch",
+    "adaptation": false,
+    "file": "assets/voice/launch-pip.m4a"
+  },
+  {
+    "id": "duel-invitation",
+    "speaker": "Iona",
+    "text": "Ha! Finally found a floor worth fighting on. Rematch tomorrow?",
+    "mood": "relief, affection hidden in a challenge",
+    "source": "Band 1, p36b, V3L36b",
+    "scene": "duel",
+    "adaptation": false,
+    "file": "assets/voice/duel-invitation.m4a"
+  },
+  {
+    "id": "duel-rook",
+    "speaker": "Rook",
+    "text": "Next time we compete, I am choosing a seated sport.",
+    "mood": "shaky relief, dry complaint",
+    "source": "Band 1, p27e, V3L27e",
+    "scene": "duel",
+    "adaptation": false,
+    "file": "assets/voice/duel-rook.m4a"
+  },
+  {
+    "id": "end-home",
+    "speaker": "Sera",
+    "text": "Five voices. Five people. All home.",
+    "mood": "quiet relief, space between the counts",
+    "source": "Band 1, p36d, V3L36d",
+    "scene": "ending",
+    "adaptation": false,
+    "file": "assets/voice/end-home.m4a"
+  },
+  {
+    "id": "end-medal",
+    "speaker": "Rook",
+    "text": "That is heavier than the natural leadership qualities advertised.",
+    "mood": "pride turning into physical recalculation",
+    "source": "Band 1, p37c, V3L37c",
+    "scene": "ending",
+    "adaptation": false,
+    "file": "assets/voice/end-medal.m4a"
+  },
+  {
+    "id": "end-signal",
+    "speaker": "Tavi",
+    "text": "We sent the handshake. Something is opening at the far end.",
+    "mood": "awe with uncertainty, no triumph",
+    "source": "Band 1, p39c, V3L39c",
+    "scene": "ending",
+    "adaptation": false,
+    "file": "assets/voice/end-signal.m4a"
+  },
+  {
+    "id": "resident-iona",
+    "speaker": "Iona",
+    "text": "Give me a way back, hotshot! Autograph it later!",
+    "mood": "impatient, cheeky, immediately practical",
+    "source": "Band 1, p06d, V3L06d",
+    "scene": "resident",
+    "adaptation": false,
+    "file": "assets/voice/resident-iona.m4a"
+  },
+  {
+    "id": "resident-iona-lunch",
+    "speaker": "Iona",
+    "text": "Yes! Finally, a meal I can build a barricade with!",
+    "mood": "small victory over a ridiculous lunch",
+    "source": "Band 1, p05e, V3L05e",
+    "scene": "resident",
+    "adaptation": false,
+    "file": "assets/voice/resident-iona-lunch.m4a"
+  },
+  {
+    "id": "resident-rook",
+    "speaker": "Rook",
+    "text": "I fly in. You board. We return before dessert.",
+    "mood": "confident miniature flight plan",
+    "source": "Band 1, p06a, V3L06a",
+    "scene": "resident",
+    "adaptation": false,
+    "file": "assets/voice/resident-rook.m4a"
+  },
+  {
+    "id": "resident-rook-ship",
+    "speaker": "Rook",
+    "text": "Exactly. A rescue ship with the silhouette of confidence.",
+    "mood": "poster confidence, warm",
+    "source": "Band 1, p09e, V3L09e",
+    "scene": "resident",
+    "adaptation": false,
+    "file": "assets/voice/resident-rook-ship.m4a"
+  },
+  {
+    "id": "resident-pip",
+    "speaker": "Pip",
+    "text": "Here, Captain. Belt tight.",
+    "mood": "tired, still frightened, safe",
+    "source": "Band 1, p25b, V3L25b",
+    "scene": "resident",
+    "adaptation": false,
+    "file": "assets/voice/resident-pip.m4a"
+  },
+  {
+    "id": "resident-tavi",
+    "speaker": "Tavi",
+    "text": "Please do not eat anything from the blue case.",
+    "mood": "gentle warning, entirely serious",
+    "source": "Band 1, p05c, V3L05c",
+    "scene": "resident",
+    "adaptation": false,
+    "file": "assets/voice/resident-tavi.m4a"
+  },
+  {
+    "id": "resident-tavi-washer",
+    "speaker": "Tavi",
+    "text": "That is a seal washer. Technically, it contains minerals.",
+    "mood": "polite practical correction",
+    "source": "Band 1, p05d, V3L05d",
+    "scene": "resident",
+    "adaptation": false,
+    "file": "assets/voice/resident-tavi-washer.m4a"
+  },
+  {
+    "id": "resident-tavi-beat",
+    "speaker": "Tavi",
+    "text": "Two short. One long. Answer low, then high. Leave the silence.",
+    "mood": "careful instruction, audible pauses",
+    "source": "Band 1, p19a, V3L19a",
+    "scene": "resident",
+    "adaptation": false,
+    "file": "assets/voice/resident-tavi-beat.m4a"
+  },
+  {
+    "id": "resident-sera",
+    "speaker": "Sera",
+    "text": "Only if you tell it where we keep the biscuits.",
+    "mood": "perfectly level, very dry",
+    "source": "Band 1, p03b, V3L03b",
+    "scene": "resident",
+    "adaptation": false,
+    "file": "assets/voice/resident-sera.m4a"
+  },
+  {
+    "id": "resident-sera-call",
+    "speaker": "Sera",
+    "text": "Answer when I call.",
+    "mood": "quiet personal concern",
+    "source": "Band 1, p07d, V3L07d",
+    "scene": "resident",
+    "adaptation": false,
+    "file": "assets/voice/resident-sera-call.m4a"
+  },
+  {
+    "id": "resident-sera-ship",
+    "speaker": "Sera",
+    "text": "The statement is usually that we collect broken things.",
+    "mood": "quiet dry affection for the rescue ship",
+    "source": "Band 1, p09b, V3L09b",
+    "scene": "resident",
+    "adaptation": false,
+    "file": "assets/voice/resident-sera-ship.m4a"
+  },
+  {
+    "id": "return-pip",
+    "speaker": "Sera",
+    "text": "Five voices. Five people. All home.",
+    "source": "Band 1, p36d, V3L36d",
+    "adaptation": false,
+    "mood": "warm, practical; exact existing source line",
+    "scene": "return",
+    "file": "assets/voice/return-pip.m4a"
+  },
+  {
+    "id": "return-tavi",
+    "speaker": "Tavi",
+    "text": "Two short. One long. Answer low, then high. Leave the silence.",
+    "source": "Band 1, p19a, V3L19a",
+    "adaptation": false,
+    "mood": "warm, practical; exact existing source line",
+    "scene": "return",
+    "file": "assets/voice/return-tavi.m4a"
+  },
+  {
+    "id": "workshop-food",
+    "speaker": "Tavi",
+    "text": "Please do not eat anything from the blue case.",
+    "source": "Band 1, p05c, V3L05c",
+    "adaptation": false,
+    "mood": "warm, practical; exact existing source line",
+    "scene": "5",
+    "file": "assets/voice/workshop-food.m4a"
+  },
+  {
+    "id": "workshop-washer",
+    "speaker": "Tavi",
+    "text": "That is a seal washer. Technically, it contains minerals.",
+    "source": "Band 1, p05d, V3L05d",
+    "adaptation": false,
+    "mood": "warm, practical; exact existing source line",
+    "scene": "5",
+    "file": "assets/voice/workshop-washer.m4a"
+  },
+  {
+    "id": "caretaker-sera",
+    "speaker": "Sera",
+    "text": "Brace first. Then reach.",
+    "source": "Band 1, p04c, V3L04c; game encounter adaptation",
+    "adaptation": false,
+    "mood": "warm, practical; exact existing source line",
+    "scene": "16",
+    "file": "assets/voice/caretaker-sera.m4a"
+  },
+  {
+    "id": "beam-k1c-duct",
+    "speaker": "Captain Beam",
+    "text": "Excellent low-profile work. The camera is being lowered to match.",
+    "mood": "radiant presenter, sincerely impressed; tiny proud pause before the camera",
+    "source": "K1C game adaptation; Band 1 p03d, p23a: propaganda reframes an awkward physical achievement.",
+    "adaptation": true,
+    "file": "assets/voice/beam-k1c-duct.m4a",
+    "status": "neu-K1C",
+    "scene": "reactive-fleetvision",
+    "trigger": {
+      "event": "task",
+      "rooms": [
+        2
+      ]
+    }
+  },
+  {
+    "id": "beam-k1c-weight",
+    "speaker": "Captain Beam",
+    "text": "A magnificent victory for personal courage. And the crate.",
+    "mood": "broad heroic approval; small extra beat before crediting the crate",
+    "source": "K1C game adaptation; Band 1 p23c and p37a-e: heroic mass, ceremonial confidence and an actual load.",
+    "adaptation": true,
+    "file": "assets/voice/beam-k1c-weight.m4a",
+    "status": "neu-K1C",
+    "scene": "reactive-fleetvision",
+    "trigger": {
+      "event": "task",
+      "rooms": [
+        3
+      ]
+    }
+  },
+  {
+    "id": "beam-k1c-net",
+    "speaker": "Captain Beam",
+    "text": "An inspiring rehearsal. The safety net has requested an autograph.",
+    "mood": "warm encouragement, no mockery; absolutely sincere autograph request",
+    "source": "K1C game adaptation; Band 1 p03d: Beam turns a safe fall into a broadcast triumph.",
+    "adaptation": true,
+    "file": "assets/voice/beam-k1c-net.m4a",
+    "status": "neu-K1C",
+    "scene": "reactive-fleetvision",
+    "trigger": {
+      "event": [
+        "puzzle-reset",
+        "recover"
+      ],
+      "rooms": [
+        7
+      ]
+    }
+  },
+  {
+    "id": "beam-k1c-swing",
+    "speaker": "Captain Beam",
+    "text": "Splendid! A graceful arrival at somewhere else.",
+    "mood": "delighted, polished announcement with a slightly uncertain destination",
+    "source": "K1C game adaptation; Band 1 p01b and p23a: spectacular movement becomes recruitment copy.",
+    "adaptation": true,
+    "file": "assets/voice/beam-k1c-swing.m4a",
+    "status": "neu-K1C",
+    "scene": "reactive-fleetvision",
+    "trigger": {
+      "event": "task",
+      "rooms": [
+        7
+      ]
+    }
+  },
+  {
+    "id": "beam-k1c-wind",
+    "speaker": "Captain Beam",
+    "text": "A commanding performance. Even the air is taking direction.",
+    "mood": "admiring presenter, stresses commanding with unwarranted confidence",
+    "source": "K1C game adaptation; Band 1 p01e: physical conditions treated as an attitude.",
+    "adaptation": true,
+    "file": "assets/voice/beam-k1c-wind.m4a",
+    "status": "neu-K1C",
+    "scene": "reactive-fleetvision",
+    "trigger": {
+      "event": "task",
+      "rooms": [
+        9
+      ]
+    }
+  },
+  {
+    "id": "beam-k1c-door",
+    "speaker": "Captain Beam",
+    "text": "Please keep moving. The door is extremely eager to finish.",
+    "mood": "cheerful polite urgency; sincere announcement, not a puzzle instruction",
+    "source": "K1C game adaptation; Band 1 p23d-e: cheerful survival announcement beside a moving plate.",
+    "adaptation": true,
+    "file": "assets/voice/beam-k1c-door.m4a",
+    "status": "neu-K1C",
+    "scene": "reactive-fleetvision",
+    "trigger": {
+      "event": "enter",
+      "rooms": [
+        12
+      ]
+    }
+  },
+  {
+    "id": "beam-k1c-second-take",
+    "speaker": "Captain Beam",
+    "text": "A second take! Our doors are nothing if not committed.",
+    "mood": "bright encouragement, warm reset gag, never scolding",
+    "source": "K1C game adaptation; Band 1 p23a: danger reframed as educational production value.",
+    "adaptation": true,
+    "file": "assets/voice/beam-k1c-second-take.m4a",
+    "status": "neu-K1C",
+    "scene": "reactive-fleetvision",
+    "trigger": {
+      "event": "puzzle-reset",
+      "rooms": [
+        12
+      ]
+    }
+  },
+  {
+    "id": "beam-k1c-retirement",
+    "speaker": "Captain Beam",
+    "text": "The machine has embraced retirement. We respect a graceful exit.",
+    "mood": "ceremonial respect for a safely parked cleaning machine",
+    "source": "K1C game adaptation; Band 1 p03d and p37e: Beam's embrace wording, with safe machine retirement.",
+    "adaptation": true,
+    "file": "assets/voice/beam-k1c-retirement.m4a",
+    "status": "neu-K1C",
+    "scene": "reactive-fleetvision",
+    "trigger": {
+      "event": "midboss",
+      "rooms": [
+        16
+      ]
+    }
+  },
+  {
+    "id": "beam-k1c-foam",
+    "speaker": "Captain Beam",
+    "text": "Every bubble a triumph. We are checking whether medals float.",
+    "mood": "enthusiastic announcement; second sentence is a genuine logistical concern",
+    "source": "K1C game adaptation; Band 1 p23c and p37c: absurd medals meet practical rescue equipment.",
+    "adaptation": true,
+    "file": "assets/voice/beam-k1c-foam.m4a",
+    "status": "neu-K1C",
+    "scene": "reactive-fleetvision",
+    "trigger": {
+      "event": "task",
+      "rooms": [
+        18
+      ]
+    }
+  },
+  {
+    "id": "beam-k1c-dark",
+    "speaker": "Captain Beam",
+    "text": "Stay bright. Stay Martian. Please remain alive for the ceremony.",
+    "mood": "bright presenter with a brief edge of concern, exact released Band 1 line",
+    "source": "Band 1, p23e, V3L23e",
+    "adaptation": false,
+    "file": "assets/audio/vo/k1c-beam-dark.m4a",
+    "status": "neu-K1C",
+    "scene": "reactive-fleetvision",
+    "trigger": {
+      "event": "enter",
+      "rooms": [
+        22
+      ]
+    },
+    "recordingReuse": {
+      "sourceLine": "V3L23e",
+      "source": "\\\\es3\\Elbstand\\downloads\\tim\\pc-auslagerung-2026-11-10\\renders\\mars-manga\\v3-1\\audio\\clips\\V3L23e.wav",
+      "sourceSha256": "926400c71863fd8af8faebc36553a73ef3368fc453e16d9d8733fe49f0724ba4",
+      "voiceProfile": "5ac8c7b2",
+      "voiceReferenceSha256": "b759ab78f3137ddd54cc335bb46a74c64a9e32cb7ada75c8023e0b78f684bb23",
+      "sha256": "6a5dd7efaacd0258c92ef6798d9605402388aecde875b5115dc64c7548471377",
+      "processing": "CPU AAC 160k; 48 kHz; no trim or tempo change; 300 ms added silence; two-pass -14 LUFS normalization with oversampled peak limiter (0.80); final measured true peak <= -1 dBTP",
+      "originalAsr": {
+        "expected": "Stay bright. Stay Martian. Please remain alive for the ceremony.",
+        "heard": "Stay Bright. Stay Martian. Please remain alive for the ceremony.",
+        "ok": true,
+        "errors": [],
+        "words": [
+          {
+            "word": "Stay",
+            "start": 0.0,
+            "end": 0.5,
+            "probability": 0.8708
+          },
+          {
+            "word": "Bright.",
+            "start": 0.5,
+            "end": 0.88,
+            "probability": 0.6795
+          },
+          {
+            "word": "Stay",
+            "start": 1.38,
+            "end": 1.52,
+            "probability": 0.9908
+          },
+          {
+            "word": "Martian.",
+            "start": 1.52,
+            "end": 1.94,
+            "probability": 0.9919
+          },
+          {
+            "word": "Please",
+            "start": 2.46,
+            "end": 2.6,
+            "probability": 0.9965
+          },
+          {
+            "word": "remain",
+            "start": 2.6,
+            "end": 3.0,
+            "probability": 0.6477
+          },
+          {
+            "word": "alive",
+            "start": 3.0,
+            "end": 3.42,
+            "probability": 0.9977
+          },
+          {
+            "word": "for",
+            "start": 3.42,
+            "end": 3.74,
+            "probability": 0.9945
+          },
+          {
+            "word": "the",
+            "start": 3.74,
+            "end": 3.9,
+            "probability": 0.9945
+          },
+          {
+            "word": "ceremony.",
+            "start": 3.9,
+            "end": 4.14,
+            "probability": 0.8725
+          }
+        ],
+        "word_error_rate": 0.0
+      },
+      "newSynthesis": false
+    }
+  },
+  {
+    "id": "beam-k1c-light",
+    "speaker": "Captain Beam",
+    "text": "Excellent visibility. We saw almost all of that.",
+    "mood": "unbroken confidence despite a poor camera view; warm little admission",
+    "source": "K1C game adaptation; Band 1 p23a-b: official view stays triumphant when the picture deteriorates.",
+    "adaptation": true,
+    "file": "assets/voice/beam-k1c-light.m4a",
+    "status": "neu-K1C",
+    "scene": "reactive-fleetvision",
+    "trigger": {
+      "event": "task",
+      "rooms": [
+        22
+      ]
+    }
+  },
+  {
+    "id": "beam-k1c-knot",
+    "speaker": "Captain Beam",
+    "text": "An optional achievement! Entirely compulsory for the highlights.",
+    "mood": "beaming approval, absurd editorial priority, no demand on the player",
+    "source": "K1C game adaptation; Band 1 p01 and p23: Beam selects a heroic public image from practical work.",
+    "adaptation": true,
+    "file": "assets/voice/beam-k1c-knot.m4a",
+    "status": "neu-K1C",
+    "scene": "reactive-fleetvision",
+    "trigger": {
+      "event": "note",
+      "rooms": [
+        4
+      ],
+      "special": true
+    }
+  },
+  {
+    "id": "beam-k1c-rescue",
+    "speaker": "Captain Beam",
+    "text": "Every survivor qualifies for our new Medal of Upright Excellence.",
+    "mood": "luminous pride in a completely impractical medal; exact released Band 1 line",
+    "source": "Band 1, p23c, V3L23c",
+    "adaptation": false,
+    "file": "assets/audio/vo/k1c-beam-rescue.m4a",
+    "status": "neu-K1C",
+    "scene": "reactive-fleetvision",
+    "trigger": {
+      "event": "rescue"
+    },
+    "recordingReuse": {
+      "sourceLine": "V3L23c",
+      "source": "\\\\es3\\Elbstand\\downloads\\tim\\pc-auslagerung-2026-11-10\\renders\\mars-manga\\v3-1\\audio\\clips\\V3L23c.wav",
+      "sourceSha256": "c828c1448d11172b8e90ae0fcc5e2f1a6e7d921c1af5624893d8df263a7b23da",
+      "voiceProfile": "5ac8c7b2",
+      "voiceReferenceSha256": "b759ab78f3137ddd54cc335bb46a74c64a9e32cb7ada75c8023e0b78f684bb23",
+      "sha256": "d87e956baf95ebe9af1a8ec282d3aba110fb5da412d5532f699052e6bb7ae008",
+      "processing": "CPU AAC 160k; 48 kHz; no trim or tempo change; 300 ms added silence; two-pass -14 LUFS normalization with oversampled peak limiter (0.80); final measured true peak <= -1 dBTP",
+      "originalAsr": {
+        "expected": "Every survivor qualifies for our new Medal of Upright Excellence.",
+        "heard": "Every survivor qualifies for our new Medal of Upright Excellence.",
+        "ok": true,
+        "errors": [],
+        "words": [
+          {
+            "word": "Every",
+            "start": 0.0,
+            "end": 0.44,
+            "probability": 0.8232
+          },
+          {
+            "word": "survivor",
+            "start": 0.44,
+            "end": 0.9,
+            "probability": 0.7529
+          },
+          {
+            "word": "qualifies",
+            "start": 0.9,
+            "end": 1.62,
+            "probability": 0.9971
+          },
+          {
+            "word": "for",
+            "start": 1.62,
+            "end": 2.0,
+            "probability": 0.9972
+          },
+          {
+            "word": "our",
+            "start": 2.0,
+            "end": 2.18,
+            "probability": 0.9955
+          },
+          {
+            "word": "new",
+            "start": 2.18,
+            "end": 2.48,
+            "probability": 0.9149
+          },
+          {
+            "word": "Medal",
+            "start": 2.48,
+            "end": 2.84,
+            "probability": 0.5313
+          },
+          {
+            "word": "of",
+            "start": 2.84,
+            "end": 3.08,
+            "probability": 0.9918
+          },
+          {
+            "word": "Upright",
+            "start": 3.08,
+            "end": 3.52,
+            "probability": 0.9663
+          },
+          {
+            "word": "Excellence.",
+            "start": 3.52,
+            "end": 3.86,
+            "probability": 0.8954
+          }
+        ],
+        "word_error_rate": 0.0
+      },
+      "newSynthesis": false
+    }
+  },
+  {
+    "id": "beam-k1c-recover",
+    "speaker": "Captain Beam",
+    "text": "A controlled return! We shall edit the control in later.",
+    "mood": "warm matter-of-fact reassurance after a safe return, sincere broadcast confidence",
+    "source": "K1C game adaptation; Band 1 p03d and p23a: an awkward safe fall receives a triumphant television description.",
+    "adaptation": true,
+    "file": "assets/voice/beam-k1c-recover.m4a",
+    "status": "neu-K1C",
+    "scene": "reactive-fleetvision",
+    "trigger": {
+      "event": "recover"
+    }
+  },
+  {
+    "id": "end-question-k1c",
+    "speaker": "Iona",
+    "text": "We got everyone home. So what did we just wake?",
+    "source": "Game adaptation, K1C: Band 1 p38c, p38e and p39a-c; no knowledge beyond the Earth bearing and movement report.",
+    "adaptation": true,
+    "status": "neu-K1C",
+    "mood": "relieved after the head count, then quiet alert curiosity; one clear question, no triumph",
+    "scene": "ending",
+    "file": "assets/voice/end-question-k1c.m4a"
+  },
+  {
+    "id": "crew-check-iona-k1c",
+    "speaker": "Iona",
+    "text": "You check every tether yourself? Even the new ones?",
+    "source": "Band 1, p07b, V3L07b",
+    "adaptation": false,
+    "status": "neu-K1C",
+    "mood": "curious, playful manner becoming careful",
+    "scene": "K1C-cause-and-crew",
+    "file": "assets/audio/vo/k1c-crew-check-iona.m4a",
+    "recordingReuse": {
+      "sourceLine": "V3L07b",
+      "source": "\\\\es3\\Elbstand\\downloads\\tim\\pc-auslagerung-2026-11-10\\renders\\mars-manga\\v3-1\\audio\\clips\\V3L07b.wav",
+      "sourceSha256": "53ec3f2b8f5ee85f81c60de71cac1abe2335780269c49266ba8ef7e52ef1c5bc",
+      "voiceProfile": "2c58ed55",
+      "voiceReferenceSha256": "84e4d93eb1f816325f00588612c84e857c490fef14b13a7b89431afcb5b9e0ce",
+      "sha256": "362fc5516000989e1b11f004449a674e88ab997f87860d2376d9353699896ff1",
+      "processing": "CPU AAC 160k; 48 kHz; no trim or tempo change; 300 ms added silence; two-pass -14 LUFS normalization with oversampled peak limiter (0.80); final measured true peak <= -1 dBTP",
+      "originalAsr": {
+        "expected": "You check every tether yourself? Even the new ones?",
+        "heard": "You check every tether yourself, even the new ones.",
+        "ok": true,
+        "errors": [],
+        "words": [
+          {
+            "word": "You",
+            "start": 0.0,
+            "end": 0.22,
+            "probability": 0.7756
+          },
+          {
+            "word": "check",
+            "start": 0.22,
+            "end": 0.52,
+            "probability": 0.9846
+          },
+          {
+            "word": "every",
+            "start": 0.52,
+            "end": 0.9,
+            "probability": 0.9923
+          },
+          {
+            "word": "tether",
+            "start": 0.9,
+            "end": 1.1,
+            "probability": 0.9675
+          },
+          {
+            "word": "yourself,",
+            "start": 1.1,
+            "end": 1.66,
+            "probability": 0.9838
+          },
+          {
+            "word": "even",
+            "start": 2.86,
+            "end": 3.06,
+            "probability": 0.9849
+          },
+          {
+            "word": "the",
+            "start": 3.06,
+            "end": 3.3,
+            "probability": 0.9971
+          },
+          {
+            "word": "new",
+            "start": 3.3,
+            "end": 3.48,
+            "probability": 0.9944
+          },
+          {
+            "word": "ones.",
+            "start": 3.48,
+            "end": 3.72,
+            "probability": 0.9632
+          }
+        ],
+        "word_error_rate": 0.0
+      },
+      "newSynthesis": false
+    }
+  },
+  {
+    "id": "crew-check-sera-k1c",
+    "speaker": "Sera",
+    "text": "Once, I trusted a green light more than a voice.",
+    "source": "Band 1, p07c, V3L07c",
+    "adaptation": false,
+    "status": "neu-K1C",
+    "mood": "quiet, contained grief; a remembered failure, no flashback explanation",
+    "scene": "K1C-cause-and-crew",
+    "file": "assets/audio/vo/k1c-crew-check-sera.m4a",
+    "recordingReuse": {
+      "sourceLine": "V3L07c",
+      "source": "\\\\es3\\Elbstand\\downloads\\tim\\pc-auslagerung-2026-11-10\\renders\\mars-manga\\v3-1\\audio\\clips\\V3L07c.wav",
+      "sourceSha256": "b60b0553cbd6f359b6c5114ec0e742686f22120cf4a980a228ac152daabe7b32",
+      "voiceProfile": "348fe8d6",
+      "voiceReferenceSha256": "99c1f967bc2d9c964211a36b403712446198eb3d263cc36ac6a041447db7aa2d",
+      "sha256": "59734e9bcb00745569f4a504dd6cca22bdb3445358b587b9f506e0115c122748",
+      "processing": "CPU AAC 160k; 48 kHz; no trim or tempo change; 300 ms added silence; two-pass -14 LUFS normalization with oversampled peak limiter (0.80); final measured true peak <= -1 dBTP",
+      "originalAsr": {
+        "expected": "Once, I trusted a green light more than a voice.",
+        "heard": "Once, I trusted a green light more than a voice",
+        "ok": true,
+        "errors": [],
+        "words": [
+          {
+            "word": "Once,",
+            "start": 0.0,
+            "end": 0.4,
+            "probability": 0.8134
+          },
+          {
+            "word": "I",
+            "start": 0.78,
+            "end": 0.94,
+            "probability": 0.9795
+          },
+          {
+            "word": "trusted",
+            "start": 0.94,
+            "end": 1.24,
+            "probability": 0.9875
+          },
+          {
+            "word": "a",
+            "start": 1.24,
+            "end": 1.44,
+            "probability": 0.9971
+          },
+          {
+            "word": "green",
+            "start": 1.44,
+            "end": 1.6,
+            "probability": 0.9858
+          },
+          {
+            "word": "light",
+            "start": 1.6,
+            "end": 1.86,
+            "probability": 0.9954
+          },
+          {
+            "word": "more",
+            "start": 1.86,
+            "end": 2.04,
+            "probability": 0.9939
+          },
+          {
+            "word": "than",
+            "start": 2.04,
+            "end": 2.16,
+            "probability": 0.9982
+          },
+          {
+            "word": "a",
+            "start": 2.16,
+            "end": 2.28,
+            "probability": 0.9959
+          },
+          {
+            "word": "voice",
+            "start": 2.28,
+            "end": 2.46,
+            "probability": 0.9971
+          }
+        ],
+        "word_error_rate": 0.0
+      },
+      "newSynthesis": false
+    }
+  },
+  {
+    "id": "crew-check-call-k1c",
+    "speaker": "Sera",
+    "text": "Answer when I call.",
+    "source": "Band 1, p07d, V3L07d",
+    "adaptation": false,
+    "status": "neu-K1C",
+    "mood": "calm personal concern",
+    "scene": "K1C-cause-and-crew",
+    "file": "assets/voice/resident-sera-call.m4a",
+    "recordingReuse": "Existing unchanged K1B Saga recording; same speaker and exact text."
+  },
+  {
+    "id": "crew-check-answer-k1c",
+    "speaker": "Iona",
+    "text": "Count on it! You will hear me all the way home.",
+    "source": "Band 1, p07e, V3L07e",
+    "adaptation": false,
+    "status": "neu-K1C",
+    "mood": "warm, direct promise; confidence without the usual challenge",
+    "scene": "K1C-cause-and-crew",
+    "file": "assets/audio/vo/k1c-crew-check-answer.m4a",
+    "recordingReuse": {
+      "sourceLine": "V3L07e",
+      "source": "\\\\es3\\Elbstand\\downloads\\tim\\pc-auslagerung-2026-11-10\\renders\\mars-manga\\v3-1\\audio\\clips\\V3L07e.wav",
+      "sourceSha256": "af183070428407638f03a7b2bc92ad23eda26e3ebc38538e165d91a8f1b8e38e",
+      "voiceProfile": "2c58ed55",
+      "voiceReferenceSha256": "84e4d93eb1f816325f00588612c84e857c490fef14b13a7b89431afcb5b9e0ce",
+      "sha256": "6aee3f6f0b51123255f6c99c87dd6a69fa0830574f0189fba5b53d5fa54c3742",
+      "processing": "CPU AAC 160k; 48 kHz; no trim or tempo change; 300 ms added silence; two-pass -14 LUFS normalization with oversampled peak limiter (0.80); final measured true peak <= -1 dBTP",
+      "originalAsr": {
+        "expected": "Count on it! You will hear me all the way home.",
+        "heard": "Count on it. You will hear me all the way home.",
+        "ok": true,
+        "errors": [],
+        "words": [
+          {
+            "word": "Count",
+            "start": 0.0,
+            "end": 0.3,
+            "probability": 0.7488
+          },
+          {
+            "word": "on",
+            "start": 0.3,
+            "end": 0.5,
+            "probability": 0.9954
+          },
+          {
+            "word": "it.",
+            "start": 0.5,
+            "end": 0.74,
+            "probability": 0.9981
+          },
+          {
+            "word": "You",
+            "start": 1.5,
+            "end": 1.68,
+            "probability": 0.9895
+          },
+          {
+            "word": "will",
+            "start": 1.68,
+            "end": 1.8,
+            "probability": 0.8118
+          },
+          {
+            "word": "hear",
+            "start": 1.8,
+            "end": 2.0,
+            "probability": 0.9997
+          },
+          {
+            "word": "me",
+            "start": 2.0,
+            "end": 2.16,
+            "probability": 0.9955
+          },
+          {
+            "word": "all",
+            "start": 2.16,
+            "end": 2.44,
+            "probability": 0.988
+          },
+          {
+            "word": "the",
+            "start": 2.44,
+            "end": 2.6,
+            "probability": 0.9988
+          },
+          {
+            "word": "way",
+            "start": 2.6,
+            "end": 2.72,
+            "probability": 0.9993
+          },
+          {
+            "word": "home.",
+            "start": 2.72,
+            "end": 3.04,
+            "probability": 0.9956
+          }
+        ],
+        "word_error_rate": 0.0,
+        "take": "C:\\Users\\Admin\\Desktop\\Hörspiele\\renders\\mars-manga\\v3-1\\audio\\takes\\V3L07e-v31-take01.wav"
+      },
+      "newSynthesis": false
+    }
+  },
+  {
+    "id": "launch-beacon-k1c",
+    "speaker": "Rook",
+    "text": "That's Pip Arden's capsule. His beacon is calling for help.",
+    "source": "Band 1, p12b, V3L12b",
+    "adaptation": false,
+    "status": "neu-K1C",
+    "mood": "sharp recognition replaces the poster grin",
+    "scene": "K1C-cause-and-crew",
+    "file": "assets/audio/vo/k1c-launch-beacon.m4a",
+    "recordingReuse": {
+      "sourceLine": "V3L12b",
+      "source": "\\\\es3\\Elbstand\\downloads\\tim\\pc-auslagerung-2026-11-10\\renders\\mars-manga\\v3-1\\audio\\clips\\V3L12b.wav",
+      "sourceSha256": "d53122d25a6be53f3064de7b74c381575c5d20db0ecc6f9a7c3b854f3db08a6d",
+      "voiceProfile": "9044902d",
+      "voiceReferenceSha256": "95f33fc5080b7e14cbaad395c19bdc06a60e8bfaf6b34395a9a0931829bc8fce",
+      "sha256": "d614345d7da7124432d24ef03b298b8a0564852febcbcf8b7019e7e01c124858",
+      "processing": "CPU AAC 160k; 48 kHz; no trim or tempo change; 300 ms added silence; two-pass -14 LUFS normalization with oversampled peak limiter (0.80); final measured true peak <= -1 dBTP",
+      "originalAsr": {
+        "expected": "That's Pip Arden's capsule. His beacon is calling for help.",
+        "heard": "That's Pip Arden's capsule. His beacon is calling for help.",
+        "ok": true,
+        "errors": [],
+        "words": [
+          {
+            "word": "That's",
+            "start": 0.0,
+            "end": 1.04,
+            "probability": 0.909
+          },
+          {
+            "word": "Pip",
+            "start": 1.04,
+            "end": 1.42,
+            "probability": 0.9322
+          },
+          {
+            "word": "Arden's",
+            "start": 1.42,
+            "end": 2.26,
+            "probability": 0.9156
+          },
+          {
+            "word": "capsule.",
+            "start": 2.26,
+            "end": 2.74,
+            "probability": 0.9656
+          },
+          {
+            "word": "His",
+            "start": 3.7,
+            "end": 3.94,
+            "probability": 0.9924
+          },
+          {
+            "word": "beacon",
+            "start": 3.94,
+            "end": 4.36,
+            "probability": 0.9792
+          },
+          {
+            "word": "is",
+            "start": 4.36,
+            "end": 5.1,
+            "probability": 0.9874
+          },
+          {
+            "word": "calling",
+            "start": 5.1,
+            "end": 5.46,
+            "probability": 0.9988
+          },
+          {
+            "word": "for",
+            "start": 5.46,
+            "end": 5.72,
+            "probability": 0.9979
+          },
+          {
+            "word": "help.",
+            "start": 5.72,
+            "end": 6.0,
+            "probability": 0.9989
+          }
+        ],
+        "word_error_rate": 0.0,
+        "take": "C:\\Users\\Admin\\Desktop\\Hörspiele\\renders\\mars-manga\\v3-1\\audio\\takes\\V3L12b-v31-take02.wav"
+      },
+      "newSynthesis": false
+    }
+  },
+  {
+    "id": "launch-promise-k1c",
+    "speaker": "Iona",
+    "text": "Hang on, Pip! I'm coming to get you!",
+    "source": "Band 1, p12d, V3L12d; caption distinction from p12e",
+    "adaptation": false,
+    "status": "neu-K1C",
+    "mood": "immediate and fiercely protective",
+    "scene": "K1C-cause-and-crew",
+    "file": "assets/audio/vo/k1c-launch-promise.m4a",
+    "recordingReuse": {
+      "sourceLine": "V3L12d",
+      "source": "\\\\es3\\Elbstand\\downloads\\tim\\pc-auslagerung-2026-11-10\\renders\\mars-manga\\v3-1\\audio\\clips\\V3L12d.wav",
+      "sourceSha256": "343a392b1c330a5def6294ece9b59eee651a5bbc1e6af304f4d00e44da1d834e",
+      "voiceProfile": "2c58ed55",
+      "voiceReferenceSha256": "84e4d93eb1f816325f00588612c84e857c490fef14b13a7b89431afcb5b9e0ce",
+      "sha256": "9e3dcf28fc0c9d76d38fb83a8e1a19a23c53880e56ba6b78678ace1588e9eb57",
+      "processing": "CPU AAC 160k; 48 kHz; no trim or tempo change; 300 ms added silence; two-pass -14 LUFS normalization with oversampled peak limiter (0.80); final measured true peak <= -1 dBTP",
+      "originalAsr": {
+        "expected": "Hang on, Pip! I'm coming to get you!",
+        "heard": "Hang on, Pip. I'm coming to get you.",
+        "ok": true,
+        "errors": [],
+        "words": [
+          {
+            "word": "Hang",
+            "start": 0.0,
+            "end": 0.16,
+            "probability": 0.5436
+          },
+          {
+            "word": "on,",
+            "start": 0.16,
+            "end": 0.42,
+            "probability": 0.9818
+          },
+          {
+            "word": "Pip.",
+            "start": 0.52,
+            "end": 0.62,
+            "probability": 0.9457
+          },
+          {
+            "word": "I'm",
+            "start": 1.06,
+            "end": 1.26,
+            "probability": 0.9873
+          },
+          {
+            "word": "coming",
+            "start": 1.26,
+            "end": 1.48,
+            "probability": 0.9899
+          },
+          {
+            "word": "to",
+            "start": 1.48,
+            "end": 1.66,
+            "probability": 0.998
+          },
+          {
+            "word": "get",
+            "start": 1.66,
+            "end": 1.8,
+            "probability": 0.9981
+          },
+          {
+            "word": "you.",
+            "start": 1.8,
+            "end": 2.1,
+            "probability": 0.9863
+          }
+        ],
+        "word_error_rate": 0.0,
+        "take": "C:\\Users\\Admin\\Desktop\\Hörspiele\\renders\\mars-manga\\v3-1\\audio\\takes\\V3L12d-v31-take01.wav"
+      },
+      "newSynthesis": false
+    }
+  },
+  {
+    "id": "launch-broadcast-k1c",
+    "speaker": "Captain Beam",
+    "text": "Training break! Join our proud fleet in the victory refrain!",
+    "source": "Band 1, p13a, V3L13a",
+    "adaptation": false,
+    "status": "neu-K1C",
+    "mood": "radiant, sincere programme announcement",
+    "scene": "K1C-cause-and-crew",
+    "file": "assets/audio/vo/k1c-launch-broadcast.m4a",
+    "recordingReuse": {
+      "sourceLine": "V3L13a",
+      "source": "\\\\es3\\Elbstand\\downloads\\tim\\pc-auslagerung-2026-11-10\\renders\\mars-manga\\v3-1\\audio\\clips\\V3L13a.wav",
+      "sourceSha256": "5b8cf6e9682d773b57b80de33963f3455509d3b96a730c54bfc5d9f036a9b79b",
+      "voiceProfile": "5ac8c7b2",
+      "voiceReferenceSha256": "b759ab78f3137ddd54cc335bb46a74c64a9e32cb7ada75c8023e0b78f684bb23",
+      "sha256": "aa95b27b7892ff26fd18a284cad727f81187aeb6d9d511dfb8760d20366f09cf",
+      "processing": "CPU AAC 160k; 48 kHz; no trim or tempo change; 300 ms added silence; two-pass -14 LUFS normalization with oversampled peak limiter (0.80); final measured true peak <= -1 dBTP",
+      "originalAsr": {
+        "expected": "Training break! Join our proud fleet in the victory refrain!",
+        "heard": "Training Break. Join our proud fleet in the Victory Refrain.",
+        "ok": true,
+        "errors": [],
+        "words": [
+          {
+            "word": "Training",
+            "start": 0.0,
+            "end": 0.36,
+            "probability": 0.8152
+          },
+          {
+            "word": "Break.",
+            "start": 0.36,
+            "end": 0.68,
+            "probability": 0.5118
+          },
+          {
+            "word": "Join",
+            "start": 1.3,
+            "end": 1.42,
+            "probability": 0.9986
+          },
+          {
+            "word": "our",
+            "start": 1.42,
+            "end": 1.66,
+            "probability": 0.9893
+          },
+          {
+            "word": "proud",
+            "start": 1.66,
+            "end": 1.92,
+            "probability": 0.9702
+          },
+          {
+            "word": "fleet",
+            "start": 1.92,
+            "end": 2.22,
+            "probability": 0.8848
+          },
+          {
+            "word": "in",
+            "start": 2.22,
+            "end": 2.42,
+            "probability": 0.9976
+          },
+          {
+            "word": "the",
+            "start": 2.42,
+            "end": 2.54,
+            "probability": 0.9886
+          },
+          {
+            "word": "Victory",
+            "start": 2.54,
+            "end": 2.82,
+            "probability": 0.6903
+          },
+          {
+            "word": "Refrain.",
+            "start": 2.82,
+            "end": 3.22,
+            "probability": 0.8768
+          }
+        ],
+        "word_error_rate": 0.0
+      },
+      "newSynthesis": false
+    }
+  },
+  {
+    "id": "launch-response-k1c",
+    "speaker": "Tavi",
+    "text": "Those lights just answered the programme. Play that again.",
+    "source": "Band 1, p13c, V3L13c",
+    "adaptation": false,
+    "status": "neu-K1C",
+    "mood": "fascination becomes intent; the observation is new to him",
+    "scene": "K1C-cause-and-crew",
+    "file": "assets/audio/vo/k1c-launch-response.m4a",
+    "recordingReuse": {
+      "sourceLine": "V3L13c",
+      "source": "\\\\es3\\Elbstand\\downloads\\tim\\pc-auslagerung-2026-11-10\\renders\\mars-manga\\v3-1\\audio\\clips\\V3L13c.wav",
+      "sourceSha256": "aee13461ae3fa6efc0ac64b3b7c7f24f97d6bcd4ef638c0482177ebf3e7141b2",
+      "voiceProfile": "e77cba53",
+      "voiceReferenceSha256": "6eaf53e97d072dc5156adec02991e0d117f717294238c9586da69c40bb9354aa",
+      "sha256": "f8d822bfe1c24ec587b7b19e899da969cbb7a6f6047ff7844a1c8153970f02fb",
+      "processing": "CPU AAC 160k; 48 kHz; no trim or tempo change; 300 ms added silence; two-pass -14 LUFS normalization with oversampled peak limiter (0.80); final measured true peak <= -1 dBTP",
+      "originalAsr": {
+        "expected": "Those lights just answered the programme. Play that again.",
+        "heard": "Those lights just answered the program. Play that again.",
+        "ok": true,
+        "errors": [],
+        "words": [
+          {
+            "word": "Those",
+            "start": 0.0,
+            "end": 0.26,
+            "probability": 0.8747
+          },
+          {
+            "word": "lights",
+            "start": 0.26,
+            "end": 0.62,
+            "probability": 0.9799
+          },
+          {
+            "word": "just",
+            "start": 0.62,
+            "end": 0.96,
+            "probability": 0.9911
+          },
+          {
+            "word": "answered",
+            "start": 0.96,
+            "end": 1.36,
+            "probability": 0.9265
+          },
+          {
+            "word": "the",
+            "start": 1.36,
+            "end": 1.56,
+            "probability": 0.9981
+          },
+          {
+            "word": "program.",
+            "start": 1.56,
+            "end": 1.9,
+            "probability": 0.9239
+          },
+          {
+            "word": "Play",
+            "start": 2.38,
+            "end": 2.46,
+            "probability": 0.9929
+          },
+          {
+            "word": "that",
+            "start": 2.46,
+            "end": 2.6,
+            "probability": 0.9954
+          },
+          {
+            "word": "again.",
+            "start": 2.6,
+            "end": 2.8,
+            "probability": 0.9889
+          }
+        ],
+        "word_error_rate": 0.0,
+        "model": "medium.en",
+        "small_en": {
+          "expected": "Those lights just answered the programme. Play that again.",
+          "heard": "Those likes just answered the program. Play that again.",
+          "ok": false,
+          "errors": [
+            {
+              "op": "replace",
+              "wanted": [
+                "lights"
+              ],
+              "heard": [
+                "likes"
+              ]
+            }
+          ],
+          "words": [
+            {
+              "word": "Those",
+              "start": 0.0,
+              "end": 0.24,
+              "probability": 0.6175
+            },
+            {
+              "word": "likes",
+              "start": 0.24,
+              "end": 0.58,
+              "probability": 0.7885
+            },
+            {
+              "word": "just",
+              "start": 0.58,
+              "end": 0.9,
+              "probability": 0.9868
+            },
+            {
+              "word": "answered",
+              "start": 0.9,
+              "end": 1.32,
+              "probability": 0.9507
+            },
+            {
+              "word": "the",
+              "start": 1.32,
+              "end": 1.52,
+              "probability": 0.9978
+            },
+            {
+              "word": "program.",
+              "start": 1.52,
+              "end": 1.86,
+              "probability": 0.9395
+            },
+            {
+              "word": "Play",
+              "start": 2.24,
+              "end": 2.46,
+              "probability": 0.9952
+            },
+            {
+              "word": "that",
+              "start": 2.46,
+              "end": 2.58,
+              "probability": 0.9956
+            },
+            {
+              "word": "again.",
+              "start": 2.58,
+              "end": 2.8,
+              "probability": 0.9973
+            }
+          ],
+          "word_error_rate": 0.1111
+        }
+      },
+      "newSynthesis": false
+    }
+  },
+  {
+    "id": "launch-priority-k1c",
+    "speaker": "Sera",
+    "text": "Mute it. Rescue first.",
+    "source": "Band 1, p13d, V3L13d",
+    "adaptation": false,
+    "status": "neu-K1C",
+    "mood": "quiet, decisive urgency; rescue interrupts the experiment",
+    "scene": "K1C-cause-and-crew",
+    "file": "assets/audio/vo/k1c-launch-priority.m4a",
+    "recordingReuse": {
+      "sourceLine": "V3L13d",
+      "source": "\\\\es3\\Elbstand\\downloads\\tim\\pc-auslagerung-2026-11-10\\renders\\mars-manga\\v3-1\\audio\\clips\\V3L13d.wav",
+      "sourceSha256": "436fc90dae5c9647df103141ba554de7839a03009d02412f821808d96f4f825d",
+      "voiceProfile": "348fe8d6",
+      "voiceReferenceSha256": "99c1f967bc2d9c964211a36b403712446198eb3d263cc36ac6a041447db7aa2d",
+      "sha256": "5f85ef06ac3b0701d51acfe4cead6a3966519a9a215315b679c6b0e0df0b5f5e",
+      "processing": "CPU AAC 160k; 48 kHz; no trim or tempo change; 300 ms added silence; two-pass -14 LUFS normalization with oversampled peak limiter (0.80); final measured true peak <= -1 dBTP",
+      "originalAsr": {
+        "expected": "Mute it. Rescue first.",
+        "heard": "Mute it. Rescue first.",
+        "ok": true,
+        "errors": [],
+        "words": [
+          {
+            "word": "Mute",
+            "start": 0.0,
+            "end": 0.36,
+            "probability": 0.5347
+          },
+          {
+            "word": "it.",
+            "start": 0.36,
+            "end": 0.66,
+            "probability": 0.945
+          },
+          {
+            "word": "Rescue",
+            "start": 1.08,
+            "end": 1.28,
+            "probability": 0.9939
+          },
+          {
+            "word": "first.",
+            "start": 1.28,
+            "end": 1.56,
+            "probability": 0.9192
+          }
+        ],
+        "word_error_rate": 0.0,
+        "take": "C:\\Users\\Admin\\Desktop\\Hörspiele\\renders\\mars-manga\\v3-1\\audio\\takes\\V3L13d-v31-take02.wav"
+      },
+      "newSynthesis": false
+    }
+  },
+  {
+    "id": "return-warmth-k1c",
+    "speaker": "Tavi",
+    "text": "Pip's still shaking. Keep him warm. I'll make this thing behave.",
+    "source": "Band 1, p28a, V3L28a",
+    "adaptation": false,
+    "status": "neu-K1C",
+    "mood": "gentle concern before technical concentration",
+    "scene": "K1C-cause-and-crew",
+    "file": "assets/audio/vo/k1c-return-warmth.m4a",
+    "recordingReuse": {
+      "sourceLine": "V3L28a",
+      "source": "\\\\es3\\Elbstand\\downloads\\tim\\pc-auslagerung-2026-11-10\\renders\\mars-manga\\v3-1\\audio\\clips\\V3L28a.wav",
+      "sourceSha256": "40292167bcb2ee4281ff1d06fd0a8bf82e7caa3d0ddb0363851a2b1393d21f94",
+      "voiceProfile": "e77cba53",
+      "voiceReferenceSha256": "6eaf53e97d072dc5156adec02991e0d117f717294238c9586da69c40bb9354aa",
+      "sha256": "60ffef94a9d91a07564d49c637b25cda58bc2f1809e5916e932b9a3d31b3e4b7",
+      "processing": "CPU AAC 160k; 48 kHz; no trim or tempo change; 300 ms added silence; two-pass -14 LUFS normalization with oversampled peak limiter (0.80); final measured true peak <= -1 dBTP",
+      "originalAsr": {
+        "expected": "Pip's still shaking. Keep him warm. I'll make this thing behave.",
+        "heard": "Pip's still shaking, keep him warm, I'll make this thing behave.",
+        "ok": true,
+        "errors": [],
+        "words": [
+          {
+            "word": "Pip's",
+            "start": 0.0,
+            "end": 0.36,
+            "probability": 0.6902
+          },
+          {
+            "word": "still",
+            "start": 0.36,
+            "end": 0.52,
+            "probability": 0.9986
+          },
+          {
+            "word": "shaking,",
+            "start": 0.52,
+            "end": 1.06,
+            "probability": 0.9905
+          },
+          {
+            "word": "keep",
+            "start": 1.84,
+            "end": 2.06,
+            "probability": 0.9125
+          },
+          {
+            "word": "him",
+            "start": 2.06,
+            "end": 2.26,
+            "probability": 0.8161
+          },
+          {
+            "word": "warm,",
+            "start": 2.26,
+            "end": 2.72,
+            "probability": 0.9985
+          },
+          {
+            "word": "I'll",
+            "start": 3.56,
+            "end": 3.9,
+            "probability": 0.9786
+          },
+          {
+            "word": "make",
+            "start": 3.9,
+            "end": 4.06,
+            "probability": 0.9981
+          },
+          {
+            "word": "this",
+            "start": 4.06,
+            "end": 4.3,
+            "probability": 0.988
+          },
+          {
+            "word": "thing",
+            "start": 4.3,
+            "end": 4.58,
+            "probability": 0.9951
+          },
+          {
+            "word": "behave.",
+            "start": 4.58,
+            "end": 4.98,
+            "probability": 0.9938
+          }
+        ],
+        "word_error_rate": 0.0,
+        "take": "C:\\Users\\Admin\\Desktop\\Hörspiele\\renders\\mars-manga\\v3-1\\audio\\takes\\V3L28a-v31-take01.wav"
+      },
+      "newSynthesis": false
+    }
+  },
+  {
+    "id": "return-answer-k1c",
+    "speaker": "Pip",
+    "text": "Here, Captain. Belt tight.",
+    "source": "Band 1, p25b, V3L25b; caption distinction from p12e",
+    "adaptation": false,
+    "status": "neu-K1C",
+    "mood": "tired, frightened, safe",
+    "scene": "K1C-cause-and-crew",
+    "file": "assets/voice/resident-pip.m4a",
+    "recordingReuse": "Existing unchanged K1B Saga recording; same speaker and exact text."
+  },
+  {
+    "id": "contact-handles-k1c",
+    "speaker": "Tavi",
+    "text": "There are handles. Whatever built it expected someone to visit.",
+    "source": "Band 1, p11e, V3L11e",
+    "adaptation": false,
+    "status": "neu-K1C",
+    "mood": "wonder, grounded in a visible mechanical detail",
+    "scene": "K1C-cause-and-crew",
+    "file": "assets/audio/vo/k1c-contact-handles.m4a",
+    "recordingReuse": {
+      "sourceLine": "V3L11e",
+      "source": "\\\\es3\\Elbstand\\downloads\\tim\\pc-auslagerung-2026-11-10\\renders\\mars-manga\\v3-1\\audio\\clips\\V3L11e.wav",
+      "sourceSha256": "e1c139ef58a59d9c2befad21e46150fcc79af0a87db9c9db99327b7face56771",
+      "voiceProfile": "e77cba53",
+      "voiceReferenceSha256": "6eaf53e97d072dc5156adec02991e0d117f717294238c9586da69c40bb9354aa",
+      "sha256": "49781c20837dc0fb7e42dfe5ca5d89f20ef0b236f09b1c60d7566f9ddc54636b",
+      "processing": "CPU AAC 160k; 48 kHz; no trim or tempo change; 300 ms added silence; two-pass -14 LUFS normalization with oversampled peak limiter (0.80); final measured true peak <= -1 dBTP",
+      "originalAsr": {
+        "expected": "There are handles. Whatever built it expected someone to visit.",
+        "heard": "There are handles. Whatever built it, expected someone to visit.",
+        "ok": true,
+        "errors": [],
+        "words": [
+          {
+            "word": "There",
+            "start": 0.0,
+            "end": 0.16,
+            "probability": 0.7967
+          },
+          {
+            "word": "are",
+            "start": 0.16,
+            "end": 0.32,
+            "probability": 0.995
+          },
+          {
+            "word": "handles.",
+            "start": 0.32,
+            "end": 0.76,
+            "probability": 0.989
+          },
+          {
+            "word": "Whatever",
+            "start": 1.98,
+            "end": 2.2,
+            "probability": 0.9806
+          },
+          {
+            "word": "built",
+            "start": 2.2,
+            "end": 2.5,
+            "probability": 0.9483
+          },
+          {
+            "word": "it,",
+            "start": 2.5,
+            "end": 2.98,
+            "probability": 0.9962
+          },
+          {
+            "word": "expected",
+            "start": 3.56,
+            "end": 3.82,
+            "probability": 0.7435
+          },
+          {
+            "word": "someone",
+            "start": 3.82,
+            "end": 4.26,
+            "probability": 0.9934
+          },
+          {
+            "word": "to",
+            "start": 4.26,
+            "end": 4.52,
+            "probability": 0.9988
+          },
+          {
+            "word": "visit.",
+            "start": 4.52,
+            "end": 4.66,
+            "probability": 0.9937
+          }
+        ],
+        "word_error_rate": 0.0
+      },
+      "newSynthesis": false
+    }
+  },
+  {
+    "id": "contact-interruption-k1c",
+    "speaker": "Tavi",
+    "text": "That jingle interrupts. Even machines hate interruptions.",
+    "source": "Band 1, p19b, V3L19b",
+    "adaptation": false,
+    "status": "neu-K1C",
+    "mood": "a precise observation, lightly dry rather than an exposition speech",
+    "scene": "K1C-cause-and-crew",
+    "file": "assets/audio/vo/k1c-contact-interruption.m4a",
+    "recordingReuse": {
+      "sourceLine": "V3L19b",
+      "source": "\\\\es3\\Elbstand\\downloads\\tim\\pc-auslagerung-2026-11-10\\renders\\mars-manga\\v3-1\\audio\\clips\\V3L19b.wav",
+      "sourceSha256": "a2c6db6f040c48daf89dc6110ffcb6e81985a3597d2f6baa1dfd7792ab613e3a",
+      "voiceProfile": "e77cba53",
+      "voiceReferenceSha256": "6eaf53e97d072dc5156adec02991e0d117f717294238c9586da69c40bb9354aa",
+      "sha256": "516b6d4c34d950d0d051c9e21ca0eedade0a99b2ca3742333f3dc4e309a62ba1",
+      "processing": "CPU AAC 160k; 48 kHz; no trim or tempo change; 300 ms added silence; two-pass -14 LUFS normalization with oversampled peak limiter (0.80); final measured true peak <= -1 dBTP",
+      "originalAsr": {
+        "expected": "That jingle interrupts. Even machines hate interruptions.",
+        "heard": "That jingle interrupts, even machines hate interruptions.",
+        "ok": true,
+        "errors": [],
+        "words": [
+          {
+            "word": "That",
+            "start": 0.0,
+            "end": 0.24,
+            "probability": 0.5383
+          },
+          {
+            "word": "jingle",
+            "start": 0.24,
+            "end": 0.68,
+            "probability": 0.9412
+          },
+          {
+            "word": "interrupts,",
+            "start": 0.68,
+            "end": 1.38,
+            "probability": 0.9935
+          },
+          {
+            "word": "even",
+            "start": 2.28,
+            "end": 2.64,
+            "probability": 0.9786
+          },
+          {
+            "word": "machines",
+            "start": 2.64,
+            "end": 3.16,
+            "probability": 0.9891
+          },
+          {
+            "word": "hate",
+            "start": 3.16,
+            "end": 3.7,
+            "probability": 0.9718
+          },
+          {
+            "word": "interruptions.",
+            "start": 3.7,
+            "end": 4.88,
+            "probability": 0.9987
+          }
+        ],
+        "word_error_rate": 0.0,
+        "take": "C:\\Users\\Admin\\Desktop\\Hörspiele\\renders\\mars-manga\\v3-1\\audio\\takes\\V3L19b-v31-take01.wav"
+      },
+      "newSynthesis": false
+    }
+  }
+]
