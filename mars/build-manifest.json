@@ -1,11 +1,12 @@
 {
-  "asOf": "2026-11-15T10:23:03.915770+01:00",
+  "asOf": "2026-11-16T17:02:22.310014+01:00",
   "review": false,
   "available": [
     1,
-    2
+    2,
+    3
   ],
-  "totalBytes": 18799538,
+  "totalBytes": 26280480,
   "files": [
     {
       "file": "app.js",
@@ -19,8 +20,8 @@
     },
     {
       "file": "data.js",
-      "bytes": 18046,
-      "sha256": "396c293a07b4774f40fe51047461426e0db1b2ea08051ca376d081ddb4c67eea"
+      "bytes": 22009,
+      "sha256": "c05911a207649596953c77890b3f319656bd968d9b434fac22d8d3cadb56d8a5"
     },
     {
       "file": "game.js",
@@ -29,8 +30,8 @@
     },
     {
       "file": "index.html",
-      "bytes": 16515,
-      "sha256": "304f4b176428d1a5e87b5b4e0f240329d9aa6859eb644ae7ebdb600af843698e"
+      "bytes": 16666,
+      "sha256": "7f2c8e9e1526fc9219037e706ff59a358bc4c82490c09162ee8da54f81976094"
     },
     {
       "file": "manga.js",
@@ -54,8 +55,8 @@
     },
     {
       "file": "sw.js",
-      "bytes": 1201,
-      "sha256": "3c32e475e12a031437fe1104e5df35c1a4a260d686d2c5be59b08e5bdbae88c9"
+      "bytes": 1226,
+      "sha256": "3fbf4d5fc436a2ac9b682d65b1a774f3368c11471a865d786da5707f40237f71"
     },
     {
       "file": "assets/Barlow-400-latin.woff2",
@@ -173,6 +174,11 @@
       "sha256": "ca8c5e8e79a2ae429aed1185c2c47f43e2ab32245d2ef32d90db30efd0737370"
     },
     {
+      "file": "missions/mission-3.js",
+      "bytes": 3272,
+      "sha256": "5837d344f249cc350b40fa965b04f9b6c586aa821137a8ee1e4fc289843495de"
+    },
+    {
       "file": "missions/scene-1.js",
       "bytes": 1336,
       "sha256": "d5019c08509e83f010f39fbab2642ebdf2027d0fd5ba6fc3c94e34702ac5a846"
@@ -181,6 +187,11 @@
       "file": "missions/scene-2.js",
       "bytes": 3076,
       "sha256": "3798b17777ef51438e0c0b257215b16bd05feef929fe0f25042c14bd8b3b025b"
+    },
+    {
+      "file": "missions/scene-3.js",
+      "bytes": 2684,
+      "sha256": "f641f9d10ab2ee070161bc769e0ac99c8cbe9b960fc8f667fe4cbcd7459bf053"
     },
     {
       "file": "assets/b1/card-iona.webp",
@@ -426,6 +437,216 @@
       "file": "assets/b2/wallpaper-p30a.webp",
       "bytes": 1132692,
       "sha256": "5cbecceaaa549fd0a9f7254b32c14d8f11014dc50f6ebcdb86d4d77918241d49"
+    },
+    {
+      "file": "assets/b3/bram-sprite.webp",
+      "bytes": 45542,
+      "sha256": "9fa74c7b214bd4b74539fe855aea96129774d54e36868bd44d41c0cd60c63955"
+    },
+    {
+      "file": "assets/b3/cover.webp",
+      "bytes": 115034,
+      "sha256": "828c3a44744ade70ec460e8235f1b965bfc6a23b4408f0211b5fa6ca4d592745"
+    },
+    {
+      "file": "assets/b3/fragment.svg",
+      "bytes": 200,
+      "sha256": "32c849ccaa620d85fd121ee9a72f4301704bde2fecb5ce308ac6a8054dc3247c"
+    },
+    {
+      "file": "assets/b3/medal-back.svg",
+      "bytes": 614,
+      "sha256": "08e7bed62a92b033d1167363478017ab16de6b5fca81757f51ed32a8eb29aea5"
+    },
+    {
+      "file": "assets/b3/medal-front.svg",
+      "bytes": 500,
+      "sha256": "c7d692d5cc4921f14b288b943dd6035eec095b0e0e376ba2de24ae06e18f349c"
+    },
+    {
+      "file": "assets/b3/p01a.webp",
+      "bytes": 145888,
+      "sha256": "d3e3b7ace73288daabb936c5aec9f499a4cbaf0f6f0e64437e897b7da2a1dd55"
+    },
+    {
+      "file": "assets/b3/p01c.webp",
+      "bytes": 119026,
+      "sha256": "98f06bcbcd626617c3639d406f223f28c91a0ba1e50658e4bff22fa5de121da6"
+    },
+    {
+      "file": "assets/b3/p04a.webp",
+      "bytes": 206034,
+      "sha256": "e7aa4d061285c80f9b988ec02f7ddb00034dc73aaac73d23ca0dccb988ab55a8"
+    },
+    {
+      "file": "assets/b3/p10a.webp",
+      "bytes": 605714,
+      "sha256": "9cf4b9658c59ebd23f3c435cf2e34bc403b981aa9bd07629a343b0f8d6c3f3ec"
+    },
+    {
+      "file": "assets/b3/p18a.webp",
+      "bytes": 224954,
+      "sha256": "d1c32b5fc1aaa01471a5ea7318c4f1961be651eb7b941222acef2abbbd04a854"
+    },
+    {
+      "file": "assets/b3/p24a.webp",
+      "bytes": 704896,
+      "sha256": "c3b6dec6b501d46d31bdc48f10525af8166354ef6d9923b3864e6a6588bcb062"
+    },
+    {
+      "file": "assets/b3/p25a.webp",
+      "bytes": 198230,
+      "sha256": "958b69ed8efc71412acbccf76f586499da13bf63d2b4fc99c3f8b91754723b6c"
+    },
+    {
+      "file": "assets/b3/p29a.webp",
+      "bytes": 136164,
+      "sha256": "ecc19b160c07a878fa13945da4bcba496149be55a44fdc7841dbef63334dac64"
+    },
+    {
+      "file": "assets/b3/p30a.webp",
+      "bytes": 162348,
+      "sha256": "6cefe323eeb41ea55ea1289f0bdb62524d251610a5e59997ed2cb386ebdc25a7"
+    },
+    {
+      "file": "assets/b3/p34d.webp",
+      "bytes": 57476,
+      "sha256": "26bf7e30839a24fe1e940b3813224631d2c6ff2c971a010cf0a46bebfc5a6f64"
+    },
+    {
+      "file": "assets/b3/p35a.webp",
+      "bytes": 477526,
+      "sha256": "bba39d64e65ed5fa0213bad9834289b2e3a9e1c1df812f1b83b2fbd54c896a15"
+    },
+    {
+      "file": "assets/b3/p39d.webp",
+      "bytes": 164274,
+      "sha256": "9d7580fdd449ce9edfb5f13aa9440ffea787c17688ae59edaf55991144e1df72"
+    },
+    {
+      "file": "assets/b3/p39e.webp",
+      "bytes": 159878,
+      "sha256": "06d901bd0706b285d1d0cd6e3b819e83916e0518b3e933b0ce18fb2ee35708ac"
+    },
+    {
+      "file": "assets/b3/p40a.webp",
+      "bytes": 135810,
+      "sha256": "2d3c9ddf498002696c9c0a8afa9e8a17627dff804d21493adaa343368bf547ef"
+    },
+    {
+      "file": "assets/b3/record-back.svg",
+      "bytes": 721,
+      "sha256": "23efc941ce36b65bfc2ce243c43d7a0cef8b6161c0fb454ec698af4c3d5b0d4a"
+    },
+    {
+      "file": "assets/b3/record-front.svg",
+      "bytes": 719,
+      "sha256": "38c9e51206cbe289a1002183d4fc88499df78956b872d1b4bdfb9d5d05de29c0"
+    },
+    {
+      "file": "assets/b3/simulator-badge.webp",
+      "bytes": 134448,
+      "sha256": "01349305f4ab5c3189fe3b2fb8f26737fff3d9b220b6921a7761837e511bf33e"
+    },
+    {
+      "file": "assets/b3/wallpaper-p24a.webp",
+      "bytes": 1139770,
+      "sha256": "fd6498defac4430de96f43cffbb93ac8649e33713447f829409b8167ff5ac0c4"
+    },
+    {
+      "file": "assets/b3/wallpaper-p35a.webp",
+      "bytes": 1073658,
+      "sha256": "405a824194ee728beeefcea7b569fd7648c0993bc8cf4eddcbc17adfbf388e88"
+    },
+    {
+      "file": "assets/b3/audio/B03L01a.m4a",
+      "bytes": 43765,
+      "sha256": "5008b45f7ed3ed65d79c0616fa820bad7844ce696da878583db76f1457350625"
+    },
+    {
+      "file": "assets/b3/audio/B03L01c.m4a",
+      "bytes": 20022,
+      "sha256": "d5e658a58edc912a6259d4dc0906a78e541d68ad4fed729d492ae5d0952dea3b"
+    },
+    {
+      "file": "assets/b3/audio/B03L25a.m4a",
+      "bytes": 16249,
+      "sha256": "86c033db7513a4e5fa2f8efaf2e1ec28e42be235976209fafdd8bf9b79ee137a"
+    },
+    {
+      "file": "assets/b3/audio/B03L25b.m4a",
+      "bytes": 17175,
+      "sha256": "4aa6b5a03b163d04a2e160dbf6877aa6eb015d4e48beccdfc19f350c9d812b08"
+    },
+    {
+      "file": "assets/b3/audio/B03L34d.m4a",
+      "bytes": 16997,
+      "sha256": "47c4cca6c75679934f21266e136320592b29272ad9f4cdbbee9a293145fe8cf6"
+    },
+    {
+      "file": "assets/b3/audio/B03L36c.m4a",
+      "bytes": 37643,
+      "sha256": "6f5589b9c682f4fb94820dc956f501ef78fdf6f2cb8c2706e280f2781c40f9dd"
+    },
+    {
+      "file": "assets/b3/audio/B03L36d.m4a",
+      "bytes": 72219,
+      "sha256": "8421b7a35224f2d052659967d8cb4f8b9caa59a1c5582e8e3799aa92d182bc7c"
+    },
+    {
+      "file": "assets/b3/audio/B03L39d.m4a",
+      "bytes": 22235,
+      "sha256": "f46395883641d374f21e036ce14cba0aec056d5e6bfdd5becf750649c9633cb4"
+    },
+    {
+      "file": "assets/b3/audio/B03L39e.m4a",
+      "bytes": 46796,
+      "sha256": "2d99fb27994f4417ff7b74c9591d710f6eac8cbafa45d01d54c91242cd48c814"
+    },
+    {
+      "file": "assets/b3/game/bram-brake.webp",
+      "bytes": 129240,
+      "sha256": "b37dc36a635176f6f580591e6fbff5d59613a540e1d26fb8e0257f4a80c1b3e4"
+    },
+    {
+      "file": "assets/b3/game/bram.webp",
+      "bytes": 202372,
+      "sha256": "fca82382d318cde9a90e935a75e34bb0356bff554de5d27109025b8bb74bc259"
+    },
+    {
+      "file": "assets/b3/game/channel.webp",
+      "bytes": 165958,
+      "sha256": "f0aeac0ed3cedce75179eac22e528169625474edebd28ade25c8d40f43a1d786"
+    },
+    {
+      "file": "assets/b3/game/core.webp",
+      "bytes": 72234,
+      "sha256": "f14b42a2443a5666a0984fe2182c85261426b55cb552f42127aca9eec1c8a639"
+    },
+    {
+      "file": "assets/b3/game/corridor.webp",
+      "bytes": 184552,
+      "sha256": "5ff9b4142910fee93d20f3b9b903a6ce0a07a78535213ff143b18c7655f3bdd6"
+    },
+    {
+      "file": "assets/b3/game/dax-seated.webp",
+      "bytes": 196744,
+      "sha256": "a82521d26582cb92d166656fae32871e7779400f3d3e280c8b80f08dab24d478"
+    },
+    {
+      "file": "assets/b3/game/dax.webp",
+      "bytes": 82072,
+      "sha256": "5702976096b04a489f2d7d0c1d2e95a9eff4bc7710be76bb5253c2b64b87d7d6"
+    },
+    {
+      "file": "assets/b3/game/halberd.webp",
+      "bytes": 70414,
+      "sha256": "92fc36387be7e5c87ae5fb94d5a5792a4bafd779895b8764a5ccb2f2d6b5825a"
+    },
+    {
+      "file": "assets/b3/game/iona-boot.webp",
+      "bytes": 64736,
+      "sha256": "20f317d6dc9947fb624b47385adca95cd47599899b563a5049facb04b58f0013"
     },
     {
       "file": "assets/b2/audio/B02L01a.m4a",
