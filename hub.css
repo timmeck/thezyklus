@@ -13,3 +13,6 @@
 @media(max-width:350px){.hub-hero,.entry-section,.week-section,.timeline-section,.hub-closing,.hub-footer{padding-inline:17px}.hero-doors{height:210px;gap:6px}.hero-portal>span{left:7px;right:5px}.hero-portal b{font-size:19px}.hero-portal small{font-size:6px}.time-date>small{font-size:7px;margin-left:8px}.door-copy{padding:21px 16px}.door-copy h3{font-size:43px}.entry h3{font-size:33px}.last-door h3{font-size:37px}.next-line>a{font-size:12px}}
 @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}*,*:before,*:after{transition:none!important;animation:none!important}}
 .legacy-anchor{display:none}.legacy-anchor:target{display:block;max-width:900px;margin:40px auto;padding:30px;border:1px solid #37433f}.legacy-anchor a{color:#eea068}
+
+/* Zeitmarken zwischen den Türen (23.11.2026) */
+.time-mark{padding-bottom:46px}.time-mark>span{font-size:26px!important;color:var(--muted)}.time-mark p:nth-child(2){font-size:19px!important;max-width:560px}.time-mark small{display:block;margin-top:6px;font-size:12px;color:var(--muted)}.time-mark.outer-thread .eyebrow{color:var(--blue)}
