@@ -37,9 +37,9 @@
       crossorigin
     />
     <script type="module" src="app.js"></script>
-  </head>
-  <body>
-    <a class="skip-link" href="#setup">Skip to match setup</a>
+  <link rel="stylesheet" href="/frame.css"></head>
+  <body data-universe-game="true" id="top"><!-- universe-frame:start --><div class="universe-frame" role="region" aria-label="ZYKLUS Universe"><a class="universe-skip skip-link" href="#main">Skip to content</a><a class="universe-brand" href="/">ZYKLUS <span>UNIVERSE</span></a><nav aria-label="Universe"><a href="/#timeline">Stories</a><a href="/#week">Programme</a><a href="/late-show/">Late Show</a><a href="/victory-window/">Fleetvision</a></nav><a class="frame-map" href="/#timeline">2360 — 3011</a></div><!-- universe-frame:end -->
+    
     <div id="lobby" data-panel="home" data-setup="crew">
       <header class="masthead">
         <a class="mars-wordmark" href="../"
@@ -60,7 +60,7 @@
         <button id="settings-open" aria-label="Open game settings">Settings</button>
         <button id="install-app" hidden>Install ↗</button>
       </nav>
-      <main>
+      <main id="main">
         <section class="cover" aria-labelledby="title">
           <div class="cover-copy">
             <p class="eyebrow">
@@ -207,7 +207,7 @@
           <div class="dispatch-dots" aria-hidden="true">✦ ✦ ✦</div>
         </div>
       </main>
-      <footer>
+      <div class="universe-local-controls" role="region" aria-label="Local controls"><footer role="group" aria-label="Local controls">
         <span
           >© Tim Mecklenburg <span class="footer-divider">/</span> Original
           MARS game</span
@@ -218,7 +218,7 @@
             Credits & Impressum
           </button>
         </div>
-      </footer>
+      </footer></div>
     </div>
     <section id="game" class="game" hidden aria-label="MARS arena match">
       <header class="game-bar">
@@ -460,5 +460,5 @@
         This arena needs JavaScript. <a href="../">Return to MARS.</a>
       </p></noscript
     >
-  </body>
+  <footer class="universe-footer"><a class="universe-brand" href="/">ZYKLUS <span>UNIVERSE</span></a><p>Stories & world by Tim Mecklenburg.<br>AI-assisted voices, images and music.</p><nav aria-label="Footer"><a href="https://www.youtube.com/@thezyklus">YouTube</a><a href="https://x.com/talesbytim" rel="me noopener">X</a><a href="/impressum.html">Imprint</a><a href="/datenschutz.html">Privacy</a><a href="#top">Back to top</a></nav><small>© 2026 Tim Mecklenburg</small></footer></body>
 </html>

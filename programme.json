@@ -1,0 +1,25 @@
+{
+  "timezone": "Europe/Berlin",
+  "asOf": "2026-11-25",
+  "next": {
+    "at": "2026-11-25T20:00:00+01:00",
+    "title": "THE OUTBOUND",
+    "url": "/outbound/"
+  },
+  "premieres": [
+    {
+      "at": "2026-12-01T21:55:00+01:00",
+      "title": "Victory Window · Spot 1: The Honour Trolley",
+      "url": "/victory-window/#spot-title",
+      "status": "scheduled",
+      "recurring": false
+    },
+    {
+      "at": "2026-12-01T22:00:00+01:00",
+      "title": "Pip’s Late Show · E02: Please Remain Seated",
+      "url": "/late-show/#episodes",
+      "status": "scheduled"
+    }
+  ],
+  "note": "Regular broadcast slots; premiere dates are listed separately."
+}

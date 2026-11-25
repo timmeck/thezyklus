@@ -1,8 +1,46 @@
-@font-face{font-family:UniverseBarlow;src:url('assets/fonts/Barlow-400-latin.woff2') format('woff2');font-display:swap}
-@font-face{font-family:UniverseCondensed;src:url('assets/fonts/BarlowCondensed-600-latin.woff2') format('woff2');font-weight:600;font-display:swap}
-.universe-frame{font:12px/1.4 UniverseBarlow,Arial,sans-serif;display:flex;align-items:center;gap:30px;padding:17px clamp(20px,5vw,88px);color:#e7e5d8;background:#101919;border-bottom:1px solid #37433f;position:relative;z-index:10;box-sizing:border-box}.universe-frame *{box-sizing:border-box}.universe-frame a{color:inherit;text-decoration:none}.universe-brand{font:600 27px/.9 UniverseCondensed,sans-serif;white-space:nowrap;letter-spacing:.035em}.universe-brand span{font:9px UniverseBarlow,sans-serif;letter-spacing:.17em;margin-left:7px}.universe-frame nav{display:flex;gap:25px;margin-left:auto}.universe-frame nav a{font-size:10px;letter-spacing:.08em;padding-block:9px;border-bottom:1px solid transparent}.universe-frame nav a:hover,.universe-frame nav a[aria-current]{color:#eea068;border-color:#eea068}.frame-map{font-size:10px;margin-left:23px;color:#acb7ae!important}.universe-frame a:focus-visible,.mini-time a:focus-visible,.universe-cross a:focus-visible{outline:2px solid #eea068;outline-offset:5px}.mini-time{font:10px/1.5 UniverseBarlow,sans-serif;color:#b9c6bf;background:#14201e;display:flex;align-items:center;gap:40px;padding:10px clamp(20px,5vw,88px);border-bottom:1px solid #37433f}.mini-time span{white-space:nowrap}.mini-time b{color:#eea068;font-weight:400}.mini-time>div{display:flex;gap:34px;position:relative;margin-left:auto}.mini-time>div:before{content:'';position:absolute;top:5px;left:3px;right:3px;height:1px;background:#54645d}.mini-time a{position:relative;color:#a7b8b1;text-decoration:none;display:flex;align-items:center;gap:8px;flex-direction:column;min-width:35px;line-height:1}.mini-time a i{display:block;width:9px;height:9px;border:1px solid #a7b8b1;background:#14201e;border-radius:50%;z-index:1}.mini-time a[aria-current]{color:#eea068}.mini-time a[aria-current] i{background:#eea068;border-color:#eea068}.universe-cross{padding:65px clamp(25px,6vw,100px);background:#14201e;color:#e7e5d8;font:16px/1.5 UniverseBarlow,sans-serif;border-top:1px solid #51625a}.universe-cross p:first-child{font-size:10px;letter-spacing:.14em;color:#eea068}.universe-cross h2{font:600 50px/1 UniverseCondensed,sans-serif;margin:20px 0}.universe-cross a{font-size:14px;color:#eea068;display:inline-block;margin:20px 25px 0 0;text-decoration:none;border-bottom:1px solid #51625a;padding-bottom:8px}.framed-mars>.site-header{position:relative;top:auto}.framed-mars .hero{scroll-margin-top:10px}
-@media(min-width:1700px){.universe-frame,.mini-time{padding-inline:max(5vw,calc((100vw - 1424px)/2))}}
-@media(max-width:1000px){.universe-frame{gap:20px}.universe-frame nav{gap:18px}.frame-map{display:none}}
-@media(max-width:700px){.universe-frame{padding:17px 22px 11px;flex-wrap:wrap;gap:15px}.universe-brand{font-size:25px}.universe-brand span{font-size:8px}.universe-frame nav{flex-basis:100%;margin:0;justify-content:space-between;gap:7px}.universe-frame nav a{font-size:9px;min-height:32px;display:flex;align-items:center}.mini-time{display:block;padding:12px 22px 15px;font-size:10px}.mini-time>div{margin-top:15px;gap:8px;justify-content:space-between}.universe-cross{padding:40px 24px}.universe-cross h2{font-size:38px}.universe-cross p{font-size:14px}.universe-cross a{font-size:13px}}
-@media(prefers-reduced-motion:reduce){.framed-mars *{animation:none!important;transition:none!important;scroll-behavior:auto!important}}
-.crew-grid>noscript,.medal-shelf>noscript,.mission-list>noscript{display:contents}
+@font-face{font-family:UniverseBarlow;src:url('/assets/fonts/Barlow-400-latin.woff2') format('woff2');font-display:swap}
+.universe-local-controls{display:contents}
+html:has(body[data-universe-game]>main>#game){height:auto;overflow:auto}
+body[data-universe-game]:has(>main>#game){height:auto;min-height:100dvh}
+@font-face{font-family:UniverseCondensed;src:url('/assets/fonts/BarlowCondensed-600-latin.woff2') format('woff2');font-weight:600;font-display:swap}
+.universe-frame,.universe-frame *,.universe-footer,.universe-footer *{box-sizing:border-box}
+.universe-frame{position:relative;z-index:30;display:flex;align-items:center;gap:36px;width:100%;min-height:76px;margin:0;padding:14px clamp(22px,5vw,88px);background:#101919;color:#eeeadd;border-bottom:1px solid #394541;font:16px/1.4 UniverseBarlow,Arial,sans-serif;letter-spacing:normal;text-transform:none;isolation:isolate}
+.universe-frame a{color:inherit;text-decoration:none;text-shadow:none;letter-spacing:normal;background:none;border:0;transform:none}
+.universe-frame .universe-brand,.universe-footer .universe-brand{display:block;font:600 30px/.95 UniverseCondensed,'Arial Narrow',sans-serif;color:#eeeadd;white-space:nowrap;letter-spacing:.035em}
+.universe-frame .universe-brand span,.universe-footer .universe-brand span{display:block;margin:5px 0 0;font:11px/1.2 UniverseBarlow,Arial,sans-serif;letter-spacing:.24em;color:#bac4bc}
+.universe-frame nav{position:static;display:flex;align-items:center;gap:30px;margin:0 0 0 auto;padding:0;pointer-events:auto;flex-wrap:wrap}
+.universe-frame nav a{display:flex;align-items:center;min-height:44px;padding:4px 0;font:14px/1.3 UniverseBarlow,Arial,sans-serif}
+.universe-frame nav a:hover{color:#f3b786;text-decoration:underline;text-underline-offset:7px}
+.universe-frame .frame-map{font:14px/1.3 UniverseBarlow,Arial,sans-serif;color:#b9c5bc;padding-left:30px;border-left:1px solid #526059;white-space:nowrap}
+.universe-frame a:focus-visible,.universe-footer a:focus-visible,.universe-skip:focus-visible{outline:3px solid #efb27f;outline-offset:5px}
+.universe-skip{position:fixed;z-index:1000;top:8px;left:16px;transform:translateY(-180%);background:#eeeadd;color:#101919;padding:14px 20px;font:16px/1.5 UniverseBarlow,Arial,sans-serif;text-decoration:none}
+.universe-skip:focus{transform:translateY(0)}
+.universe-footer{position:static;display:grid;grid-template-columns:1fr 1.2fr 1fr;gap:30px;padding:48px clamp(22px,5vw,88px) 28px;background:#101919;color:#b9c5bc;border-top:1px solid #394541;font:16px/1.6 UniverseBarlow,Arial,sans-serif}
+.universe-footer p{margin:0}.universe-footer nav{display:flex;flex-wrap:wrap;justify-content:flex-end;align-content:start;gap:10px 22px}.universe-footer a{color:#eeeadd;text-decoration:none;font-size:14px;min-height:32px}.universe-footer nav a:hover{text-decoration:underline}.universe-footer small{grid-column:1/-1;border-top:1px solid #394541;padding-top:24px;font-size:14px;color:#b9c5bc;letter-spacing:normal}
+.universe-legal{background:#101919;color:#eeeadd}.universe-legal main{max-width:780px;padding:60px 24px}.universe-legal main p,.universe-legal main li{color:#bfc9c0}.universe-legal main h2{color:#efb27f}.universe-legal main a{text-underline-offset:4px}
+.universe-dates{max-width:1240px;margin:40px auto;padding:48px 24px;border-top:1px solid #739f96}.universe-dates>p{font-size:14px}.universe-dates h2{font-size:clamp(32px,5vw,54px);margin:20px 0}.universe-dates ol{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:24px}.universe-dates li{border-top:1px solid #739f96;padding:20px 0}.universe-dates li strong{display:block;font-size:20px}.universe-dates li span{display:block;font-size:16px;margin-top:10px}
+body[data-universe-game]>.universe-frame{font-family:UniverseBarlow,Arial,sans-serif}
+body[data-universe-game]:has(>main>#game){overflow:auto}
+body[data-universe-game]:has(>main>#game)>main{height:calc(100dvh - 76px)}
+@media(max-width:800px){.universe-frame{gap:16px;padding:16px 22px}.universe-frame nav{gap:20px}.universe-frame .frame-map{display:none}.universe-footer{grid-template-columns:1fr 1fr}.universe-footer nav{grid-column:1/-1;justify-content:flex-start}}
+@media(max-width:540px){.universe-frame{flex-wrap:wrap;min-height:120px;gap:10px;padding:15px 22px 8px}.universe-frame .universe-brand{font-size:28px}.universe-frame .universe-brand span{display:inline;font-size:11px;margin-left:10px}.universe-frame nav{flex-basis:100%;justify-content:space-between;gap:10px;margin:0}.universe-frame nav a{font-size:14px;min-height:40px}.universe-footer{grid-template-columns:1fr;font-size:16px;gap:28px}.universe-footer nav{gap:10px 22px}.universe-dates ol{grid-template-columns:1fr 1fr}.universe-dates li span{font-size:15px}body[data-universe-game]:has(>main>#game)>main{height:calc(100dvh - 120px)}}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto!important}*,*:before,*:after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}}
+
+.universe-visually-hidden{position:absolute!important;width:1px!important;height:1px!important;padding:0!important;margin:-1px!important;overflow:hidden!important;clip-path:inset(50%)!important;white-space:nowrap!important;border:0!important}
+.universe-fallback{grid-column:1/-1;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:25px}.universe-fallback article{padding:20px;border:1px solid #62776d}.universe-fallback h3{font-size:28px;margin:16px 0}.universe-fallback p{font-size:17px}.universe-fallback img{max-width:260px;height:220px;object-fit:contain}.universe-fallback a{display:inline-block;margin-top:15px;color:#f0c08a}
+body:has(.poster-g) .poster-g{color:#3b190f}
+body:has(#sofa-note) .dim.sign{color:#f0bc83;opacity:1}
+body:has(#sofa-note) #tonight .eyebrow,body:has(#sofa-note) #rules .eyebrow,body:has(#sofa-note) .sting,body:has(#sofa-note) #sofa-note{color:#a43d28}
+body:has(#sofa-note) .chapters button,body:has(#sofa-note) .text-link{color:#116965}
+body:has(#sofa-note) footer>small{color:#b7c8be}
+@media(max-width:700px){.universe-fallback{grid-template-columns:1fr}}
+
+.universe-frame .universe-skip{position:fixed;top:8px;left:16px;transform:translateY(-180%);background:#eeeadd;color:#101919;padding:14px 20px;font:16px/1.5 UniverseBarlow,Arial,sans-serif;z-index:1000}
+.universe-frame .universe-skip:focus{transform:translateY(0)}
+.universe-legal main{box-sizing:border-box;overflow-wrap:anywhere}
+
+body:has(#sofa-note) footer>small{opacity:1}
+body[data-universe-404]{display:block;padding:0;text-align:left;background:#101919}
+body[data-universe-404]>.universe-frame a{margin:0;border-radius:0}
+body[data-universe-404]>main{min-height:calc(100dvh - 76px);display:flex;align-items:center;justify-content:center;flex-direction:column;padding:50px 24px;text-align:center}
+@media(max-width:540px){body[data-universe-404]>main{min-height:calc(100dvh - 120px)}}
