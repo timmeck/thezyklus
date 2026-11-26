@@ -1,25 +1,133 @@
 {
   "timezone": "Europe/Berlin",
-  "asOf": "2026-11-25",
-  "next": {
-    "at": "2026-11-27T18:00:00+01:00",
-    "title": "BRACKS · The fights",
-    "url": "/bracks-manga/"
-  },
-  "premieres": [
+  "asOf": "2026-11-26T10:35:23+01:00",
+  "upcoming": [
+    {
+      "at": "2026-11-27T18:00:00+01:00",
+      "series": "BRACKS · The fights",
+      "title": "He only fouls where the referee isn't looking. So I keep him where he is.",
+      "url": "/bracks-manga/"
+    },
+    {
+      "at": "2026-11-27T20:00:00+01:00",
+      "series": "ZYKLUS",
+      "title": "She set the Games' heat. Then it changed without her.",
+      "url": "/zyklus/"
+    },
+    {
+      "at": "2026-11-28T22:00:00+01:00",
+      "series": "Pip’s Late Show",
+      "title": "TV missed the rescue and filmed a falling banner. A hero was inside it.",
+      "url": "/late-show/"
+    },
+    {
+      "at": "2026-11-29T21:00:00+01:00",
+      "series": "Please Mind the Sofa",
+      "title": "He remembered their anniversary. She thought he was invading her kitchen.",
+      "url": "/sofa/"
+    },
+    {
+      "at": "2026-11-30T17:00:00+01:00",
+      "series": "MARS",
+      "title": "We Got the Miners Out. Our Captain Got a Reprimand. [Manga Dub]",
+      "url": "/mars/"
+    },
+    {
+      "at": "2026-11-30T18:00:00+01:00",
+      "series": "BRACKS · The fights",
+      "title": "New bandages on my bench. Food at home. Nobody says who paid for it.",
+      "url": "/bracks-manga/"
+    },
     {
       "at": "2026-12-01T21:55:00+01:00",
-      "title": "Victory Window · Spot 1: The Honour Trolley",
-      "url": "/victory-window/#spot-title",
-      "status": "scheduled",
-      "recurring": false
+      "series": "Victory Window",
+      "title": "The medal got a cushion and a tiny canopy. The hero still had to push it.",
+      "url": "/victory-window/"
     },
     {
       "at": "2026-12-01T22:00:00+01:00",
-      "title": "Pip’s Late Show · E02: Please Remain Seated",
-      "url": "/late-show/#episodes",
-      "status": "scheduled"
+      "series": "Pip’s Late Show",
+      "title": "TV said the children stood ready. Their driver had told them all to sit down.",
+      "url": "/late-show/"
+    },
+    {
+      "at": "2026-12-02T20:00:00+01:00",
+      "series": "THE OUTBOUND",
+      "title": "Someone told me to stop. I wouldn't. It cost us most of our water.",
+      "url": "/outbound/"
+    },
+    {
+      "at": "2026-12-03T22:00:00+01:00",
+      "series": "Pip’s Late Show",
+      "title": "He hung the banner that buried a hero. He's taped down every cable since.",
+      "url": "/late-show/"
+    },
+    {
+      "at": "2026-12-04T18:00:00+01:00",
+      "series": "BRACKS · The fights",
+      "title": "Four years later, back in the pump room. Kobb needs one last fight.",
+      "url": "/bracks-manga/"
+    },
+    {
+      "at": "2026-12-04T20:00:00+01:00",
+      "series": "ZYKLUS · Anime",
+      "title": "They said I killed him. At 1:20 a.m., he knocked on my door.",
+      "url": "/zyklus/"
+    },
+    {
+      "at": "2026-12-05T22:00:00+01:00",
+      "series": "Pip’s Late Show",
+      "title": "TV said the film's cadet stood up first try. It was take fourteen.",
+      "url": "/late-show/"
+    },
+    {
+      "at": "2026-12-06T21:00:00+01:00",
+      "series": "Please Mind the Sofa",
+      "title": "The collector came for the booth. He stayed for Grandma's soup.",
+      "url": "/sofa/"
+    },
+    {
+      "at": "2026-12-07T18:00:00+01:00",
+      "series": "BRACKS · The fights",
+      "title": "Everything I know, I learned from right-handers. He leads with the left.",
+      "url": "/bracks-manga/"
+    },
+    {
+      "at": "2026-12-09T20:00:00+01:00",
+      "series": "THE OUTBOUND",
+      "title": "A machine was reeling our boat in. Our drinking water was the only way out.",
+      "url": "/outbound/"
+    },
+    {
+      "at": "2026-12-11T18:00:00+01:00",
+      "series": "BRACKS · The fights",
+      "title": "Five years ago I won a room and never said what I did with it. Tonight he knows.",
+      "url": "/bracks-manga/"
+    },
+    {
+      "at": "2026-12-13T21:00:00+01:00",
+      "series": "Please Mind the Sofa",
+      "title": "He tried to make his mother's suitor late. The man was late saving him.",
+      "url": "/sofa/"
+    },
+    {
+      "at": "2026-12-14T18:00:00+01:00",
+      "series": "BRACKS · The fights",
+      "title": "Five years ago this hall cheered for him. Tonight 600 people shout my name.",
+      "url": "/bracks-manga/"
+    },
+    {
+      "at": "2026-12-18T18:00:00+01:00",
+      "series": "BRACKS · The fights",
+      "title": "Last night to qualify for the Games: one fight and one race. I'm not a runner.",
+      "url": "/bracks-manga/"
+    },
+    {
+      "at": "2026-12-20T21:00:00+01:00",
+      "series": "Please Mind the Sofa",
+      "title": "Her complaint line was too quiet. Then her husband complained about himself.",
+      "url": "/sofa/"
     }
   ],
-  "note": "Regular broadcast slots; premiere dates are listed separately."
+  "note": "Upcoming = episodes actually scheduled on YouTube. Weekly grid = regular slots."
 }

@@ -10,3 +10,6 @@
 /* Announced premieres can extend the programme without narrowing its columns. */
 .premiere-strip{grid-template-columns:repeat(4,minmax(0,1fr))}.premiere-strip>p{grid-column:1/-1}.programme-slot>small:not(.next-label){display:block;font-size:14px;margin-top:12px;color:var(--muted)}
 @media(max-width:700px){.premiere-strip{grid-template-columns:1fr}.programme-slot>small:not(.next-label){grid-column:2;margin-top:0}}
+
+/* Coming up: real scheduled episodes (26.11.2026) */
+.upcoming-strip{grid-template-columns:repeat(auto-fit,minmax(200px,1fr))}.upcoming-strip>p{grid-column:1/-1}.upcoming strong{display:block;font-size:13px;color:var(--accent);letter-spacing:.06em;text-transform:uppercase;margin-top:6px}.upcoming span{display:block;font-size:16px;margin-top:6px;color:var(--paper)}.upcoming[hidden]{display:none}
