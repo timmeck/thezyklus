@@ -1,13 +1,7 @@
 {
   "timezone": "Europe/Berlin",
-  "asOf": "2026-11-27T19:20:09+01:00",
+  "asOf": "2026-11-27T21:30:09+01:00",
   "upcoming": [
-    {
-      "at": "2026-11-27T20:00:00+01:00",
-      "series": "ZYKLUS",
-      "title": "She set the Games' heat. Then it changed without her.",
-      "url": "/zyklus/"
-    },
     {
       "at": "2026-11-28T22:00:00+01:00",
       "series": "Pip’s Late Show",
